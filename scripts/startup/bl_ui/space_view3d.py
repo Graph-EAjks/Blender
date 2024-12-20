@@ -2596,7 +2596,6 @@ class VIEW3D_MT_empty_add(Menu):
 
     def draw(self, _context):
         layout = self.layout
-
         layout.operator_context = 'INVOKE_REGION_WIN'
         layout.operator_enum("object.empty_add", "type")
       
