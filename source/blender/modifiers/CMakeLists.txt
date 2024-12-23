@@ -6,10 +6,8 @@ set(INC
   .
   intern
   intern/lineart
-  ../blenkernel
   ../blenloader
   ../blentranslation
-  ../bmesh
   ../editors/include
   ../functions
   ../geometry
@@ -141,8 +139,9 @@ set(SRC
 
 set(LIB
   PRIVATE bf::blenfont
-  bf_blenkernel
+  PRIVATE bf::blenkernel
   PRIVATE bf::blenlib
+  PRIVATE bf::bmesh
   PRIVATE bf::depsgraph
   PUBLIC bf::dna
   PRIVATE bf::intern::guardedalloc

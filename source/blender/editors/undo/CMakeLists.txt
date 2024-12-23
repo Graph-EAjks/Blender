@@ -5,10 +5,8 @@
 set(INC
   ../include
   ../../asset_system
-  ../../blenkernel
   ../../blenloader
   ../../blentranslation
-  ../../bmesh
   ../../makesrna
   ../../windowmanager
 )
@@ -25,8 +23,9 @@ set(SRC
 )
 
 set(LIB
-  bf_blenkernel
+  PRIVATE bf::blenkernel
   PRIVATE bf::blenlib
+  PRIVATE bf::bmesh
   PRIVATE bf::dna
   PRIVATE bf::intern::clog
   PRIVATE bf::intern::guardedalloc

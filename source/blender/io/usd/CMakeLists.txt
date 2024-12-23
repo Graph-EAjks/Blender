@@ -44,10 +44,8 @@ endif()
 set(INC
   .
   ../common
-  ../../blenkernel
   ../../blenloader
   ../../blentranslation
-  ../../bmesh
   ../../editors/include
   ../../imbuf
   ../../makesrna
@@ -195,8 +193,9 @@ if(WITH_HYDRA)
 endif()
 
 set(LIB
-  bf_blenkernel
+  PRIVATE bf::blenkernel
   PRIVATE bf::blenlib
+  PRIVATE bf::bmesh
   PRIVATE bf::depsgraph
   PRIVATE bf::dna
   PRIVATE bf::animrig
