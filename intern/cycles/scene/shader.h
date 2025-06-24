@@ -226,6 +226,7 @@ class ShaderManager {
   static thread_mutex lookup_table_mutex;
 
   unordered_map<const float *, size_t> bsdf_tables;
+  size_t thin_film_table_offset_;
 
   thread_spin_lock attribute_lock_;
 
