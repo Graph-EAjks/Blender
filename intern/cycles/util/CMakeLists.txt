@@ -16,7 +16,6 @@ set(SRC
   ies.cpp
   log.cpp
   math_cdf.cpp
-  math_fft.cpp
   md5.cpp
   murmurhash.cpp
   path.cpp
@@ -65,7 +64,6 @@ set(SRC_HEADERS
   math_base.h
   math_cdf.h
   math_fast.h
-  math_fft.h
   math_intersect.h
   math_float2.h
   math_float3.h

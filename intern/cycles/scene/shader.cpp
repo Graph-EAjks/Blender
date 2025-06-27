@@ -20,9 +20,7 @@
 #include "scene/tables.h"
 
 #include "util/log.h"
-#include "util/math_fft.h"
 #include "util/murmurhash.h"
-#include "util/time.h"
 #include "util/transform.h"
 
 #ifdef WITH_OCIO
