@@ -22,6 +22,7 @@
 #include "util/log.h"
 #include "util/math_fft.h"
 #include "util/murmurhash.h"
+#include "util/time.h"
 #include "util/transform.h"
 
 #ifdef WITH_OCIO
@@ -34,103 +35,6 @@ namespace OCIO = OCIO_NAMESPACE;
 CCL_NAMESPACE_BEGIN
 
 thread_mutex ShaderManager::lookup_table_mutex;
-
-ccl_inline_constant float cie_color_match[][3] = {
-    {0.0014f, 0.0000f, 0.0065f}, {0.0022f, 0.0001f, 0.0105f}, {0.0042f, 0.0001f, 0.0201f},
-    {0.0076f, 0.0002f, 0.0362f}, {0.0143f, 0.0004f, 0.0679f}, {0.0232f, 0.0006f, 0.1102f},
-    {0.0435f, 0.0012f, 0.2074f}, {0.0776f, 0.0022f, 0.3713f}, {0.1344f, 0.0040f, 0.6456f},
-    {0.2148f, 0.0073f, 1.0391f}, {0.2839f, 0.0116f, 1.3856f}, {0.3285f, 0.0168f, 1.6230f},
-    {0.3483f, 0.0230f, 1.7471f}, {0.3481f, 0.0298f, 1.7826f}, {0.3362f, 0.0380f, 1.7721f},
-    {0.3187f, 0.0480f, 1.7441f}, {0.2908f, 0.0600f, 1.6692f}, {0.2511f, 0.0739f, 1.5281f},
-    {0.1954f, 0.0910f, 1.2876f}, {0.1421f, 0.1126f, 1.0419f}, {0.0956f, 0.1390f, 0.8130f},
-    {0.0580f, 0.1693f, 0.6162f}, {0.0320f, 0.2080f, 0.4652f}, {0.0147f, 0.2586f, 0.3533f},
-    {0.0049f, 0.3230f, 0.2720f}, {0.0024f, 0.4073f, 0.2123f}, {0.0093f, 0.5030f, 0.1582f},
-    {0.0291f, 0.6082f, 0.1117f}, {0.0633f, 0.7100f, 0.0782f}, {0.1096f, 0.7932f, 0.0573f},
-    {0.1655f, 0.8620f, 0.0422f}, {0.2257f, 0.9149f, 0.0298f}, {0.2904f, 0.9540f, 0.0203f},
-    {0.3597f, 0.9803f, 0.0134f}, {0.4334f, 0.9950f, 0.0087f}, {0.5121f, 1.0000f, 0.0057f},
-    {0.5945f, 0.9950f, 0.0039f}, {0.6784f, 0.9786f, 0.0027f}, {0.7621f, 0.9520f, 0.0021f},
-    {0.8425f, 0.9154f, 0.0018f}, {0.9163f, 0.8700f, 0.0017f}, {0.9786f, 0.8163f, 0.0014f},
-    {1.0263f, 0.7570f, 0.0011f}, {1.0567f, 0.6949f, 0.0010f}, {1.0622f, 0.6310f, 0.0008f},
-    {1.0456f, 0.5668f, 0.0006f}, {1.0026f, 0.5030f, 0.0003f}, {0.9384f, 0.4412f, 0.0002f},
-    {0.8544f, 0.3810f, 0.0002f}, {0.7514f, 0.3210f, 0.0001f}, {0.6424f, 0.2650f, 0.0000f},
-    {0.5419f, 0.2170f, 0.0000f}, {0.4479f, 0.1750f, 0.0000f}, {0.3608f, 0.1382f, 0.0000f},
-    {0.2835f, 0.1070f, 0.0000f}, {0.2187f, 0.0816f, 0.0000f}, {0.1649f, 0.0610f, 0.0000f},
-    {0.1212f, 0.0446f, 0.0000f}, {0.0874f, 0.0320f, 0.0000f}, {0.0636f, 0.0232f, 0.0000f},
-    {0.0468f, 0.0170f, 0.0000f}, {0.0329f, 0.0119f, 0.0000f}, {0.0227f, 0.0082f, 0.0000f},
-    {0.0158f, 0.0057f, 0.0000f}, {0.0114f, 0.0041f, 0.0000f}, {0.0081f, 0.0029f, 0.0000f},
-    {0.0058f, 0.0021f, 0.0000f}, {0.0041f, 0.0015f, 0.0000f}, {0.0029f, 0.0010f, 0.0000f},
-    {0.0020f, 0.0007f, 0.0000f}, {0.0014f, 0.0005f, 0.0000f}, {0.0010f, 0.0004f, 0.0000f},
-    {0.0007f, 0.0002f, 0.0000f}, {0.0005f, 0.0002f, 0.0000f}, {0.0003f, 0.0001f, 0.0000f},
-    {0.0002f, 0.0001f, 0.0000f}, {0.0002f, 0.0001f, 0.0000f}, {0.0001f, 0.0000f, 0.0000f},
-    {0.0001f, 0.0000f, 0.0000f}, {0.0001f, 0.0000f, 0.0000f}, {0.0000f, 0.0000f, 0.0000f}};
-
-static float3 thin_film_basis(const float freq)
-{
-  if (freq == 0.0f) {
-    return zero_float3();
-  }
-  const float lambda_nm = 1000.0f / freq;
-
-  /* svm_math_wavelength_color_xyz.
-   * TODO: Deduplicate! */
-  float ii = (lambda_nm - 380.0f) * (1.0f / 5.0f);  // scaled 0..80
-  const int i = float_to_int(ii);
-  float3 color;
-  if (i < 0 || i >= 80) {
-    color = zero_float3();
-  }
-  else {
-    ii -= i;
-    ccl_constant float *c = cie_color_match[i];
-    color = interp(make_float3(c[0], c[1], c[2]), make_float3(c[3], c[4], c[5]), ii);
-  }
-
-  return color / sqr(freq);
-}
-
-static vector<float> thin_film_table(const float3 xyz_to_r,
-                                     const float3 xyz_to_g,
-                                     const float3 xyz_to_b)
-{
-  /* Compute basis functions in frequency parametrization. */
-  vector<float> S_r, S_g, S_b;
-  for (int i = 0; i < 2 * THIN_FILM_TABLE_SIZE; i++) {
-    const float3 Sxyz = thin_film_basis(M_PI_F * i / 60.0f);
-    S_r.push_back(dot(Sxyz, xyz_to_r));
-    S_g.push_back(dot(Sxyz, xyz_to_g));
-    S_b.push_back(dot(Sxyz, xyz_to_b));
-  }
-  /* Compute FFT of basis functions. */
-  util_fft_r2c(S_r);
-  util_fft_r2c(S_g);
-  util_fft_r2c(S_b);
-  /* We don't use the Nyquist frequency entry, so avoid the special case. */
-  S_r[1] = 0.0f;
-  S_g[1] = 0.0f;
-  S_b[1] = 0.0f;
-  /* Normalize. */
-  for (int i = 2; i < 2 * THIN_FILM_TABLE_SIZE; i++) {
-    S_r[i] /= S_r[0];
-    S_g[i] /= S_g[0];
-    S_b[i] /= S_b[0];
-  }
-  S_r[0] = 1.0f;
-  S_g[0] = 1.0f;
-  S_b[0] = 1.0f;
-
-  vector<float> tables(6 * THIN_FILM_TABLE_SIZE);
-  for (int i = 0; i < THIN_FILM_TABLE_SIZE; i++) {
-    /* Real components of R/G/B. */
-    tables[i + 0 * THIN_FILM_TABLE_SIZE] = S_r[2 * i];
-    tables[i + 1 * THIN_FILM_TABLE_SIZE] = S_g[2 * i];
-    tables[i + 2 * THIN_FILM_TABLE_SIZE] = S_b[2 * i];
-    /* Imaginary components of R/G/B. */
-    tables[i + 3 * THIN_FILM_TABLE_SIZE] = S_r[2 * i + 1];
-    tables[i + 4 * THIN_FILM_TABLE_SIZE] = S_g[2 * i + 1];
-    tables[i + 5 * THIN_FILM_TABLE_SIZE] = S_b[2 * i + 1];
-  }
-  return tables;
-}
 
 /* Shader */
 
@@ -727,11 +631,9 @@ void ShaderManager::device_update_common(Device * /*device*/,
   ktables->ggx_gen_schlick_ior_s = ensure_bsdf_table(dscene, scene, table_ggx_gen_schlick_ior_s);
   ktables->ggx_gen_schlick_s = ensure_bsdf_table(dscene, scene, table_ggx_gen_schlick_s);
 
-  /* TODO: Cache this, xyz_to_* will typically stay the same for the entire lifetime of the
-   * process. Will need some locking in case of multiple Cycles instances. */
-  vector<float> thin_film_table_ = thin_film_table(xyz_to_r, xyz_to_g, xyz_to_b);
-  scene->lookup_tables->remove_table(&thin_film_table_offset_);
-  thin_film_table_offset_ = scene->lookup_tables->add_table(dscene, thin_film_table_);
+  if (thin_film_table_offset_ == TABLE_OFFSET_INVALID) {
+    thin_film_table_offset_ = scene->lookup_tables->add_table(dscene, thin_film_table);
+  }
   dscene->data.tables.thin_film_table = (int)thin_film_table_offset_;
 
   /* integrator */
@@ -761,6 +663,7 @@ void ShaderManager::device_free_common(Device * /*device*/, DeviceScene *dscene,
   }
   bsdf_tables.clear();
   scene->lookup_tables->remove_table(&thin_film_table_offset_);
+  thin_film_table_offset_ = TABLE_OFFSET_INVALID;
 
   dscene->shaders.free();
 }
@@ -968,6 +871,49 @@ static bool to_scene_linear_transform(OCIO::ConstConfigRcPtr &config,
 }
 #endif
 
+void ShaderManager::compute_thin_film_table()
+{
+  assert(sizeof(table_thin_film_cmf) == 6 * THIN_FILM_TABLE_SIZE * sizeof(float));
+  thin_film_table.resize(6 * THIN_FILM_TABLE_SIZE);
+
+  float3 normalization;
+  float3 prevPhase = zero_float3();
+  for (int i = 0; i < THIN_FILM_TABLE_SIZE; i++) {
+    const float *tableRow = table_thin_film_cmf[i];
+    /* Load precomputed resampled Fourier-transformed XYZ CMFs. */
+    const float3 xyzReal = make_float3(tableRow[0], tableRow[1], tableRow[2]);
+    const float3 xyzImag = make_float3(tableRow[3], tableRow[4], tableRow[5]);
+
+    /* Linearly combine precomputed data to produce the RGB equivalents. Works since both
+     * resampling and Fourier transformation are linear operations. */
+    const float3 rgbReal{dot(xyzReal, xyz_to_r), dot(xyzReal, xyz_to_g), dot(xyzReal, xyz_to_b)};
+    const float3 rgbImag{dot(xyzImag, xyz_to_r), dot(xyzImag, xyz_to_g), dot(xyzImag, xyz_to_b)};
+
+    /* We normalize all entries by the first element. Since that is the DC component, it normalizes
+     * the CMF (in non-Fourier space) to an area of 1. */
+    if (i == 0) {
+      normalization = 1.0f / rgbReal;
+    }
+
+    /* Convert the complex value into magnitude/phase representation since those are more slowly
+     * varying and therefore linear interpolation is more accurate. */
+    const float3 rgbMag = sqrt(sqr(rgbReal) + sqr(rgbImag));
+    float3 rgbPhase = atan2(rgbImag, rgbReal);
+
+    /* Unwrap phase to avoid jumps. */
+    rgbPhase -= M_2PI_F * round((rgbPhase - prevPhase) * M_1_2PI_F);
+    prevPhase = rgbPhase;
+
+    /* Store in lookup table. */
+    thin_film_table[i + 0 * THIN_FILM_TABLE_SIZE] = rgbMag.x * normalization.x;
+    thin_film_table[i + 1 * THIN_FILM_TABLE_SIZE] = rgbMag.y * normalization.y;
+    thin_film_table[i + 2 * THIN_FILM_TABLE_SIZE] = rgbMag.z * normalization.z;
+    thin_film_table[i + 3 * THIN_FILM_TABLE_SIZE] = rgbPhase.x;
+    thin_film_table[i + 4 * THIN_FILM_TABLE_SIZE] = rgbPhase.y;
+    thin_film_table[i + 5 * THIN_FILM_TABLE_SIZE] = rgbPhase.z;
+  }
+}
+
 void ShaderManager::init_xyz_transforms()
 {
   /* Default to ITU-BT.709 in case no appropriate transform found.
@@ -1062,6 +1008,8 @@ void ShaderManager::init_xyz_transforms()
   rec709_to_b = make_float3(rec709_to_rgb.z);
   is_rec709 = transform_equal_threshold(xyz_to_rgb, xyz_to_rec709, 0.0001f);
 #endif
+
+  compute_thin_film_table();
 }
 
 size_t ShaderManager::ensure_bsdf_table_impl(DeviceScene *dscene,

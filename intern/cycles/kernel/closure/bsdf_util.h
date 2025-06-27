@@ -348,24 +348,20 @@ ccl_device_inline Spectrum iridescence_lookup_sensitivity(KernelGlobals kg,
                                                           const float OPD,
                                                           const float shift)
 {
-  const float phase = M_2PI_F * OPD;
-
-  /* TODO: There's probably an off-by-one error here.
-   * The 60000 should exactly fall on the Nyquist frequency, but the last entry in the table
-   * is one before that. */
-  float f = phase / 60000.0f;
+  /* The LUT covers 0 to 60 um. */
+  float x = M_2PI_F * OPD / 60000.0f;
   const int size = THIN_FILM_TABLE_SIZE;
 
-  const float3 real = make_float3(
-      lookup_table_read(kg, f, kernel_data.tables.thin_film_table + 0 * size, size),
-      lookup_table_read(kg, f, kernel_data.tables.thin_film_table + 1 * size, size),
-      lookup_table_read(kg, f, kernel_data.tables.thin_film_table + 2 * size, size));
-  const float3 imag = make_float3(
-      lookup_table_read(kg, f, kernel_data.tables.thin_film_table + 3 * size, size),
-      lookup_table_read(kg, f, kernel_data.tables.thin_film_table + 4 * size, size),
-      lookup_table_read(kg, f, kernel_data.tables.thin_film_table + 5 * size, size));
+  const float3 mag = make_float3(
+      lookup_table_read(kg, x, kernel_data.tables.thin_film_table + 0 * size, size),
+      lookup_table_read(kg, x, kernel_data.tables.thin_film_table + 1 * size, size),
+      lookup_table_read(kg, x, kernel_data.tables.thin_film_table + 2 * size, size));
+  const float3 phase = make_float3(
+      lookup_table_read(kg, x, kernel_data.tables.thin_film_table + 3 * size, size),
+      lookup_table_read(kg, x, kernel_data.tables.thin_film_table + 4 * size, size),
+      lookup_table_read(kg, x, kernel_data.tables.thin_film_table + 5 * size, size));
 
-  return cosf(shift) * real + sinf(shift) * imag;
+  return mag * cos(phase - shift);
 }
 
 ccl_device_inline float3 iridescence_airy_summation(KernelGlobals kg,

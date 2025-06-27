@@ -239,6 +239,7 @@ class ShaderManager {
   float3 rec709_to_g;
   float3 rec709_to_b;
   bool is_rec709;
+  vector<float> thin_film_table;
 
   template<std::size_t n>
   size_t ensure_bsdf_table(DeviceScene *dscene, Scene *scene, const float (&table)[n])
@@ -249,6 +250,8 @@ class ShaderManager {
                                 Scene *scene,
                                 const float *table,
                                 const size_t n);
+
+  void compute_thin_film_table();
 
   uint get_graph_kernel_features(ShaderGraph *graph);
 
