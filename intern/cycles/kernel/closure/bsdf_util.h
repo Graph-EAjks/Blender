@@ -7,7 +7,6 @@
 
 #pragma once
 
-#include "kernel/tables.h"
 #include "kernel/types.h"
 
 #include "kernel/util/colorspace.h"
