@@ -487,7 +487,9 @@ cie_X = CubicSpline(CIEXYZ[:, 0], CIEXYZ[:, 1], extrapolate=False)
 cie_Y = CubicSpline(CIEXYZ[:, 0], CIEXYZ[:, 2], extrapolate=False)
 cie_Z = CubicSpline(CIEXYZ[:, 0], CIEXYZ[:, 3], extrapolate=False)
 
-resample = lambda func, freq: np.nan_to_num(func(1000 / freq) / (freq * freq))
+
+def resample(func, freq): return np.nan_to_num(func(1000 / freq) / (freq * freq))
+
 
 endfreq = 60  # Cover 0 to 60 um
 N = 1022  # 1022 real datapoints result in 512 Fourier-space complex values.
