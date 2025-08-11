@@ -1635,6 +1635,7 @@ def km_view3d(params):
          {"properties": [("type", 'LEFT')]}),
         ("view3d.view_roll", {"type": 'NUMPAD_6', "value": 'PRESS', "shift": True, "repeat": True},
          {"properties": [("type", 'RIGHT')]}),
+        ("view3d.view_roll", {"type": 'MIDDLEMOUSE', "value": 'PRESS', "alt": True}, None),
         ("view3d.view_orbit", {"type": 'NUMPAD_9', "value": 'PRESS'},
          {"properties": [("angle", pi), ("type", 'ORBITRIGHT')]}),
         ("view3d.view_axis", {"type": 'NUMPAD_1', "value": 'PRESS', "shift": True},
