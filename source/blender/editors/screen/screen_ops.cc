@@ -3283,7 +3283,7 @@ static wmOperatorStatus frame_offset_exec(bContext *C, wmOperator *op)
   if (!scene) {
     return OPERATOR_CANCELLED;
   }
-  
+
   int delta = RNA_int_get(op->ptr, "delta");
 
   /* In order to jump from e.g. 1.5 to 1 the delta needs to be incremented by 1 since the sub-frame
@@ -6217,12 +6217,8 @@ static wmOperatorStatus userpref_show_exec(bContext *C, wmOperator *op)
   };
 
   /* changes context! */
-  if (ScrArea *area = ED_screen_temp_space_open(C,
-                                                nullptr,
-                                                &window_rect,
-                                                SPACE_USERPREF,
-                                                U.preferences_display_type,
-                                                false))
+  if (ScrArea *area = ED_screen_temp_space_open(
+          C, nullptr, &window_rect, SPACE_USERPREF, U.preferences_display_type, false))
   {
     /* The header only contains the editor switcher and looks empty.
      * So hiding in the temp window makes sense. */
