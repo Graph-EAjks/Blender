@@ -991,9 +991,9 @@ set(POTRACE_LICENSE SPDX:GPL-2.0-or-later)
 set(POTRACE_COPYRIGHT "Copyright © 2001-2019 Peter Selinger.")
 
 
-set(HARU_VERSION 2_3_0)
-set(HARU_URI https://github.com/libharu/libharu/archive/RELEASE_${HARU_VERSION}.tar.gz)
-set(HARU_HASH 4f916aa49c3069b3a10850013c507460)
+set(HARU_VERSION 2.4.5)
+set(HARU_URI https://github.com/libharu/libharu/archive/refs/tags/v${HARU_VERSION}.tar.gz)
+set(HARU_HASH d5633fb741079a7675bb3e9e8e8a58ce)
 set(HARU_HASH_TYPE MD5)
 set(HARU_FILE libharu-${HARU_VERSION}.tar.gz)
 set(HARU_HOMEPAGE http://libharu.org/)
