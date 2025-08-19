@@ -2325,6 +2325,12 @@ typedef struct UserInputEvent {
   _view.delegate = _renderer;
 }
 
+- (BOOL)prefersHomeIndicatorAutoHidden
+{
+  /* Make the Home Indicator (the bottom-center white navigation bar) auto-hide when possible. */
+  return YES;
+}
+
 @end
 
 @interface IOSAppDelegate : UIResponder <UIApplicationDelegate>
