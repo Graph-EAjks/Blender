@@ -9,6 +9,7 @@
 #include "GHOST_EventCursor.hh"
 #include "GHOST_EventDragnDrop.hh"
 #include "GHOST_EventKey.hh"
+#include "GHOST_EventTouch.hh"
 #include "GHOST_EventTrackpad.hh"
 #include "GHOST_EventWheel.hh"
 #include "GHOST_SystemIOS.h"
@@ -351,6 +352,8 @@ typedef struct UserInputEvent {
   GHOSTUIRotationGestureRecognizer *rotation_gesture_recognizer;
   GHOSTUIHoverGestureRecognizer *hover_gesture_recognizer;
   UIPencilInteraction *pencil_interaction;
+  UIScreenEdgePanGestureRecognizer *edge_swipe_left;
+  UIScreenEdgePanGestureRecognizer *edge_swipe_right;
   // GHOSTUILongPressGestureRecognizer *long_press_gesture_recognizer;
 
   /* Data from the Apple pencil */
@@ -569,6 +572,21 @@ typedef struct UserInputEvent {
   rotation_gesture_recognizer.allowedTouchTypes =
       @[ @(UITouchTypeDirect), @(UITouchTypeIndirect) ];
   [window->getView() addGestureRecognizer:rotation_gesture_recognizer];
+
+  /* Edge swipe. */
+  edge_swipe_left = [[UIScreenEdgePanGestureRecognizer alloc]
+      initWithTarget:self
+              action:@selector(handleEdgeSwipe:)];
+  edge_swipe_left.edges = UIRectEdgeLeft;
+  edge_swipe_left.delegate = self;
+  [window->getView() addGestureRecognizer:edge_swipe_left];
+
+  edge_swipe_right = [[UIScreenEdgePanGestureRecognizer alloc]
+      initWithTarget:self
+              action:@selector(handleEdgeSwipe:)];
+  edge_swipe_right.edges = UIRectEdgeRight;
+  edge_swipe_right.delegate = self;
+  [window->getView() addGestureRecognizer:edge_swipe_right];
 
   /* Apple Pencil hover recognizer. */
   hover_gesture_recognizer = [[GHOSTUIHoverGestureRecognizer alloc]
@@ -1670,6 +1688,33 @@ typedef struct UserInputEvent {
       [self generateUserInputEvents:event_info];
     }
   }
+}
+
+- (void)handleEdgeSwipe:(UIScreenEdgePanGestureRecognizer *)gesture
+{
+  if (gesture.state != UIGestureRecognizerStateEnded) {
+    return;
+  }
+
+  UIView *view = window->getView();
+  CGPoint location = [gesture locationInView:view];
+  CGSize viewSize = view.bounds.size;
+
+  GHOST_TTouchEventSubTypes ghostEventType;
+
+  if (gesture.edges == UIRectEdgeLeft) {
+    ghostEventType = GHOST_kTouchEventEdgeSwipeInLeft;
+  }
+  else if (gesture.edges == UIRectEdgeRight) {
+    ghostEventType = GHOST_kTouchEventEdgeSwipeInRight;
+  }
+  else {
+    /* For now only handle left/right. */
+    return;
+  }
+
+  system->pushEvent(new GHOST_EventTouch(
+      system->getMilliSeconds(), window, ghostEventType, location.x, location.y));
 }
 
 - (void)handleHover:(GHOSTUIHoverGestureRecognizer *)sender
