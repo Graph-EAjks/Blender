@@ -98,6 +98,7 @@ set(USD_EXTRA_ARGS
   -DPXR_BUILD_USD_TOOLS=OFF
   -DCMAKE_DEBUG_POSTFIX=_d
   -DBUILD_SHARED_LIBS=ON
+  -DTBB_DIR=${LIBDIR}/tbb/lib/cmake/TBB
   -DTBB_INCLUDE_DIRS=${LIBDIR}/tbb/include
   -DTBB_LIBRARIES=${LIBDIR}/tbb/lib/${LIBPREFIX}${TBB_LIBRARY}${SHAREDLIBEXT}
   -DTBB_LIBRARIES_DEBUG=${LIBDIR}/tbb/lib/${LIBPREFIX}${TBB_LIBRARY}${SHAREDLIBEXT}
@@ -144,6 +145,9 @@ ExternalProject_Add(external_usd
     ${PATCH_CMD} -p 1 -d
       ${BUILD_DIR}/usd/src/external_usd <
       ${PATCH_DIR}/usd_no_vulkan_sdk.diff &&
+    # The patch just makes empty, but we need it to be removed to avoid
+    # including an empty file instead of the actual vma header.
+    ${CMAKE_COMMAND} -E remove ${BUILD_DIR}/usd/src/external_usd/pxr/imaging/hgiVulkan/vk_mem_alloc.h &&
     ${PATCH_CMD} -p 1 -d
       ${BUILD_DIR}/usd/src/external_usd <
       ${PATCH_DIR}/usd_storm_vulkan.diff
