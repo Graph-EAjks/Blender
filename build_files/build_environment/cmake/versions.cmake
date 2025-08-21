@@ -315,9 +315,9 @@ Copyright © 1991-1997 Silicon Graphics, Inc.
 
 set(OSL_VERSION 1.14.7.0)
 set(OSL_NAME "Open Shading Language")
-set(OSL_URI https://github.com/AcademySoftwareFoundation/OpenShadingLanguage/archive/v${OSL_VERSION}.tar.gz)
-set(OSL_HASH 5a3490d405615f48d7340ba4af41380d)
-set(OSL_HASH_TYPE MD5)
+set(OSL_URI https://github.com/AcademySoftwareFoundation/OpenShadingLanguage/releases/download/v${OSL_VERSION}/OSL-${OSL_VERSION}.tar.gz)
+set(OSL_HASH 45b2b9de1bae6854fb8af0d332c3266898871d95741bdb6abe8178cd6d01aef2)
+set(OSL_HASH_TYPE SHA256)
 set(OSL_FILE OpenShadingLanguage-${OSL_VERSION}.tar.gz)
 set(OSL_HOMEPAGE https://github.com/AcademySoftwareFoundation/OpenShadingLanguage/)
 set(OSL_LICENSE SPDX:BSD-3-Clause)
