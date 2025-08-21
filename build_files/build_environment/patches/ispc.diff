@@ -1,26 +1,8 @@
-diff -Naur ispc-1.17.0.org/CMakeLists.txt ispc-1.17.0/CMakeLists.txt
---- ispc-1.17.0.org/CMakeLists.txt	2022-01-15 01:35:15 -0700
-+++ ispc-1.17.0/CMakeLists.txt	2022-02-12 12:44:24 -0700
-@@ -443,7 +447,7 @@
- 
- # Include directories
- target_include_directories(${PROJECT_NAME} PRIVATE
--                           ${LLVM_INCLUDE_DIRS}
-+                           ${LLVM_INCLUDE_DIRS} ${CLANG_INCLUDE_DIRS}
-                            ${XE_DEPS_DIR}/include
-                            ${CMAKE_CURRENT_SOURCE_DIR}/src
-                            ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR})
-@@ -607,7 +607,7 @@
-                  NAMES
-                     "${CMAKE_STATIC_LIBRARY_PREFIX}${clangLib}${CMAKE_STATIC_LIBRARY_SUFFIX}"
-                     clang-cpp
--                 HINTS ${LLVM_LIBRARY_DIRS})
-+                 HINTS ${LLVM_LIBRARY_DIRS} ${CLANG_LIBRARY_DIR})
-     if (NOT ${${clangLib}Path} IN_LIST CLANG_LIBRARY_FULL_PATH_LIST)
-         list(APPEND CLANG_LIBRARY_FULL_PATH_LIST ${${clangLib}Path})
-     endif()
-@@ -546,6 +550,29 @@
-     endif()
+diff -Naur ispc-1.28.0.orig/CMakeLists.txt ispc-1.28.0/CMakeLists.txt
+--- ispc-1.28.0.orig/CMakeLists.txt	2025-08-12 05:34:22.000000000 -0700
++++ ispc-1.28.0/CMakeLists.txt	2025-08-21 11:55:15.223379600 -0700
+@@ -119,6 +119,29 @@
+     set(ISPC_LIBRARY_JIT OFF CACHE BOOL "Build ISPC as a library with JIT capabilities" FORCE)
  endif()
  
 +# Link against libstdc++.a which must be provided to the linker after
@@ -47,17 +29,45 @@ diff -Naur ispc-1.17.0.org/CMakeLists.txt ispc-1.17.0/CMakeLists.txt
 +endif()
 +
  # Build target for utility checking host ISA
- if (ISPC_INCLUDE_UTILS)
-     add_executable(check_isa "")
-diff -Naur ispc-1.17.0.org/cmake/GenerateBuiltins.cmake ispc-1.17.0/cmake/GenerateBuiltins.cmake
---- ispc-1.17.0.org/cmake/GenerateBuiltins.cmake	2022-01-15 01:35:15 -0700
-+++ ispc-1.17.0/cmake/GenerateBuiltins.cmake	2022-02-12 12:44:24 -0700
-@@ -124,6 +124,8 @@
+ # This target should be defined before the inclusion of FindLLVM.cmake because
+ # we want to build check_isa without LLVM installed.
+@@ -669,7 +692,7 @@
  
-     if ("${bit}" STREQUAL "32" AND ${arch} STREQUAL "x86")
-         set(target_arch "i686")
+ # Include directories
+ list(APPEND INCLUDE_DIRECTORIES
+-    ${LLVM_INCLUDE_DIRS}
++    ${LLVM_INCLUDE_DIRS} ${CLANG_INCLUDE_DIRS}
+     ${XE_DEPS_DIR}/include
+     ${CMAKE_CURRENT_SOURCE_DIR}/src
+     ${CMAKE_CURRENT_SOURCE_DIR}/src/include
+@@ -819,7 +842,7 @@
+                  NAMES
+                     "${CMAKE_STATIC_LIBRARY_PREFIX}${clangLib}${CMAKE_STATIC_LIBRARY_SUFFIX}"
+                     clang-cpp
+-                 HINTS ${LLVM_LIBRARY_DIRS})
++                 HINTS ${LLVM_LIBRARY_DIRS} ${CLANG_LIBRARY_DIR})
+     if (NOT ${${clangLib}Path} IN_LIST CLANG_LIBRARY_FULL_PATH_LIST)
+         list(APPEND CLANG_LIBRARY_FULL_PATH_LIST ${${clangLib}Path})
+     endif()
+diff -Naur ispc-1.28.0.orig/cmake/GenerateBuiltins.cmake ispc-1.28.0/cmake/GenerateBuiltins.cmake
+--- ispc-1.28.0.orig/cmake/GenerateBuiltins.cmake	2025-08-12 05:34:22.000000000 -0700
++++ ispc-1.28.0/cmake/GenerateBuiltins.cmake	2025-08-21 12:09:18.535820200 -0700
+@@ -334,7 +334,7 @@
+ 
+     add_custom_command(
+         OUTPUT ${bc}
+-        COMMAND cat ${input} | \"${LLVM_AS_EXECUTABLE}\" -o ${bc}
++        COMMAND ${CMAKE_COMMAND} -E cat ${input} | \"${LLVM_AS_EXECUTABLE}\" -o ${bc}
+         DEPENDS ${input}
+         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+         )
+@@ -405,7 +405,8 @@
+     endif()
+ 
+     if (ISPC_LINUX_TARGET AND X86_ENABLED)
+-        builtin_to_cpp(32 linux x86)
 +        # Blender: disable 32bit due to build issues on Linux and being unnecessary.
-+        set(SKIP ON)
-     elseif ("${bit}" STREQUAL "64" AND ${arch} STREQUAL "x86")
-         set(target_arch "x86_64")
-     elseif ("${bit}" STREQUAL "32" AND ${arch} STREQUAL "arm")
++        #builtin_to_cpp(32 linux x86)
+         builtin_to_cpp(64 linux x86)
+     endif()
+ 
