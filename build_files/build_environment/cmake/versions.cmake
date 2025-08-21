@@ -255,10 +255,10 @@ Copyright (C) Nathan Moinvaziri https://github.com/zlib-ng/minizip-ng.
 Copyright (C) 1998-2010 Gilles Vollant https://www.winimage.com/zLibDll/minizip.html.
 ]=])
 
-set(LLVM_VERSION 17.0.6)
+set(LLVM_VERSION 20.1.8)
 set(LLVM_NAME LLVM)
 set(LLVM_URI https://github.com/llvm/llvm-project/releases/download/llvmorg-${LLVM_VERSION}/llvm-project-${LLVM_VERSION}.src.tar.xz)
-set(LLVM_HASH 62a09d65240a5133f001ace48269dbfc)
+set(LLVM_HASH 915e251a657450a2ba8e4c106e4f9555)
 set(LLVM_HASH_TYPE MD5)
 set(LLVM_FILE llvm-project-${LLVM_VERSION}.src.tar.xz)
 set(LLVM_CPE "cpe:2.3:a:llvm:compiler:${LLVM_VERSION}:*:*:*:*:*:*:*")
@@ -313,12 +313,10 @@ Copyright © 1988-1997 Sam Leffler.
 Copyright © 1991-1997 Silicon Graphics, Inc.
 ]=])
 
-# Latest 1.14 (beta) main, that is compatible with OIIO 3.0
-set(OSL_VERSION 1.14.3.0-beta)
-set(OSL_COMMIT "b795e3e92ae1f2c5da5024b61295b0eb41486a65")
+set(OSL_VERSION 1.14.7.0)
 set(OSL_NAME "Open Shading Language")
-set(OSL_URI https://github.com/AcademySoftwareFoundation/OpenShadingLanguage/archive/${OSL_COMMIT}.tar.gz)
-set(OSL_HASH dbfe1a34249959f2d66296bf04317c1c)
+set(OSL_URI https://github.com/AcademySoftwareFoundation/OpenShadingLanguage/archive/v${OSL_VERSION}.tar.gz)
+set(OSL_HASH 5a3490d405615f48d7340ba4af41380d)
 set(OSL_HASH_TYPE MD5)
 set(OSL_FILE OpenShadingLanguage-${OSL_VERSION}.tar.gz)
 set(OSL_HOMEPAGE https://github.com/AcademySoftwareFoundation/OpenShadingLanguage/)
