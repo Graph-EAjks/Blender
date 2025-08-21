@@ -81,8 +81,8 @@ const EnumPropertyItem rna_enum_property_type_items[] = {
   {PROP_FREQUENCY, "FREQUENCY", 0, "Frequency", ""}
 
 #define RNA_ENUM_PROPERTY_SUBTYPE_NUMBER_ARRAY_ITEMS \
-  {PROP_COLOR, "COLOR", 0, "Linear Color", "Color in the linear space"}, \
-  {PROP_TRANSLATION, "TRANSLATION", 0, "Translation", "Color in the gamma corrected space"}, \
+  {PROP_COLOR, "COLOR", 0, "Linear Color", "Color in the scene linear working color space"}, \
+  {PROP_TRANSLATION, "TRANSLATION", 0, "Translation", ""}, \
   {PROP_DIRECTION, "DIRECTION", 0, "Direction", ""}, \
   {PROP_VELOCITY, "VELOCITY", 0, "Velocity", ""}, \
   {PROP_ACCELERATION, "ACCELERATION", 0, "Acceleration", ""}, \
@@ -92,7 +92,7 @@ const EnumPropertyItem rna_enum_property_type_items[] = {
   {PROP_AXISANGLE, "AXISANGLE", 0, "Axis-Angle", "Angle and axis to rotate around"}, \
   {PROP_XYZ, "XYZ", 0, "XYZ", ""}, \
   {PROP_XYZ_LENGTH, "XYZ_LENGTH", 0, "XYZ Length", ""}, \
-  {PROP_COLOR_GAMMA, "COLOR_GAMMA", 0, "Gamma-Corrected Color", ""}, \
+  {PROP_COLOR_GAMMA, "COLOR_GAMMA", 0, "sRGB Color", "Color in sRGB color space (mainly for user interface colors)"}, \
   {PROP_COORDS, "COORDINATES", 0, "Coordinates", ""}, \
   /* Boolean. */ \
   {PROP_LAYER, "LAYER", 0, "Layer", ""}, \
@@ -1649,16 +1649,24 @@ static void rna_property_override_diff_propptr(Main *bmain,
             if (opop == nullptr) {
               const char *subitem_refname = rna_itemname_b ? rna_itemname_b->c_str() : nullptr;
               const char *subitem_locname = rna_itemname_a ? rna_itemname_a->c_str() : nullptr;
-              opop = BKE_lib_override_library_property_operation_find(op,
-                                                                      subitem_refname,
-                                                                      subitem_locname,
-                                                                      ptrdiff_ctx.rna_itemid_b,
-                                                                      ptrdiff_ctx.rna_itemid_a,
-                                                                      rna_itemindex_b,
-                                                                      rna_itemindex_a,
-                                                                      true,
-                                                                      nullptr);
+              opop = BKE_lib_override_library_property_operation_get(op,
+                                                                     LIBOVERRIDE_OP_REPLACE,
+                                                                     subitem_refname,
+                                                                     subitem_locname,
+                                                                     ptrdiff_ctx.rna_itemid_b,
+                                                                     ptrdiff_ctx.rna_itemid_a,
+                                                                     rna_itemindex_b,
+                                                                     rna_itemindex_a,
+                                                                     true,
+                                                                     nullptr,
+                                                                     &created);
+              /* Do not use BKE_lib_override_library_operations_tag here, we do not want to
+               * validate as used all of its operations. */
+              op->tag &= ~LIBOVERRIDE_PROP_OP_TAG_UNUSED;
               opop->tag &= ~LIBOVERRIDE_PROP_OP_TAG_UNUSED;
+              if (created) {
+                ptrdiff_ctx.rnadiff_ctx.report_flag |= RNA_OVERRIDE_MATCH_RESULT_CREATED;
+              }
             }
 
             BLI_assert(propptr_a->data == propptr_a->owner_id);

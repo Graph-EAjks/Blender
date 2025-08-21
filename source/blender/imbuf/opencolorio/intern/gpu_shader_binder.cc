@@ -133,7 +133,9 @@ bool GPUDisplayShader::matches(const GPUDisplayParameters &display_parameters) c
   const bool use_curve_mapping = (display_parameters.curve_mapping != nullptr);
   return (this->from_colorspace == display_parameters.from_colorspace &&
           this->view == display_parameters.view && this->display == display_parameters.display &&
-          this->look == display_parameters.look && this->use_curve_mapping == use_curve_mapping);
+          this->look == display_parameters.look && this->use_curve_mapping == use_curve_mapping &&
+          this->use_hdr == display_parameters.use_hdr &&
+          this->use_display_emulation == display_parameters.use_display_emulation);
 }
 
 bool GPUDisplayShader::initialize_common()
@@ -394,6 +396,8 @@ bool GPUShaderBinder::display_bind(const GPUDisplayParameters &display_parameter
     display_shader->display = display_parameters.display;
     display_shader->look = display_parameters.look;
     display_shader->use_curve_mapping = (display_parameters.curve_mapping != nullptr);
+    display_shader->use_hdr = display_parameters.use_hdr;
+    display_shader->use_display_emulation = display_parameters.use_display_emulation;
     display_shader->is_valid = false;
 
     if (display_parameters.curve_mapping) {
@@ -427,20 +431,20 @@ bool GPUShaderBinder::to_scene_linear_bind(const StringRefNull from_colorspace,
   display_parameters.use_predivide = use_predivide;
 
   /* Attempt to get shader from the cache. */
-  internal::GPUDisplayShader *display_shader = scene_linear_cache_->get(display_parameters);
+  internal::GPUDisplayShader *shader = scene_linear_cache_->get(display_parameters);
 
-  if (!display_shader) {
-    display_shader = &display_cache_->create_default();
-    BLI_assert(display_shader);
+  if (!shader) {
+    shader = &scene_linear_cache_->create_default();
+    BLI_assert(shader);
 
-    display_shader->from_colorspace = display_parameters.from_colorspace;
+    shader->from_colorspace = display_parameters.from_colorspace;
 
-    if (display_shader->initialize_common()) {
-      construct_scene_linear_shader(*display_shader);
+    if (shader->initialize_common()) {
+      construct_scene_linear_shader(*shader);
     }
   }
 
-  return gpu_shader_bind(config_, *display_shader, display_parameters);
+  return gpu_shader_bind(config_, *shader, display_parameters);
 }
 
 void GPUShaderBinder::unbind() const

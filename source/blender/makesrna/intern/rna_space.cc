@@ -695,10 +695,10 @@ static StructRNA *rna_Space_refine(PointerRNA *ptr)
   return &RNA_Space;
 }
 
-static ScrArea *rna_area_from_space(PointerRNA *ptr)
+static ScrArea *rna_area_from_space(const PointerRNA *ptr)
 {
-  bScreen *screen = (bScreen *)ptr->owner_id;
-  SpaceLink *link = (SpaceLink *)ptr->data;
+  bScreen *screen = reinterpret_cast<bScreen *>(ptr->owner_id);
+  SpaceLink *link = static_cast<SpaceLink *>(ptr->data);
   return BKE_screen_find_area_from_space(screen, link);
 }
 
@@ -931,6 +931,27 @@ static void rna_Space_show_region_asset_shelf_set(PointerRNA *ptr, bool value)
 {
   rna_Space_bool_from_region_flag_set_by_type(ptr, RGN_TYPE_ASSET_SHELF, RGN_FLAG_HIDDEN, !value);
 }
+static int rna_Space_show_region_asset_shelf_editable(const PointerRNA *ptr, const char **r_info)
+{
+  ScrArea *area = rna_area_from_space(ptr);
+  ARegion *region = BKE_area_find_region_type(area, RGN_TYPE_ASSET_SHELF);
+
+  if (!region) {
+    return 0;
+  }
+
+  if (region->flag & RGN_FLAG_POLL_FAILED) {
+    if (r_info) {
+      *r_info = N_(
+          "The asset shelf is not available in the current context (try changing the active mode "
+          "or tool)");
+    }
+    return 0;
+  }
+
+  return PROP_EDITABLE;
+}
+
 static void rna_Space_show_region_asset_shelf_update(bContext *C, PointerRNA *ptr)
 {
   rna_Space_bool_from_region_flag_update_by_type(C, ptr, RGN_TYPE_ASSET_SHELF, RGN_FLAG_HIDDEN);
@@ -2680,8 +2701,8 @@ static void rna_SpaceNodeEditor_node_tree_set(PointerRNA *ptr,
   ED_node_tree_start(region, snode, (bNodeTree *)value.data, nullptr, nullptr);
 }
 
-static bool rna_SpaceNodeEditor_geometry_nodes_tool_tree_poll(PointerRNA * /*ptr*/,
-                                                              const PointerRNA value)
+static bool rna_SpaceNodeEditor_selected_node_group_poll(PointerRNA * /*ptr*/,
+                                                         const PointerRNA value)
 {
   const bNodeTree &ntree = *static_cast<const bNodeTree *>(value.data);
   if (ntree.type != NTREE_GEOMETRY) {
@@ -2698,7 +2719,7 @@ static bool rna_SpaceNodeEditor_geometry_nodes_tool_tree_poll(PointerRNA * /*ptr
 
 static bool space_node_node_geometry_nodes_poll(const SpaceNode &snode, const bNodeTree &ntree)
 {
-  switch (SpaceNodeGeometryNodesType(snode.geometry_nodes_type)) {
+  switch (SpaceNodeGeometryNodesType(snode.node_tree_sub_type)) {
     case SNODE_GEOMETRY_MODIFIER:
       if (!ntree.geometry_node_asset_traits) {
         return false;
@@ -2741,12 +2762,12 @@ static void rna_SpaceNodeEditor_node_tree_update(const bContext *C, PointerRNA *
   blender::ed::space_node::tree_update(C);
 }
 
-static void rna_SpaceNodeEditor_geometry_nodes_type_update(Main * /*main*/,
-                                                           Scene * /*scene*/,
-                                                           PointerRNA *ptr)
+static void rna_SpaceNodeEditor_node_tree_sub_type_update(Main * /*main*/,
+                                                          Scene * /*scene*/,
+                                                          PointerRNA *ptr)
 {
   SpaceNode *snode = static_cast<SpaceNode *>(ptr->data);
-  if (snode->geometry_nodes_type == SNODE_GEOMETRY_TOOL) {
+  if (snode->node_tree_sub_type == SNODE_GEOMETRY_TOOL) {
     snode->flag &= ~SNODE_PIN;
   }
 }
@@ -3820,7 +3841,18 @@ static void rna_def_space_generic_show_region_toggles(StructRNA *srna, int regio
   }
   if (region_type_mask & ((1 << RGN_TYPE_ASSET_SHELF) | (1 << RGN_TYPE_ASSET_SHELF_HEADER))) {
     region_type_mask &= ~((1 << RGN_TYPE_ASSET_SHELF) | (1 << RGN_TYPE_ASSET_SHELF_HEADER));
-    DEF_SHOW_REGION_PROPERTY(show_region_asset_shelf, "Asset Shelf", "");
+
+    prop = RNA_def_property(srna, "show_region_asset_shelf", PROP_BOOLEAN, PROP_NONE);
+    RNA_def_property_flag(prop, PROP_CONTEXT_UPDATE);
+    RNA_def_property_boolean_funcs(
+        prop, "rna_Space_show_region_asset_shelf_get", "rna_Space_show_region_asset_shelf_set");
+    RNA_def_property_editable_func(prop, "rna_Space_show_region_asset_shelf_editable");
+    RNA_def_property_ui_text(
+        prop,
+        "Asset Shelf",
+        "Display a region with assets that may currently be relevant (such as "
+        "brushes in paint modes, or poses in Pose Mode)");
+    RNA_def_property_update(prop, 0, "rna_Space_show_region_asset_shelf_update");
   }
   BLI_assert(region_type_mask == 0);
 }
@@ -8069,13 +8101,13 @@ static void rna_def_space_node(BlenderRNA *brna)
   RNA_def_property_translation_context(prop, BLT_I18NCONTEXT_ID_ID);
   RNA_def_property_update(prop, NC_SPACE | ND_SPACE_NODE, nullptr);
 
-  prop = RNA_def_property(srna, "geometry_nodes_type", PROP_ENUM, PROP_NONE);
-  RNA_def_property_enum_sdna(prop, nullptr, "geometry_nodes_type");
+  prop = RNA_def_property(srna, "node_tree_sub_type", PROP_ENUM, PROP_NONE);
+  RNA_def_property_enum_sdna(prop, nullptr, "node_tree_sub_type");
   RNA_def_property_enum_items(prop, geometry_nodes_type_items);
-  RNA_def_property_ui_text(prop, "Geometry Nodes Type", "");
+  RNA_def_property_ui_text(prop, "Node Tree Sub-Type", "");
   RNA_def_property_translation_context(prop, BLT_I18NCONTEXT_ID_ID);
   RNA_def_property_update(
-      prop, NC_SPACE | ND_SPACE_NODE, "rna_SpaceNodeEditor_geometry_nodes_type_update");
+      prop, NC_SPACE | ND_SPACE_NODE, "rna_SpaceNodeEditor_node_tree_sub_type_update");
 
   prop = RNA_def_property(srna, "id", PROP_POINTER, PROP_NONE);
   RNA_def_property_clear_flag(prop, PROP_EDITABLE);
@@ -8124,11 +8156,11 @@ static void rna_def_space_node(BlenderRNA *brna)
   RNA_def_property_update(
       prop, NC_SPACE | ND_SPACE_NODE_VIEW, "rna_SpaceNodeEditor_show_backdrop_update");
 
-  prop = RNA_def_property(srna, "geometry_nodes_tool_tree", PROP_POINTER, PROP_NONE);
+  prop = RNA_def_property(srna, "selected_node_group", PROP_POINTER, PROP_NONE);
   RNA_def_property_pointer_funcs(
-      prop, nullptr, nullptr, nullptr, "rna_SpaceNodeEditor_geometry_nodes_tool_tree_poll");
+      prop, nullptr, nullptr, nullptr, "rna_SpaceNodeEditor_selected_node_group_poll");
   RNA_def_property_flag(prop, PROP_EDITABLE | PROP_CONTEXT_UPDATE);
-  RNA_def_property_ui_text(prop, "Node Tool Tree", "Node group to edit as node tool");
+  RNA_def_property_ui_text(prop, "Selected Node Group", "Node group to edit");
   RNA_def_property_update(prop, NC_SPACE | ND_SPACE_NODE, "rna_SpaceNodeEditor_node_tree_update");
 
   prop = RNA_def_property(srna, "show_annotation", PROP_BOOLEAN, PROP_NONE);

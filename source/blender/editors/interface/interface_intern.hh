@@ -413,6 +413,10 @@ struct uiButDecorator : public uiBut {
   PointerRNA decorated_rnapoin = {};
   PropertyRNA *decorated_rnaprop = nullptr;
   int decorated_rnaindex = -1;
+  /* The only action allowed to decorators currently is to set or clear animation keyframes.
+   * However, they should be able to do it only under some circumstances (typically, when they do
+   * display animation-related status). */
+  bool toggle_keyframe_on_click = false;
 };
 
 /** Derived struct for #ButType::Progress. */
@@ -574,6 +578,8 @@ struct uiBlockDynamicListener {
   void (*listener_func)(const wmRegionListenerParams *params);
 };
 
+enum class uiBlockAlertLevel : int8_t { None, Info, Success, Warning, Error };
+
 struct uiBlock {
   uiBlock *next, *prev;
 
@@ -604,6 +610,8 @@ struct uiBlock {
 
   rctf rect;
   float aspect;
+
+  uiBlockAlertLevel alert_level = uiBlockAlertLevel::None;
 
   /** Unique hash used to implement popup menu memory. */
   uint puphash;
@@ -1135,7 +1143,11 @@ void ui_layout_panel_popup_scroll_apply(Panel *panel, const float dy);
 /**
  * Draws in resolution of 48x4 colors.
  */
-void ui_draw_gradient(const rcti *rect, const float hsv[3], eButGradientType type, float alpha);
+void ui_draw_gradient(const rcti *rect,
+                      const float hsv[3],
+                      eButGradientType type,
+                      float alpha,
+                      const ColorManagedDisplay *display);
 
 /**
  * Draws rounded corner segments but inverted. Imagine each corner like a filled right triangle,

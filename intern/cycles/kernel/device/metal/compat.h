@@ -267,6 +267,7 @@ ccl_device_forceinline uchar4 make_uchar4(const uchar x,
 #define atanf(x) atan(float(x))
 #define floorf(x) floor(float(x))
 #define ceilf(x) ceil(float(x))
+#define roundf(x) round(float(x))
 #define hypotf(x, y) hypot(float(x), float(y))
 #define atan2f(x, y) atan2(float(x), float(y))
 #define fmaxf(x, y) fmax(float(x), float(y))
@@ -276,6 +277,7 @@ ccl_device_forceinline uchar4 make_uchar4(const uchar x,
 #define coshf(x) cosh(float(x))
 #define tanhf(x) tanh(float(x))
 #define saturatef(x) saturate(float(x))
+#define ldexpf(x, y) ldexp(float(x), int(y))
 
 /* Use native functions with possibly lower precision for performance,
  * no issues found so far. */
@@ -328,10 +330,10 @@ typedef metal::raytracing::intersector<triangle_data, curve_data METALRT_LIMITS>
 
 /* texture bindings and sampler setup */
 
-/* TextureParamsMetal is reinterpreted as Texture2DParamsMetal. */
-struct TextureParamsMetal {
-  uint64_t tex;
+struct Buffer1DParamsMetal {
+  device float *buf;
 };
+
 struct Texture2DParamsMetal {
   texture2d<float, access::sample> tex;
 };
@@ -342,15 +344,12 @@ struct MetalRTBlasWrapper {
 };
 #endif
 
-/* Additional Metal-specific resources which aren't encoded in KernelData.
- * IMPORTANT: If this layout changes, ANCILLARY_SLOT_COUNT and the host-side encoding must change
- * to match. */
 struct MetalAncillaries {
-  device TextureParamsMetal *textures;
+  device Texture2DParamsMetal *textures_2d;
+  device Buffer1DParamsMetal *buffers;
 
 #ifdef __METALRT__
   metalrt_as_type accel_struct;
-  constant MetalRTBlasWrapper *blas_accel_structs;
   metalrt_ift_type ift_default;
   metalrt_ift_type ift_shadow;
   metalrt_ift_type ift_shadow_all;
@@ -359,6 +358,7 @@ struct MetalAncillaries {
   metalrt_ift_type ift_local_mblur;
   metalrt_blas_ift_type ift_local_single_hit;
   metalrt_ift_type ift_local_single_hit_mblur;
+  constant MetalRTBlasWrapper *blas_accel_structs;
 #endif
 };
 

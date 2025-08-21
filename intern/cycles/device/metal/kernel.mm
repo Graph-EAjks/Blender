@@ -340,7 +340,7 @@ void ShaderCache::load_kernel(DeviceKernel device_kernel,
    * to be active. */
   pipeline->pipeline_id = g_next_pipeline_id.fetch_add(1);
   pipeline->originating_device_id = device->device_id;
-  pipeline->kernel_data_ = device->launch_params->data;
+  pipeline->kernel_data_ = device->launch_params.data;
   pipeline->pso_type = pso_type;
   pipeline->mtlDevice = mtlDevice;
   pipeline->kernels_md5 = device->kernels_md5[pso_type];
@@ -423,7 +423,7 @@ bool MetalKernelPipeline::should_use_binary_archive() const
     if ((device_kernel >= DEVICE_KERNEL_INTEGRATOR_SHADE_BACKGROUND &&
          device_kernel <= DEVICE_KERNEL_INTEGRATOR_SHADE_SHADOW) ||
         (device_kernel >= DEVICE_KERNEL_SHADER_EVAL_DISPLACE &&
-         device_kernel <= DEVICE_KERNEL_SHADER_EVAL_CURVE_SHADOW_TRANSPARENCY))
+         device_kernel <= DEVICE_KERNEL_SHADER_EVAL_VOLUME_DENSITY))
     {
       /* Archive all shade kernels - they take a long time to compile. */
       return true;
