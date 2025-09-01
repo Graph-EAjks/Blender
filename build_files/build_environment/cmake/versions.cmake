@@ -61,10 +61,10 @@ Copyright (c) 2015, Archontis Politis.
 Copyright (c) 2019, Christopher Robinson.
 ]=])
 
-set(PNG_VERSION 1.6.43)
+set(PNG_VERSION 1.6.50)
 set(PNG_NAME libpng)
 set(PNG_URI http://prdownloads.sourceforge.net/libpng/libpng-${PNG_VERSION}.tar.xz)
-set(PNG_HASH 6a5ca0652392a2d7c9db2ae5b40210843c0bbc081cbd410825ab00cc59f14a6c)
+set(PNG_HASH 4df396518620a7aa3651443e87d1b2862e4e88cad135a8b93423e01706232307)
 set(PNG_HASH_TYPE SHA256)
 set(PNG_FILE libpng-${PNG_VERSION}.tar.xz)
 set(PNG_CPE "cpe:2.3:a:libpng:libpng:${PNG_VERSION}:*:*:*:*:*:*:*")

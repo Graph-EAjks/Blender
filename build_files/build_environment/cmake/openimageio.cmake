@@ -131,7 +131,10 @@ ExternalProject_Add(external_openimageio
   PATCH_COMMAND
     ${PATCH_CMD} -p 1 -N -d
       ${BUILD_DIR}/openimageio/src/external_openimageio/ <
-      ${PATCH_DIR}/openimageio.diff
+      ${PATCH_DIR}/openimageio.diff &&
+    ${PATCH_CMD} -p 1 -N -d
+      ${BUILD_DIR}/openimageio/src/external_openimageio/ <
+      ${PATCH_DIR}/openimageio_png_cicp_4746.diff
   CMAKE_ARGS
     -DCMAKE_INSTALL_PREFIX=${LIBDIR}/openimageio
     ${DEFAULT_CMAKE_FLAGS}
