@@ -1376,6 +1376,21 @@ IndexMask retrieve_editable_and_selected_elements(Object &object,
   return {};
 }
 
+IndexMask retrieve_editable_and_all_selected_points(Object &object,
+                                                    const bke::greasepencil::Drawing &drawing,
+                                                    int layer_index,
+                                                    int handle_display,
+                                                    IndexMaskMemory &memory)
+{
+  const bke::CurvesGeometry &curves = drawing.strokes();
+
+  const IndexMask editable_points = retrieve_editable_points(object, drawing, layer_index, memory);
+  const IndexMask selected_points = ed::curves::retrieve_all_selected_points(
+      curves, handle_display, memory);
+
+  return IndexMask::from_intersection(editable_points, selected_points, memory);
+}
+
 bool has_editable_layer(const GreasePencil &grease_pencil)
 {
   using namespace blender::bke::greasepencil;
@@ -1612,9 +1627,10 @@ static float brush_radius_at_location(const RegionView3D *rv3d,
                                       const float4x4 to_world)
 {
   if ((brush->flag & BRUSH_LOCK_SIZE) == 0) {
-    return pixel_radius_to_world_space_radius(rv3d, region, location, to_world, brush->size);
+    return pixel_radius_to_world_space_radius(
+        rv3d, region, location, to_world, float(brush->size) / 2.0f);
   }
-  return brush->unprojected_radius;
+  return brush->unprojected_size / 2.0f;
 }
 
 float radius_from_input_sample(const RegionView3D *rv3d,

@@ -136,7 +136,9 @@ static int foreach_libblock_id_user_map_callback(LibraryIDLinkCallbackData *cb_d
 PyDoc_STRVAR(
     /* Wrap. */
     bpy_user_map_doc,
-    ".. method:: user_map(subset, key_types, value_types)\n"
+    /* NOTE: These documented default values (None) are here just to signal that these parameters
+     * are optional. Explicitly passing None is not valid, and will raise a TypeError. */
+    ".. method:: user_map(*, subset=None, key_types=None, value_types=None)\n"
     "\n"
     "   Returns a mapping of all ID data-blocks in current ``bpy.data`` to a set of all "
     "data-blocks using them.\n"
@@ -355,7 +357,7 @@ static void foreach_id_file_path_map(BPathForeachPathData &bpath_data)
 PyDoc_STRVAR(
     /* Wrap. */
     bpy_file_path_map_doc,
-    ".. method:: file_path_map(subset=None, key_types=None, include_libraries=False)\n"
+    ".. method:: file_path_map(*, subset=None, key_types=None, include_libraries=False)\n"
     "\n"
     "   Returns a mapping of all ID data-blocks in current ``bpy.data`` to a set of all "
     "file paths used by them.\n"

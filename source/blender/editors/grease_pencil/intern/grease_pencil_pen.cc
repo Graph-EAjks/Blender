@@ -665,7 +665,7 @@ struct PenToolOperation {
     curves.update_curve_types();
 
     const int material_index = this->vc.obact->actcol - 1;
-    if (material_index != 0) {
+    if (material_index != -1) {
       bke::SpanAttributeWriter<int> material_indexes =
           attributes.lookup_or_add_for_write_span<int>(
               "material_index",
@@ -1170,7 +1170,7 @@ static wmOperatorStatus grease_pencil_pen_invoke(bContext *C, wmOperator *op, co
 
       if (ptd.closest_element.element_mode == ElementMode::Edge) {
         add_single.store(false, std::memory_order_relaxed);
-        if (ptd.insert_point) {
+        if (ptd.insert_point && ptd.closest_element.drawing_index == drawing_index) {
           ptd.insert_point_to_curve(curves);
           info.drawing.tag_topology_changed();
           changed.store(true, std::memory_order_relaxed);

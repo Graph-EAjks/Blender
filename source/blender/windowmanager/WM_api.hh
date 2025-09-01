@@ -316,6 +316,11 @@ bool WM_window_is_main_top_level(const wmWindow *win);
 bool WM_window_is_fullscreen(const wmWindow *win);
 bool WM_window_is_maximized(const wmWindow *win);
 
+/*
+ * Support for wide gamut and HDR colors.
+ */
+bool WM_window_support_hdr_color(const wmWindow *win);
+
 /**
  * Some editor data may need to be synced with scene data (3D View camera and layers).
  * This function ensures data is synced for editors
@@ -689,7 +694,7 @@ void WM_event_remove_ui_handler(ListBase *handlers,
                                 wmUIHandlerRemoveFunc remove_fn,
                                 void *user_data,
                                 bool postpone);
-void WM_event_remove_area_handler(ListBase *handlers, void *area);
+void WM_event_remove_handlers_by_area(ListBase *handlers, const ScrArea *area);
 void WM_event_free_ui_handler_all(bContext *C,
                                   ListBase *handlers,
                                   wmUIHandlerFunc handle_fn,

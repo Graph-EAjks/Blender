@@ -4387,6 +4387,9 @@ static void ui_block_open_begin(bContext *C, uiBut *but, uiHandleButtonData *dat
   uiBlockHandleCreateFunc handlefunc = nullptr;
   uiMenuCreateFunc menufunc = nullptr;
   uiMenuCreateFunc popoverfunc = nullptr;
+  /* The checks for the panel type being null are for exceptional cases where script
+   * authors intentionally unregister built-in panels for example.
+   * While this should only ever happen rarely, it shouldn't crash, see #144716. */
   PanelType *popover_panel_type = nullptr;
   void *arg = nullptr;
 
@@ -4411,9 +4414,12 @@ static void ui_block_open_begin(bContext *C, uiBut *but, uiHandleButtonData *dat
     case ButType::Menu:
       BLI_assert(but->menu_create_func);
       if (ui_but_menu_draw_as_popover(but)) {
-        popoverfunc = but->menu_create_func;
         const char *idname = static_cast<const char *>(but->func_argN);
         popover_panel_type = WM_paneltype_find(idname, false);
+      }
+
+      if (popover_panel_type) {
+        popoverfunc = but->menu_create_func;
       }
       else {
         menufunc = but->menu_create_func;
@@ -4431,9 +4437,12 @@ static void ui_block_open_begin(bContext *C, uiBut *but, uiHandleButtonData *dat
       but->editvec = data->vec;
 
       if (ui_but_menu_draw_as_popover(but)) {
-        popoverfunc = but->menu_create_func;
         const char *idname = static_cast<const char *>(but->func_argN);
         popover_panel_type = WM_paneltype_find(idname, false);
+      }
+
+      if (popover_panel_type) {
+        popoverfunc = but->menu_create_func;
       }
       else {
         handlefunc = ui_block_func_COLOR;
@@ -5079,7 +5088,12 @@ static void force_activate_view_item_but(bContext *C,
 
   /* For popups. Other abstract view instances correctly calls the select operator, see:
    * #141235. */
+  if (but->context) {
+    CTX_store_set(C, but->context);
+  }
   but->view_item->activate(*C);
+  CTX_store_set(C, nullptr);
+
   ED_region_tag_redraw_no_rebuild(region);
   ED_region_tag_refresh_ui(region);
 
@@ -6651,13 +6665,13 @@ static int ui_do_but_COLOR(bContext *C, uiBut *but, uiHandleButtonData *data, co
               if (but->rnaprop && RNA_property_subtype(but->rnaprop) == PROP_COLOR_GAMMA) {
                 RNA_property_float_get_array_at_most(
                     &but->rnapoin, but->rnaprop, color, ARRAY_SIZE(color));
+                IMB_colormanagement_srgb_to_scene_linear_v3(color, color);
                 BKE_brush_color_set(paint, brush, color);
                 updated = true;
               }
               else if (but->rnaprop && RNA_property_subtype(but->rnaprop) == PROP_COLOR) {
                 RNA_property_float_get_array_at_most(
                     &but->rnapoin, but->rnaprop, color, ARRAY_SIZE(color));
-                IMB_colormanagement_scene_linear_to_srgb_v3(color, color);
                 BKE_brush_color_set(paint, brush, color);
                 updated = true;
               }
@@ -8307,7 +8321,8 @@ static int ui_do_button(bContext *C, uiBlock *block, uiBut *but, const wmEvent *
           but->type == ButType::ViewItem ? but :
                                            ui_view_item_find_mouse_over(data->region, event->xy));
       if (clicked_view_item_but) {
-        clicked_view_item_but->view_item->activate(*C);
+        clicked_view_item_but->view_item->activate_for_context_menu(*C);
+        ED_region_tag_redraw_no_rebuild(data->region);
       }
 
       /* RMB has two options now */
@@ -10133,15 +10148,25 @@ static int ui_handle_view_item_event(bContext *C,
       }
       break;
     case LEFTMOUSE:
-      if ((event->val == KM_PRESS) && (event->modifier == 0)) {
+      if (event->modifier == 0) {
         /* Only bother finding the active view item button if the active button isn't already a
          * view item. */
         uiButViewItem *view_but = static_cast<uiButViewItem *>(
             (active_but && active_but->type == ButType::ViewItem) ?
                 active_but :
                 ui_view_item_find_mouse_over(region, event->xy));
-        /* Will free active button if there already is one. */
+
         if (view_but) {
+          if (UI_view_item_supports_drag(*view_but->view_item)) {
+            if (event->val != KM_CLICK) {
+              break;
+            }
+          }
+          else if (event->val != KM_PRESS) {
+            break;
+          }
+
+          /* Will free active button if there already is one. */
           /* Close the popup when clicking on the view item directly, not any overlapped button. */
           const bool close_popup = view_but == active_but;
           force_activate_view_item_but(C, region, view_but, close_popup);
