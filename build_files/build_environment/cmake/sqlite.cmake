@@ -5,6 +5,21 @@
 set(SQLITE_CONFIGURE_ENV echo .)
 set(SQLITE_CONFIGURATION_ARGS)
 
+if(WIN32)
+  # Python will build this with its preferred build options.
+  # We only need to unpack sqlite.
+  ExternalProject_Add(external_sqlite
+    URL file://${PACKAGE_DIR}/${SQLITE_FILE}
+    DOWNLOAD_DIR ${DOWNLOAD_DIR}
+    URL_HASH ${SQLITE_HASH_TYPE}=${SQLITE_HASH}
+    PREFIX ${BUILD_DIR}/sqlite
+    CONFIGURE_COMMAND echo "."
+    BUILD_COMMAND echo "."
+    INSTALL_COMMAND echo "."
+    INSTALL_DIR ${LIBDIR}/sqlite
+  )
+endif()
+
 if(UNIX)
   if(NOT APPLE)
     set(SQLITE_LDFLAGS -Wl,--as-needed)
@@ -52,25 +67,24 @@ if(UNIX)
     --disable-tcl
     --enable-shared=no
   )
+  ExternalProject_Add(external_sqlite
+    URL file://${PACKAGE_DIR}/${SQLITE_FILE}
+    DOWNLOAD_DIR ${DOWNLOAD_DIR}
+    URL_HASH ${SQLITE_HASH_TYPE}=${SQLITE_HASH}
+    PREFIX ${BUILD_DIR}/sqlite
+
+    CONFIGURE_COMMAND ${SQLITE_CONFIGURE_ENV} &&
+      cd ${BUILD_DIR}/sqlite/src/external_sqlite/ &&
+      ${CONFIGURE_COMMAND} --prefix=${LIBDIR}/sqlite ${SQLITE_CONFIGURATION_ARGS}
+
+    BUILD_COMMAND ${CONFIGURE_ENV} &&
+      cd ${BUILD_DIR}/sqlite/src/external_sqlite/ &&
+      make -j${MAKE_THREADS}
+
+    INSTALL_COMMAND ${CONFIGURE_ENV} &&
+      cd ${BUILD_DIR}/sqlite/src/external_sqlite/ &&
+      make install
+
+    INSTALL_DIR ${LIBDIR}/sqlite
+  )
 endif()
-
-ExternalProject_Add(external_sqlite
-  URL file://${PACKAGE_DIR}/${SQLITE_FILE}
-  DOWNLOAD_DIR ${DOWNLOAD_DIR}
-  URL_HASH ${SQLITE_HASH_TYPE}=${SQLITE_HASH}
-  PREFIX ${BUILD_DIR}/sqlite
-
-  CONFIGURE_COMMAND ${SQLITE_CONFIGURE_ENV} &&
-    cd ${BUILD_DIR}/sqlite/src/external_sqlite/ &&
-    ${CONFIGURE_COMMAND} --prefix=${LIBDIR}/sqlite ${SQLITE_CONFIGURATION_ARGS}
-
-  BUILD_COMMAND ${CONFIGURE_ENV} &&
-    cd ${BUILD_DIR}/sqlite/src/external_sqlite/ &&
-    make -j${MAKE_THREADS}
-
-  INSTALL_COMMAND ${CONFIGURE_ENV} &&
-    cd ${BUILD_DIR}/sqlite/src/external_sqlite/ &&
-    make install
-
-  INSTALL_DIR ${LIBDIR}/sqlite
-)

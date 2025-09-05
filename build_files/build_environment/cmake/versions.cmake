@@ -335,7 +335,7 @@ set(MANIFOLD_COPYRIGHT "Copyright 2021 The Manifold Authors.")
 
 # NOTE: When updating the python version, it's required to check the versions of
 # it wants to use in PCbuild/get_externals.bat for the following dependencies:
-# BZIP2, FFI, SQLITE and change the versions in this file as well. For compliance
+# BZIP2, FFI and change the versions in this file as well. For compliance
 # reasons there can be no exceptions to this.
 # Additionally, keep the PYTHON_PIP_VERSION in sync with the pip version bundled
 # into Python.
@@ -780,13 +780,10 @@ Copyright (c) 1998-2024 The OpenSSL Project Authors.
 Copyright (c) 1995-1998 Eric A. Young, Tim J. Hudson; All rights reserved.
 ]=])
 
-# Note: This will *HAVE* to match the version python ships on windows which
-# is hardcoded in pythons PCbuild/get_externals.bat for compliance reasons there
-# can be no exceptions to this.
-set(SQLITE_VERSION 3.45.1)
-set(SQLLITE_LONG_VERSION 3450100)
-set(SQLITE_URI https://www.sqlite.org/2024/sqlite-autoconf-${SQLLITE_LONG_VERSION}.tar.gz)
-set(SQLITE_HASH 650305e234add12fc1e6bef0b365d86a087b3d38)
+set(SQLITE_VERSION 3.50.4)
+set(SQLLITE_LONG_VERSION 3500400)
+set(SQLITE_URI https://www.sqlite.org/2025/sqlite-autoconf-${SQLLITE_LONG_VERSION}.tar.gz)
+set(SQLITE_HASH 145048005c777796dd8494aa1cfed304e8c34283)
 set(SQLITE_HASH_TYPE SHA1)
 set(SQLITE_FILE sqlite-autoconf-${SQLLITE_LONG_VERSION}.tar.gz)
 set(SQLITE_CPE "cpe:2.3:a:sqlite:sqlite:${SQLITE_VERSION}:*:*:*:*:*:*:*")
