@@ -333,6 +333,16 @@ set(MANIFOLD_HOMEPAGE https://github.com/elalish/manifold)
 set(MANIFOLD_LICENSE SPDX:Apache-2.0)
 set(MANIFOLD_COPYRIGHT "Copyright 2021 The Manifold Authors.")
 
+set(RUBBERBAND_VERSION 4.0.0)
+set(RUBBERBAND_NAME "Rubber Band Library")
+set(RUBBERBAND_URI https://breakfastquay.com/files/releases/rubberband-${RUBBERBAND_VERSION}.tar.bz2)
+set(RUBBERBAND_HASH 93bf3159eb91048e76eba35cf1bf766f)
+set(RUBBERBAND_HASH_TYPE MD5)
+set(RUBBERBAND_FILE rubberband-${RUBBERBAND_VERSION}.tar.bz2)
+set(RUBBERBAND_HOMEPAGE https://breakfastquay.com/rubberband/)
+set(RUBBERBAND_LICENSE SPDX:GPL-2.0-or-later)
+set(RUBBERBAND_COPYRIGHT "Copyright (c) 2025 Particular Programs Ltd")
+
 # NOTE: When updating the python version, it's required to check the versions of
 # it wants to use in PCbuild/get_externals.bat for the following dependencies:
 # BZIP2, FFI and change the versions in this file as well. For compliance

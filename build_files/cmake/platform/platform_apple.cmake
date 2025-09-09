@@ -367,6 +367,10 @@ if(WITH_MANIFOLD)
   find_package(manifold REQUIRED)
 endif()
 
+if(WITH_RUBBERBAND)
+  find_package(Rubberband REQUIRED)
+endif()
+
 if(WITH_CYCLES AND WITH_CYCLES_PATH_GUIDING)
   find_package(openpgl QUIET)
   if(openpgl_FOUND)

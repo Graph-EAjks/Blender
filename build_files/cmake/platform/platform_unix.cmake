@@ -588,6 +588,11 @@ if(WITH_MANIFOLD)
   mark_as_advanced(manifold_DIR)
 endif()
 
+if(WITH_RUBBERBAND)
+  find_package_wrapper(Rubberband)
+  set_and_warn_library_found("Rubberband" RUBBERBAND_FOUND WITH_RUBBEBAND)
+endif()
+
 if(WITH_CYCLES AND WITH_CYCLES_PATH_GUIDING)
   find_package_wrapper(openpgl)
   mark_as_advanced(openpgl_DIR)

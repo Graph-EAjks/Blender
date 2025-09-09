@@ -897,6 +897,15 @@ if(WITH_OPENSUBDIV)
   endif()
 endif()
 
+if(WITH_RUBBERBAND)
+  set(RUBBERBAND_FOUND TRUE)
+  set(RUBBERBAND_INCLUDE_DIRS ${LIBDIR}/rubberband/include)
+  set(RUBBERBAND_LIBRARIES 
+    optimized ${LIBDIR}/rubberband/lib/rubberband-static.lib
+    debug ${LIBDIR}/rubberband/lib/rubberband-static_d.lib
+  )
+endif()
+
 if(WITH_SDL)
   set(SDL ${LIBDIR}/sdl)
   set(SDL_INCLUDE_DIR ${SDL}/include)
@@ -1249,11 +1258,7 @@ if(WITH_HARU)
   set(HARU_FOUND ON)
   set(HARU_ROOT_DIR ${LIBDIR}/haru)
   set(HARU_INCLUDE_DIRS ${HARU_ROOT_DIR}/include)
-  if(EXISTS ${HARU_ROOT_DIR}/lib/hpdf.lib) # blender 5.0+
-    set(HARU_LIBRARIES ${HARU_ROOT_DIR}/lib/hpdf.lib)
-  else()
-    set(HARU_LIBRARIES ${HARU_ROOT_DIR}/lib/libhpdfs.lib)
-  endif()
+  set(HARU_LIBRARIES ${HARU_ROOT_DIR}/lib/libhpdfs.lib)
 endif()
 
 if(WITH_VULKAN_BACKEND)
