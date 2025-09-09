@@ -2004,6 +2004,12 @@ static void rna_def_userdef_theme_ui(BlenderRNA *brna)
   RNA_def_property_ui_text(prop, "Panel Outline", "Color of the outline of top-level panels");
   RNA_def_property_update(prop, 0, "rna_userdef_theme_update");
 
+  prop = RNA_def_property(srna, "panel_active", PROP_FLOAT, PROP_COLOR_GAMMA);
+  RNA_def_property_array(prop, 4);
+  RNA_def_property_ui_text(
+      prop, "Active Panel Outline", "Color of the outline of top-level panels that are active");
+  RNA_def_property_update(prop, 0, "rna_userdef_theme_update");
+
   /* Transparent Grid */
   prop = RNA_def_property(srna, "transparent_checker_primary", PROP_FLOAT, PROP_COLOR_GAMMA);
   RNA_def_property_float_sdna(prop, nullptr, "transparent_checker_primary");
@@ -3565,12 +3571,6 @@ static void rna_def_userdef_theme_space_buts(BlenderRNA *brna)
   RNA_def_property_ui_text(prop, "Search Match", "");
   RNA_def_property_update(prop, 0, "rna_userdef_theme_update");
 
-  prop = RNA_def_property(srna, "active_modifier", PROP_FLOAT, PROP_COLOR_GAMMA);
-  RNA_def_property_float_sdna(prop, nullptr, "active");
-  RNA_def_property_array(prop, 4);
-  RNA_def_property_ui_text(prop, "Active Modifier Outline", "");
-  RNA_def_property_update(prop, 0, "rna_userdef_theme_update");
-
   rna_def_userdef_theme_spaces_main(srna);
   rna_def_userdef_theme_spaces_region_main(srna);
 }
@@ -3824,6 +3824,12 @@ static void rna_def_userdef_theme_space_seq(BlenderRNA *brna)
   RNA_def_property_float_sdna(prop, nullptr, "selected_text");
   RNA_def_property_array(prop, 4);
   RNA_def_property_ui_text(prop, "Selected Text", "Text strip editing selection");
+  RNA_def_property_update(prop, 0, "rna_userdef_theme_update");
+
+  prop = RNA_def_property(srna, "active_modifier", PROP_FLOAT, PROP_COLOR_GAMMA);
+  RNA_def_property_float_sdna(prop, nullptr, "active");
+  RNA_def_property_array(prop, 4);
+  RNA_def_property_ui_text(prop, "Active Modifier Outline", "");
   RNA_def_property_update(prop, 0, "rna_userdef_theme_update");
 }
 
@@ -4933,6 +4939,19 @@ static void rna_def_userdef_view(BlenderRNA *brna)
       prop, "Developer Extras", "Display advanced settings and tools for developers");
   RNA_def_property_update(prop, 0, "rna_userdef_update");
 
+  prop = RNA_def_property(srna, "show_area_handle", PROP_BOOLEAN, PROP_NONE);
+  RNA_def_property_boolean_sdna(prop, nullptr, "uiflag", USER_AREA_CORNER_HANDLE);
+  RNA_def_property_ui_text(prop, "Corner Handles", "Show visible area maintenance corner handles");
+  RNA_def_property_update(prop, 0, "rna_userdef_gpu_update");
+
+  prop = RNA_def_property(srna, "show_number_arrows", PROP_BOOLEAN, PROP_NONE);
+  RNA_def_property_boolean_sdna(prop, nullptr, "uiflag2", USER_ALWAYS_SHOW_NUMBER_ARROWS);
+  RNA_def_property_ui_text(
+      prop,
+      "Show Numeric Input Arrows",
+      "Display arrows in numeric input fields for increasing or decreasing values");
+  RNA_def_property_update(prop, 0, "rna_userdef_update");
+
   prop = RNA_def_property(srna, "show_object_info", PROP_BOOLEAN, PROP_NONE);
   RNA_def_property_boolean_sdna(prop, nullptr, "uiflag", USER_DRAWVIEWINFO);
   RNA_def_property_ui_text(prop,
@@ -5364,6 +5383,13 @@ static void rna_def_userdef_view(BlenderRNA *brna)
       prop, nullptr, "statusbar_flag", STATUSBAR_SHOW_EXTENSIONS_UPDATES);
   RNA_def_property_ui_text(prop, "Extensions Updates", "Show Extensions Update Count");
   RNA_def_property_update(prop, NC_SPACE | ND_SPACE_INFO, "rna_userdef_update");
+
+  /* Accessibility. */
+  prop = RNA_def_property(srna, "use_reduce_motion", PROP_BOOLEAN, PROP_NONE);
+  RNA_def_property_boolean_sdna(prop, nullptr, "uiflag", USER_REDUCE_MOTION);
+  RNA_def_property_ui_text(
+      prop, "Reduce Motion", "Avoid animations and other motion effects in the interface");
+  RNA_def_property_update(prop, 0, "rna_userdef_update");
 }
 
 static void rna_def_userdef_edit(BlenderRNA *brna)
@@ -5733,7 +5759,7 @@ static void rna_def_userdef_edit(BlenderRNA *brna)
   RNA_def_property_boolean_sdna(prop, nullptr, "dupflag", USER_DUP_GPENCIL);
   RNA_def_property_ui_text(prop,
                            "Duplicate Grease Pencil",
-                           "Causes grease pencil data to be duplicated with the object");
+                           "Causes Grease Pencil data to be duplicated with the object");
 
   prop = RNA_def_property(srna, "use_duplicate_curves", PROP_BOOLEAN, PROP_NONE);
   RNA_def_property_boolean_sdna(prop, nullptr, "dupflag", USER_DUP_CURVES);

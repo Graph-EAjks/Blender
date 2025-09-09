@@ -9,6 +9,7 @@
 #include <cmath>
 
 #include "BLI_listbase.h"
+#include "BLI_math_color.h"
 #include "BLI_math_geom.h"
 #include "BLI_math_half.hh"
 #include "BLI_math_matrix.h"
@@ -2383,7 +2384,7 @@ void ED_view3d_select_id_validate(const ViewContext *vc)
 
 int ED_view3d_backbuf_sample_size_clamp(ARegion *region, const float dist)
 {
-  return int(min_ff(ceilf(dist), float(max_ii(region->winx, region->winx))));
+  return int(min_ff(ceilf(dist), float(max_ii(region->winx, region->winy))));
 }
 
 /** \} */

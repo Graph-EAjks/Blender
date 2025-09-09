@@ -12,7 +12,6 @@ from bpy.types import (
 from bl_ui.properties_paint_common import (
     UnifiedPaintPanel,
     brush_basic_texpaint_settings,
-    brush_basic_gpencil_weight_settings,
     brush_basic_grease_pencil_weight_settings,
     brush_basic_grease_pencil_vertex_settings,
     BrushAssetShelf,
@@ -432,24 +431,6 @@ class _draw_tool_settings_context_mode:
 
         # Brush falloff
         layout.popover("VIEW3D_PT_tools_brush_falloff")
-
-        return True
-
-    @staticmethod
-    def WEIGHT_GPENCIL(context, layout, tool):
-        if (tool is None) or (not tool.use_brushes):
-            return False
-
-        tool_settings = context.tool_settings
-        paint = tool_settings.gpencil_weight_paint
-        brush = paint.brush
-
-        BrushAssetShelf.draw_popup_selector(layout, context, brush)
-
-        brush_basic_gpencil_weight_settings(layout, context, brush, compact=True)
-
-        layout.popover("VIEW3D_PT_tools_grease_pencil_weight_options", text="Options")
-        layout.popover("VIEW3D_PT_tools_grease_pencil_brush_weight_falloff", text="Falloff")
 
         return True
 
@@ -8802,7 +8783,7 @@ class VIEW3D_PT_sculpt_automasking(Panel):
             col.prop(sculpt, "use_automasking_custom_cavity_curve", text="Custom Curve")
 
             if sculpt.use_automasking_custom_cavity_curve:
-                col.template_curve_mapping(sculpt, "automasking_cavity_curve")
+                col.template_curve_mapping(sculpt, "automasking_cavity_curve", brush=True)
 
         col.separator()
 
@@ -9004,7 +8985,11 @@ class VIEW3D_PT_curves_sculpt_parameter_falloff(Panel):
         settings = UnifiedPaintPanel.paint_settings(context)
         brush = settings.brush
 
-        layout.template_curve_mapping(brush.curves_sculpt_settings, "curve_parameter_falloff")
+        layout.template_curve_mapping(
+            brush.curves_sculpt_settings,
+            "curve_parameter_falloff",
+            brush=True,
+            use_negative_slope=True)
         row = layout.row(align=True)
         row.operator("brush.sculpt_curves_falloff_preset", icon='SMOOTHCURVE', text="").shape = 'SMOOTH'
         row.operator("brush.sculpt_curves_falloff_preset", icon='SPHERECURVE', text="").shape = 'ROUND'

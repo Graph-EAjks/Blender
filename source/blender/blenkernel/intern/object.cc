@@ -486,15 +486,7 @@ static void object_foreach_id(ID *id, LibraryForeachIDData *data)
   }
 
   if (flag & IDWALK_DO_DEPRECATED_POINTERS) {
-    BKE_LIB_FOREACHID_PROCESS_ID_NOCHECK(data, object->ipo, IDWALK_CB_USER);
-    BKE_LIB_FOREACHID_PROCESS_IDSUPER(data, object->action, IDWALK_CB_USER);
-
     BKE_LIB_FOREACHID_PROCESS_IDSUPER(data, object->poselib, IDWALK_CB_USER);
-
-    LISTBASE_FOREACH (bConstraintChannel *, chan, &object->constraintChannels) {
-      BKE_LIB_FOREACHID_PROCESS_ID_NOCHECK(data, chan->ipo, IDWALK_CB_USER);
-    }
-
     /* Note: This is technically _not_ needed currently, because readcode (see
      * #object_blend_read_data) directly converts and removes these deprecated ObHook data.
      * However, for sake of consistency, better have this ID pointer handled here nonetheless. */
@@ -503,15 +495,6 @@ static void object_foreach_id(ID *id, LibraryForeachIDData *data)
        * executed. */
       BLI_assert_unreachable();
       BKE_LIB_FOREACHID_PROCESS_IDSUPER(data, hook->parent, IDWALK_CB_NOP);
-    }
-
-    LISTBASE_FOREACH (bActionStrip *, strip, &object->nlastrips) {
-      BKE_LIB_FOREACHID_PROCESS_IDSUPER(data, strip->object, IDWALK_CB_NOP);
-      BKE_LIB_FOREACHID_PROCESS_IDSUPER(data, strip->act, IDWALK_CB_USER);
-      BKE_LIB_FOREACHID_PROCESS_ID_NOCHECK(data, strip->ipo, IDWALK_CB_USER);
-      LISTBASE_FOREACH (bActionModifier *, amod, &strip->modifiers) {
-        BKE_LIB_FOREACHID_PROCESS_IDSUPER(data, amod->ob, IDWALK_CB_NOP);
-      }
     }
 
     BKE_LIB_FOREACHID_PROCESS_IDSUPER(data, object->gpd, IDWALK_CB_USER);
@@ -524,12 +507,6 @@ static void object_foreach_id(ID *id, LibraryForeachIDData *data)
     PartEff *paf = BKE_object_do_version_give_parteff_245(object);
     if (paf && paf->group) {
       BKE_LIB_FOREACHID_PROCESS_IDSUPER(data, paf->group, IDWALK_CB_USER);
-    }
-
-    FluidsimModifierData *fluidmd = reinterpret_cast<FluidsimModifierData *>(
-        BKE_modifiers_findby_type(object, eModifierType_Fluidsim));
-    if (fluidmd && fluidmd->fss) {
-      BKE_LIB_FOREACHID_PROCESS_ID_NOCHECK(data, fluidmd->fss->ipo, IDWALK_CB_USER);
     }
   }
 }
@@ -614,6 +591,28 @@ static void object_foreach_cache(ID *id,
   }
 }
 
+static void object_foreach_working_space_color(ID *id,
+                                               const IDTypeForeachColorFunctionCallback &fn)
+{
+  Object *ob = (Object *)id;
+
+  fn.single(ob->color);
+
+  LISTBASE_FOREACH (ShaderFxData *, fx, &ob->shader_fx) {
+    const ShaderFxTypeInfo *fxi = BKE_shaderfx_get_info(ShaderFxType(fx->type));
+    if (fxi && fxi->foreach_working_space_color) {
+      fxi->foreach_working_space_color(fx, fn);
+    }
+  }
+
+  LISTBASE_FOREACH (ModifierData *, md, &ob->modifiers) {
+    const ModifierTypeInfo *mti = BKE_modifier_get_info(ModifierType(md->type));
+    if (mti && mti->foreach_working_space_color) {
+      mti->foreach_working_space_color(md, fn);
+    }
+  }
+}
+
 static void object_blend_write(BlendWriter *writer, ID *id, const void *id_address)
 {
   Object *ob = (Object *)id;
@@ -694,16 +693,6 @@ static void object_blend_write(BlendWriter *writer, ID *id, const void *id_addre
   }
 }
 
-/* XXX deprecated - old animation system */
-static void direct_link_nlastrips(BlendDataReader *reader, ListBase *strips)
-{
-  BLO_read_struct_list(reader, bActionStrip, strips);
-
-  LISTBASE_FOREACH (bActionStrip *, strip, strips) {
-    BLO_read_struct_list(reader, bActionModifier, &strip->modifiers);
-  }
-}
-
 static void object_blend_read_data(BlendDataReader *reader, ID *id)
 {
   Object *ob = (Object *)id;
@@ -740,11 +729,6 @@ static void object_blend_read_data(BlendDataReader *reader, ID *id)
   /* Only for versioning, vertex group names are now stored on object data. */
   BLO_read_struct_list(reader, bDeformGroup, &ob->defbase);
   BLO_read_struct_list(reader, bFaceMap, &ob->fmaps);
-
-  /* XXX deprecated - old animation system <<< */
-  direct_link_nlastrips(reader, &ob->nlastrips);
-  BLO_read_struct_list(reader, bConstraintChannel, &ob->constraintChannels);
-  /* >>> XXX deprecated - old animation system */
 
   BLO_read_pointer_array(reader, ob->totcol, (void **)&ob->mat);
   BLO_read_char_array(reader, ob->totcol, &ob->matbits);
@@ -1112,6 +1096,7 @@ IDTypeInfo IDType_ID_OB = {
     /*foreach_id*/ object_foreach_id,
     /*foreach_cache*/ object_foreach_cache,
     /*foreach_path*/ object_foreach_path,
+    /*foreach_working_space_color*/ object_foreach_working_space_color,
     /*owner_pointer_get*/ nullptr,
 
     /*blend_write*/ object_blend_write,
@@ -2670,7 +2655,7 @@ Object *BKE_object_duplicate(Main *bmain,
     /* Unfortunate, but with some types (e.g. meshes), an object is considered in Edit mode if its
      * obdata contains edit mode runtime data. This can be the case of all newly duplicated
      * objects, as even though duplicate code move the object back in Object mode, they are still
-     * using the original obdata ID, leading to them being falsly detected as being in Edit mode,
+     * using the original obdata ID, leading to them being falsely detected as being in Edit mode,
      * and therefore not remapping their obdata to the newly duplicated one.
      * See #139715. */
     BKE_libblock_relink_to_newid(

@@ -368,15 +368,18 @@ class NODE_OT_interface_item_new(NodeInterfaceOperator, Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     def get_items(_self, context):
-        snode = context.space_data
-        tree = snode.edit_tree
-        interface = tree.interface
-
         items = [
             ('INPUT', "Input", ""),
             ('OUTPUT', "Output", ""),
             ('PANEL', "Panel", ""),
         ]
+
+        if context is None:
+            return items
+
+        snode = context.space_data
+        tree = snode.edit_tree
+        interface = tree.interface
 
         active_item = interface.active
         # Panels have the extra option to add a toggle.
@@ -619,7 +622,7 @@ class NODE_OT_interface_item_unlink_panel_toggle(NodeInterfaceOperator, Operator
 
 
 class NODE_OT_viewer_shortcut_set(Operator):
-    """Create a compositor viewer shortcut for the selected node by pressing ctrl+1,2,..9"""
+    """Create a viewer shortcut for the selected node by pressing ctrl+1,2,..9"""
     bl_idname = "node.viewer_shortcut_set"
     bl_label = "Fast Preview"
     bl_options = {'REGISTER', 'UNDO'}
@@ -687,7 +690,7 @@ class NODE_OT_viewer_shortcut_set(Operator):
 
 
 class NODE_OT_viewer_shortcut_get(Operator):
-    """Activate a specific compositor viewer node using 1,2,..,9 keys"""
+    """Activate a specific viewer node using 1,2,..,9 keys"""
     bl_idname = "node.viewer_shortcut_get"
     bl_label = "Fast Preview"
     bl_options = {'REGISTER', 'UNDO'}
