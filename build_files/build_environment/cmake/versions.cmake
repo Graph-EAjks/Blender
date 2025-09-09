@@ -350,11 +350,11 @@ set(RUBBERBAND_COPYRIGHT "Copyright (c) 2025 Particular Programs Ltd")
 # Additionally, keep the PYTHON_PIP_VERSION in sync with the pip version bundled
 # into Python.
 
-set(PYTHON_VERSION 3.11.11)
+set(PYTHON_VERSION 3.11.13)
 set(PYTHON_SHORT_VERSION 3.11)
 set(PYTHON_SHORT_VERSION_NO_DOTS 311)
 set(PYTHON_URI https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VERSION}.tar.xz)
-set(PYTHON_HASH 3e497037b170fe4be5f462c4964596f2)
+set(PYTHON_HASH ec39a8018b9eedf6f0edeb44533bd279)
 set(PYTHON_HASH_TYPE MD5)
 set(PYTHON_FILE Python-${PYTHON_VERSION}.tar.xz)
 set(PYTHON_CPE "cpe:2.3:a:python:python:${PYTHON_VERSION}:-:*:*:*:*:*:*")
