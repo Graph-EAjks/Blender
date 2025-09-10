@@ -24,6 +24,7 @@ ExternalProject_Add(external_rubberband
   CONFIGURE_COMMAND ${RUBBERBAND_CONFIGURE_ENV} &&
     ${CMAKE_COMMAND} -E env ${RUBBERBAND_PKG_ENV} ${MESON} setup
       --prefix ${LIBDIR}/rubberband
+      --libdir lib
       ${MESON_BUILD_TYPE}
       -Dauto_features=disabled
       -Ddefault_library=static
@@ -60,7 +61,7 @@ if(WIN32)
         ${LIBDIR}/rubberband/lib/rubberband-static.lib
         ${HARVEST_TARGET}/rubberband/lib/rubberband-static_d.lib
       DEPENDEES install
-    )  
+    )
   endif()
 else()
   harvest(external_rubberband rubberband/include rubberband/include "*.h")

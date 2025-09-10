@@ -589,8 +589,14 @@ if(WITH_MANIFOLD)
 endif()
 
 if(WITH_RUBBERBAND)
-  find_package_wrapper(Rubberband)
-  set_and_warn_library_found("Rubberband" RUBBERBAND_FOUND WITH_RUBBEBAND)
+  if(DEFINED LIBDIR)
+    find_package_wrapper(Rubberband)
+  else()
+    # Use system libs
+    find_package(PkgConfig)
+    pkg_check_modules(RUBBERBAND rubberband)
+  endif()
+  set_and_warn_library_found("Rubberband" RUBBERBAND_FOUND WITH_RUBBERBAND)
 endif()
 
 if(WITH_CYCLES AND WITH_CYCLES_PATH_GUIDING)

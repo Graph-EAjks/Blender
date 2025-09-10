@@ -28,7 +28,7 @@ set(_rubberband_SEARCH_DIRS
 
 find_path(RUBBERBAND_INCLUDE_DIR
   NAMES
-    RubberBandStretcher.h
+    rubberband/RubberBandStretcher.h
   HINTS
     ${_rubberband_SEARCH_DIRS}
   PATH_SUFFIXES
@@ -50,14 +50,13 @@ find_package(PackageHandleStandardArgs)
 find_package_handle_standard_args(Rubberband DEFAULT_MSG RUBBERBAND_LIBRARY RUBBERBAND_INCLUDE_DIR)
 
 if(RUBBERBAND_FOUND)
-  get_filename_component(RUBBERBAND_INCLUDE_DIR ${RUBBERBAND_INCLUDE_DIR} DIRECTORY)
   set(RUBBERBAND_LIBRARIES ${RUBBERBAND_LIBRARY})
   set(RUBBERBAND_INCLUDE_DIRS ${RUBBERBAND_INCLUDE_DIR})
 endif()
 
 
 mark_as_advanced(
-  RUBBERBAND_LIBRARY 
+  RUBBERBAND_LIBRARY
   RUBBERBAND_INCLUDE_DIR
 )
 
