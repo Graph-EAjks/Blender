@@ -36,7 +36,6 @@ if(UNIX)
 -DSQLITE_ENABLE_DBSTAT_VTAB \
 -DSQLITE_ENABLE_UPDATE_DELETE_LIMIT=1 \
 -DSQLITE_ENABLE_LOAD_EXTENSION \
--DSQLITE_ENABLE_JSON1 \
 -DSQLITE_LIKE_DOESNT_MATCH_BLOBS \
 -DSQLITE_THREADSAFE=1 \
 -DSQLITE_ENABLE_FTS3_TOKENIZER=1 \
@@ -56,16 +55,9 @@ if(UNIX)
     ${SQLITE_CONFIGURATION_ARGS}
     --enable-threadsafe
     --enable-load-extension
-    --enable-json1
     --enable-fts4
     --enable-fts5
-    # While building `tcl` is harmless, it causes problems when the install step
-    # tries to copy the files into the system path.
-    # Since this isn't required by Python or Blender this can be disabled.
-    # Note that Debian (for example), splits this off into a separate package,
-    # so it's safe to turn off.
-    --disable-tcl
-    --enable-shared=no
+    --disable-shared
   )
   ExternalProject_Add(external_sqlite
     URL file://${PACKAGE_DIR}/${SQLITE_FILE}
