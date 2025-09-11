@@ -1263,7 +1263,6 @@ if(WITH_HARU)
   else()
     set(HARU_LIBRARIES ${HARU_ROOT_DIR}/lib/libhpdfs.lib)
   endif()
-  set(HARU_LIBRARIES ${HARU_ROOT_DIR}/lib/hpdf.lib)
 endif()
 
 if(WITH_VULKAN_BACKEND)
