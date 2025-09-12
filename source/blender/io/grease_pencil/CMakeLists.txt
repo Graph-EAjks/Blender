@@ -62,7 +62,8 @@ if(WITH_HARU)
     ${HARU_INCLUDE_DIRS}
   )
   list(APPEND LIB
-    ${HARU_LIBRARIES}
+    PRIVATE ${HARU_LIBRARIES}
+    PRIVATE ${TIFF_LIBRARY} # needed for TIFFFaxBlackCodes in older (<5.0) lib folders
   )
   add_definitions(-DWITH_HARU)
 endif()
