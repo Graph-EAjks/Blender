@@ -98,7 +98,7 @@ static void standard_defines(Vector<StringRefNull> &sources)
     sources.append("#define OS_UNIX\n");
   }
   /* API Definition */
-  eGPUBackendType backend = GPU_backend_get_type();
+  GPUBackendType backend = GPU_backend_get_type();
   switch (backend) {
     case GPU_BACKEND_OPENGL:
       sources.append("#define GPU_OPENGL\n");
@@ -112,10 +112,6 @@ static void standard_defines(Vector<StringRefNull> &sources)
     default:
       BLI_assert_msg(false, "Invalid GPU Backend Type");
       break;
-  }
-
-  if (GPU_crappy_amd_driver()) {
-    sources.append("#define GPU_DEPRECATED_AMD_DRIVER\n");
   }
 }
 
@@ -725,7 +721,6 @@ Shader *ShaderCompiler::compile(const shader::ShaderCreateInfo &info, bool is_ba
     sources.append(resources);
     sources.append(interface);
     sources.extend(code);
-    sources.extend(info.dependencies_generated);
     sources.append(info.vertex_source_generated);
 
     if (info.vertex_entry_fn_ != "main") {
@@ -753,7 +748,6 @@ Shader *ShaderCompiler::compile(const shader::ShaderCreateInfo &info, bool is_ba
     sources.append(resources);
     sources.append(interface);
     sources.extend(code);
-    sources.extend(info.dependencies_generated);
     sources.append(info.fragment_source_generated);
 
     if (info.fragment_entry_fn_ != "main") {
@@ -804,7 +798,6 @@ Shader *ShaderCompiler::compile(const shader::ShaderCreateInfo &info, bool is_ba
     sources.append(resources);
     sources.append(layout);
     sources.extend(code);
-    sources.extend(info.dependencies_generated);
     sources.append(info.compute_source_generated);
 
     if (info.compute_entry_fn_ != "main") {

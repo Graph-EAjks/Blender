@@ -58,7 +58,8 @@ class USERPREF_HT_header(Header):
 class USERPREF_PT_navigation_bar(Panel):
     bl_label = "Preferences Navigation"
     bl_space_type = 'PREFERENCES'
-    bl_region_type = 'NAVIGATION_BAR'
+    bl_region_type = 'UI'
+    bl_category = 'Navigation'
     bl_options = {'HIDE_HEADER'}
 
     def draw(self, context):
@@ -86,8 +87,12 @@ class USERPREF_MT_editor_menus(Menu):
 class USERPREF_MT_view(Menu):
     bl_label = "View"
 
-    def draw(self, _context):
+    def draw(self, context):
         layout = self.layout
+        view = context.space_data
+
+        layout.prop(view, "show_region_ui")
+        layout.separator()
 
         layout.menu("INFO_MT_area")
 
@@ -985,6 +990,7 @@ class USERPREF_MT_interface_theme_presets(Menu):
         "ThemeRegions",
         "ThemeRegionsAssetShelf",
         "ThemeRegionsChannels",
+        "ThemeRegionsScrubbing",
         "ThemeRegionsSidebars",
         "ThemeSequenceEditor",
         "ThemeSpaceGeneric",

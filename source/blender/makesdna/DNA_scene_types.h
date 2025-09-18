@@ -1189,6 +1189,12 @@ typedef struct Paint {
 
   /** Flags used for symmetry. */
   int symmetry_flags;
+  /**
+   * Collapsed state of a given pressure curve
+   * See #PaintCurveVisibilityFlags
+   */
+  int curve_visibility_flags;
+  char _pad[4];
 
   float tile_offset[3];
   struct UnifiedPaintSettings unified_paint_settings;
@@ -1683,6 +1689,8 @@ typedef struct ToolSettings {
   char uv_flag;
   char uv_selectmode;
   char uv_sticky;
+
+  rctf uv_custom_region;
 
   float uvcalc_margin;
 
@@ -2800,6 +2808,7 @@ enum {
    * selection should be used - since not all combinations of options support it.
    */
   UV_FLAG_ISLAND_SELECT = 1 << 2,
+  UV_FLAG_CUSTOM_REGION = 1 << 3,
 };
 
 /** #ToolSettings::uv_selectmode */
