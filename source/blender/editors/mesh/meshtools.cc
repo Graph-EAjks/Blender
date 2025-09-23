@@ -161,14 +161,14 @@ static void join_mesh_single(Depsgraph *depsgraph,
         /* if this mesh has any shape-keys, check first, otherwise just copy coordinates */
         LISTBASE_FOREACH (KeyBlock *, kb, &key->block) {
           /* get pointer to where to write data for this mesh in shape-key's data array */
-          float(*cos)[3] = ((float(*)[3])kb->data) + *vertofs;
+          float (*cos)[3] = ((float (*)[3])kb->data) + *vertofs;
 
           /* Check if this mesh has such a shape-key. */
           KeyBlock *okb = mesh->key ? BKE_keyblock_find_name(mesh->key, kb->name) : nullptr;
           if (okb) {
             /* copy this mesh's shape-key to the destination shape-key
              * (need to transform first) */
-            float(*ocos)[3] = static_cast<float(*)[3]>(okb->data);
+            float (*ocos)[3] = static_cast<float (*)[3]>(okb->data);
             for (a = 0; a < mesh->verts_num; a++, cos++, ocos++) {
               copy_v3_v3(*cos, *ocos);
               mul_m4_v3(cmat, *cos);
@@ -191,13 +191,13 @@ static void join_mesh_single(Depsgraph *depsgraph,
       if (key) {
         LISTBASE_FOREACH (KeyBlock *, kb, &key->block) {
           /* get pointer to where to write data for this mesh in shape-key's data array */
-          float(*cos)[3] = ((float(*)[3])kb->data) + *vertofs;
+          float (*cos)[3] = ((float (*)[3])kb->data) + *vertofs;
 
           /* Check if this was one of the original shape-keys. */
           KeyBlock *okb = nkey ? BKE_keyblock_find_name(nkey, kb->name) : nullptr;
           if (okb) {
             /* copy this mesh's shape-key to the destination shape-key */
-            float(*ocos)[3] = static_cast<float(*)[3]>(okb->data);
+            float (*ocos)[3] = static_cast<float (*)[3]>(okb->data);
             for (a = 0; a < mesh->verts_num; a++, cos++, ocos++) {
               copy_v3_v3(*cos, *ocos);
             }
