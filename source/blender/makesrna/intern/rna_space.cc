@@ -193,35 +193,37 @@ const EnumPropertyItem rna_enum_space_file_browse_mode_items[] = {
 };
 
 #define SACT_ITEM_DOPESHEET \
-  {SACTCONT_DOPESHEET, "DOPESHEET", ICON_ACTION, "Dope Sheet", "Edit all keyframes in scene"}
+  { \
+    SACTCONT_DOPESHEET, "DOPESHEET", ICON_ACTION, "Dope Sheet", "Edit all keyframes in scene" \
+  }
 #define SACT_ITEM_TIMELINE \
-  {SACTCONT_TIMELINE, "TIMELINE", ICON_TIME, "Timeline", "Timeline and playback controls"}
+  { \
+    SACTCONT_TIMELINE, "TIMELINE", ICON_TIME, "Timeline", "Timeline and playback controls" \
+  }
 #define SACT_ITEM_ACTION \
-  {SACTCONT_ACTION, \
-   "ACTION", \
-   ICON_OBJECT_DATA, \
-   "Action Editor", \
-   "Edit keyframes in active object's Object-level action"}
+  { \
+    SACTCONT_ACTION, "ACTION", ICON_OBJECT_DATA, "Action Editor", \
+        "Edit keyframes in active object's Object-level action" \
+  }
 #define SACT_ITEM_SHAPEKEY \
-  {SACTCONT_SHAPEKEY, \
-   "SHAPEKEY", \
-   ICON_SHAPEKEY_DATA, \
-   "Shape Key Editor", \
-   "Edit keyframes in active object's Shape Keys action"}
+  { \
+    SACTCONT_SHAPEKEY, "SHAPEKEY", ICON_SHAPEKEY_DATA, "Shape Key Editor", \
+        "Edit keyframes in active object's Shape Keys action" \
+  }
 #define SACT_ITEM_GPENCIL \
-  {SACTCONT_GPENCIL, \
-   "GPENCIL", \
-   ICON_OUTLINER_OB_GREASEPENCIL, \
-   "Grease Pencil", \
-   "Edit timings for all Grease Pencil sketches in file"}
+  { \
+    SACTCONT_GPENCIL, "GPENCIL", ICON_OUTLINER_OB_GREASEPENCIL, "Grease Pencil", \
+        "Edit timings for all Grease Pencil sketches in file" \
+  }
 #define SACT_ITEM_MASK \
-  {SACTCONT_MASK, "MASK", ICON_MOD_MASK, "Mask", "Edit timings for Mask Editor splines"}
+  { \
+    SACTCONT_MASK, "MASK", ICON_MOD_MASK, "Mask", "Edit timings for Mask Editor splines" \
+  }
 #define SACT_ITEM_CACHEFILE \
-  {SACTCONT_CACHEFILE, \
-   "CACHEFILE", \
-   ICON_FILE, \
-   "Cache File", \
-   "Edit timings for Cache File data-blocks"}
+  { \
+    SACTCONT_CACHEFILE, "CACHEFILE", ICON_FILE, "Cache File", \
+        "Edit timings for Cache File data-blocks" \
+  }
 
 #ifndef RNA_RUNTIME
 /* XXX: action-editor is currently for object-level only actions,
@@ -265,10 +267,21 @@ const EnumPropertyItem rna_enum_space_action_mode_items[] = {
 #undef SACT_ITEM_CACHEFILE
 
 #define SI_ITEM_VIEW(identifier, name, icon) \
-  {SI_MODE_VIEW, identifier, icon, name, "View the image"}
-#define SI_ITEM_UV {SI_MODE_UV, "UV", ICON_UV, "UV Editor", "UV edit in mesh editmode"}
-#define SI_ITEM_PAINT {SI_MODE_PAINT, "PAINT", ICON_TPAINT_HLT, "Paint", "2D image painting mode"}
-#define SI_ITEM_MASK {SI_MODE_MASK, "MASK", ICON_MOD_MASK, "Mask", "Mask editing"}
+  { \
+    SI_MODE_VIEW, identifier, icon, name, "View the image" \
+  }
+#define SI_ITEM_UV \
+  { \
+    SI_MODE_UV, "UV", ICON_UV, "UV Editor", "UV edit in mesh editmode" \
+  }
+#define SI_ITEM_PAINT \
+  { \
+    SI_MODE_PAINT, "PAINT", ICON_TPAINT_HLT, "Paint", "2D image painting mode" \
+  }
+#define SI_ITEM_MASK \
+  { \
+    SI_MODE_MASK, "MASK", ICON_MOD_MASK, "Mask", "Mask editing" \
+  }
 
 const EnumPropertyItem rna_enum_space_image_mode_all_items[] = {
     SI_ITEM_VIEW("VIEW", "View", ICON_FILE_IMAGE),
@@ -1225,7 +1238,7 @@ static void rna_RegionView3D_view_matrix_set(PointerRNA *ptr, const float *value
 {
   RegionView3D *rv3d = (RegionView3D *)(ptr->data);
   float mat[4][4];
-  invert_m4_m4(mat, (float (*)[4])values);
+  invert_m4_m4(mat, (float(*)[4])values);
   ED_view3d_from_m4(mat, rv3d->ofs, rv3d->viewquat, &rv3d->dist);
   rna_RegionView3D_view_rotation_set_validate_view_axis(rv3d);
 }

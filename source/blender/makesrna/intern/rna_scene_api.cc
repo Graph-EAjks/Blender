@@ -172,7 +172,7 @@ static void rna_Scene_ray_cast(Scene *scene,
                                                                 r_normal,
                                                                 r_index,
                                                                 (const Object **)(r_ob),
-                                                                (float (*)[4])r_obmat);
+                                                                (float(*)[4])r_obmat);
 
   blender::ed::transform::snap_object_context_destroy(sctx);
 
@@ -186,7 +186,7 @@ static void rna_Scene_ray_cast(Scene *scene,
   else {
     *r_success = false;
 
-    unit_m4((float (*)[4])r_obmat);
+    unit_m4((float(*)[4])r_obmat);
     zero_v3(r_location);
     zero_v3(r_normal);
   }

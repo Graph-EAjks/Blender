@@ -201,7 +201,9 @@ void merge_layers(const GreasePencil &src_grease_pencil,
         BLI_assert(duration >= 0);
         dst_frames.add_or_modify(
             item.key,
-            [&](InsertKeyframe *frame) { *frame = {item.value, duration}; },
+            [&](InsertKeyframe *frame) {
+              *frame = {item.value, duration};
+            },
             [&](InsertKeyframe *frame) {
               /* The destination frame is always an implicit hold if at least on of the source
                * frame is an implicit hold. */
