@@ -46,21 +46,23 @@ static void cmp_node_map_uv_declare(NodeDeclarationBuilder &b)
       .description(
           "The UV coordinates at which to sample the texture. The Z component is assumed to "
           "contain an alpha channel")
-      .compositor_domain_priority(0)
       .structure_type(StructureType::Dynamic);
 
   PanelDeclarationBuilder &sampling_panel = b.add_panel("Sampling").default_closed(true);
   sampling_panel.add_input<decl::Menu>("Interpolation")
       .default_value(CMP_NODE_INTERPOLATION_BILINEAR)
       .static_items(rna_enum_node_compositor_interpolation_items)
+      .optional_label()
       .description("Interpolation method");
   sampling_panel.add_input<decl::Menu>("Extension X")
       .default_value(CMP_NODE_EXTENSION_MODE_CLIP)
       .static_items(rna_enum_node_compositor_extension_items)
+      .optional_label()
       .description("The extension mode applied to the X axis");
   sampling_panel.add_input<decl::Menu>("Extension Y")
       .default_value(CMP_NODE_EXTENSION_MODE_CLIP)
       .static_items(rna_enum_node_compositor_extension_items)
+      .optional_label()
       .description("The extension mode applied to the Y axis");
 }
 

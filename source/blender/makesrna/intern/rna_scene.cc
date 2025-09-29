@@ -129,7 +129,7 @@ const EnumPropertyItem rna_enum_mesh_select_mode_items[] = {
 };
 
 const EnumPropertyItem rna_enum_mesh_select_mode_uv_items[] = {
-    {UV_SELECT_VERTEX, "VERTEX", ICON_UV_VERTEXSEL, "Vertex", "Vertex selection mode"},
+    {UV_SELECT_VERT, "VERTEX", ICON_UV_VERTEXSEL, "Vertex", "Vertex selection mode"},
     {UV_SELECT_EDGE, "EDGE", ICON_UV_EDGESEL, "Edge", "Edge selection mode"},
     {UV_SELECT_FACE, "FACE", ICON_UV_FACESEL, "Face", "Face selection mode"},
     {0, nullptr, 0, nullptr, nullptr},
@@ -2072,6 +2072,20 @@ static std::optional<std::string> rna_SceneRenderView_path(const PointerRNA *ptr
   return fmt::format("render.views[\"{}\"]", srv_name_esc);
 }
 
+static bool rna_Scene_use_nodes_get(PointerRNA * /*ptr*/)
+{
+  /* #use_nodes is deprecated. Always return true for consistency with Materials and World. */
+  return true;
+}
+
+static void rna_Scene_use_nodes_set(PointerRNA * /*ptr*/, const bool /*use_nodes*/)
+{
+  /* #use_nodes is deprecated. Setting the property has no effect.
+   * Note: Users will get a warning through the RNA deprecation warning, so no need to log a
+   * warning here. */
+  return;
+}
+
 static void rna_Physics_relations_update(Main *bmain, Scene * /*scene*/, PointerRNA * /*ptr*/)
 {
   DEG_relations_tag_update(bmain);
@@ -3286,17 +3300,17 @@ static void rna_def_tool_settings(BlenderRNA *brna)
   };
 
   static const EnumPropertyItem uv_sticky_mode_items[] = {
-      {SI_STICKY_DISABLE,
+      {UV_STICKY_DISABLE,
        "DISABLED",
        ICON_STICKY_UVS_DISABLE,
        "Disabled",
        "Sticky vertex selection disabled"},
-      {SI_STICKY_LOC,
+      {UV_STICKY_LOCATION,
        "SHARED_LOCATION",
        ICON_STICKY_UVS_LOC,
        "Shared Location",
        "Select UVs that are at the same location and share a mesh vertex"},
-      {SI_STICKY_VERTEX,
+      {UV_STICKY_VERT,
        "SHARED_VERTEX",
        ICON_STICKY_UVS_VERT,
        "Shared Vertex",
@@ -4203,7 +4217,7 @@ static void rna_def_tool_settings(BlenderRNA *brna)
       prop, NC_SPACE | ND_SPACE_IMAGE, "rna_Scene_uv_sticky_select_mode_update");
 
   prop = RNA_def_property(srna, "use_uv_select_sync", PROP_BOOLEAN, PROP_NONE);
-  RNA_def_property_boolean_sdna(prop, nullptr, "uv_flag", UV_FLAG_SYNC_SELECT);
+  RNA_def_property_boolean_sdna(prop, nullptr, "uv_flag", UV_FLAG_SELECT_SYNC);
   RNA_def_property_flag(prop, PROP_DEG_SYNC_ONLY);
   RNA_def_property_ui_text(
       prop, "UV Sync Selection", "Keep UV and edit mode mesh selection in sync");
@@ -4211,7 +4225,7 @@ static void rna_def_tool_settings(BlenderRNA *brna)
   RNA_def_property_update(prop, NC_SPACE | ND_SPACE_IMAGE, nullptr);
 
   prop = RNA_def_property(srna, "use_uv_select_island", PROP_BOOLEAN, PROP_NONE);
-  RNA_def_property_boolean_sdna(prop, nullptr, "uv_flag", UV_FLAG_ISLAND_SELECT);
+  RNA_def_property_boolean_sdna(prop, nullptr, "uv_flag", UV_FLAG_SELECT_ISLAND);
   RNA_def_property_flag(prop, PROP_DEG_SYNC_ONLY);
   RNA_def_property_ui_text(prop, "UV Island Selection", "Island selection");
   RNA_def_property_ui_icon(prop, ICON_UV_ISLANDSEL, 0);
@@ -5175,7 +5189,7 @@ void rna_def_view_layer_common(BlenderRNA *brna, StructRNA *srna, const bool sce
 
   prop = RNA_def_property(srna, "use_pass_emit", PROP_BOOLEAN, PROP_NONE);
   RNA_def_property_boolean_sdna(prop, nullptr, "passflag", SCE_PASS_EMIT);
-  RNA_def_property_ui_text(prop, "Emit", "Deliver emission pass");
+  RNA_def_property_ui_text(prop, "Emission", "Deliver emission pass");
   if (scene) {
     RNA_def_property_update(prop, NC_SCENE | ND_RENDER_OPTIONS, "rna_ViewLayer_pass_update");
   }
@@ -6013,7 +6027,7 @@ static void rna_def_bake_data(BlenderRNA *brna)
   /* custom passes flags */
   prop = RNA_def_property(srna, "use_pass_emit", PROP_BOOLEAN, PROP_NONE);
   RNA_def_property_boolean_sdna(prop, nullptr, "pass_filter", R_BAKE_PASS_FILTER_EMIT);
-  RNA_def_property_ui_text(prop, "Emit", "Add emission contribution");
+  RNA_def_property_ui_text(prop, "Emission", "Add emission contribution");
 
   prop = RNA_def_property(srna, "use_pass_direct", PROP_BOOLEAN, PROP_NONE);
   RNA_def_property_boolean_sdna(prop, nullptr, "pass_filter", R_BAKE_PASS_FILTER_DIRECT);
@@ -6376,6 +6390,15 @@ static void rna_def_scene_image_format_data(BlenderRNA *brna)
   RNA_def_property_enum_items(prop, rna_enum_exr_codec_items);
   RNA_def_property_enum_funcs(prop, nullptr, nullptr, "rna_ImageFormatSettings_exr_codec_itemf");
   RNA_def_property_ui_text(prop, "Codec", "Compression codec settings for OpenEXR");
+  RNA_def_property_update(prop, NC_SCENE | ND_RENDER_OPTIONS, nullptr);
+
+  prop = RNA_def_property(srna, "use_exr_interleave", PROP_BOOLEAN, PROP_NONE);
+  RNA_def_property_boolean_negative_sdna(prop, nullptr, "exr_flag", R_IMF_EXR_FLAG_MULTIPART);
+  RNA_def_property_ui_text(
+      prop,
+      "Interleave",
+      "Use legacy interleaved storage of views, layers and passes for compatibility with "
+      "applications that do not support more efficient multi-part OpenEXR files.");
   RNA_def_property_update(prop, NC_SCENE | ND_RENDER_OPTIONS, nullptr);
 #  endif
 
@@ -8832,6 +8855,20 @@ void RNA_def_scene(BlenderRNA *brna)
                                  "rna_Scene_compositing_node_group_set",
                                  nullptr,
                                  "rna_Scene_compositing_node_group_poll");
+
+  /* Todo(#140111): Remove in 6.0. */
+  prop = RNA_def_property(srna, "use_nodes", PROP_BOOLEAN, PROP_NONE);
+  RNA_def_property_boolean_sdna(prop, nullptr, "use_nodes", 1);
+  RNA_def_property_flag(prop, PROP_CONTEXT_UPDATE);
+  RNA_def_property_ui_text(prop, "Use Nodes", "Enable the compositing node group.");
+  RNA_def_property_boolean_funcs(prop, "rna_Scene_use_nodes_get", "rna_Scene_use_nodes_set");
+  RNA_def_property_deprecated(
+      prop,
+      "Unused but kept for compatibility reasons. Setting the property "
+      "has no effect, and getting it always returns True. Use #scene.render.use_compositing to "
+      "turn compositing to enable or disable compositing.",
+      500,
+      600);
 
   /* Sequencer */
   prop = RNA_def_property(srna, "sequence_editor", PROP_POINTER, PROP_NONE);

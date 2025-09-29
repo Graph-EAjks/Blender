@@ -769,7 +769,7 @@ class NWMergeNodes(Operator, NWBase):
                     and nodes_list in (selected_math, selected_vector, selected_mix)
                     and mode == 'MIX'):
                 mode = 'ADD'
-            if merge_position == 'CENTER':
+            if merge_position == 'CENTER' and len(nodes_list) >= 2:
                 # average yloc of last two nodes (lowest two)
                 loc_y = ((nodes_list[-1][2]) + (nodes_list[-2][2])) / 2
                 if nodes_list[-1][-1]:  # if last node is hidden, mix should be shifted up a bit
@@ -1497,7 +1497,7 @@ class NWAddPrincipledSetup(Operator, NWBase, ImportHelper):
 
                     # Add bump node
                     bump_node = nodes.new(type='ShaderNodeBump')
-                    link = connect_sockets(bump_node.inputs[2], bump_node_texture.outputs[0])
+                    link = connect_sockets(bump_node.inputs[3], bump_node_texture.outputs[0])
                     link = connect_sockets(active_node.inputs['Normal'], bump_node.outputs[0])
                 continue
 

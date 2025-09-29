@@ -884,7 +884,7 @@ static bool uv_rip_object(Scene *scene, Object *obedit, const float co[2], const
     }
   }
   if (changed) {
-    uvedit_deselect_flush(scene, bm);
+    uvedit_select_flush_from_verts(scene, bm, false);
   }
   return changed;
 }
@@ -901,7 +901,7 @@ static wmOperatorStatus uv_rip_exec(bContext *C, wmOperator *op)
   Scene *scene = CTX_data_scene(C);
   ViewLayer *view_layer = CTX_data_view_layer(C);
 
-  if (scene->toolsettings->uv_flag & UV_FLAG_SYNC_SELECT) {
+  if (scene->toolsettings->uv_flag & UV_FLAG_SELECT_SYNC) {
     /* "Rip" is logically incompatible with sync-select.
      * Report an error instead of "poll" so this is reported when the tool is used,
      * with #131642 implemented, this can be made to work. */

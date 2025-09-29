@@ -45,17 +45,19 @@ def playback_controls(layout, context):
     tool_settings = context.tool_settings
     screen = context.screen
 
-    layout.popover(
-        panel="TIME_PT_playback",
-        text="Playback",
-    )
+    if scene:
+        layout.popover(
+            panel="TIME_PT_playback",
+            text="Playback",
+        )
 
-    icon_keytype = 'KEYTYPE_{:s}_VEC'.format(context.tool_settings.keyframe_type)
-    layout.popover(
-        panel="TIME_PT_keyframing_settings",
-        text_ctxt=i18n_contexts.id_windowmanager,
-        icon=icon_keytype,
-    )
+    if tool_settings:
+        icon_keytype = 'KEYTYPE_{:s}_VEC'.format(tool_settings.keyframe_type)
+        layout.popover(
+            panel="TIME_PT_keyframing_settings",
+            text_ctxt=i18n_contexts.id_windowmanager,
+            icon=icon_keytype,
+        )
 
     if is_sequencer:
         layout.prop(context.workspace, "use_scene_time_sync", text="Sync Scene Time")
@@ -95,10 +97,11 @@ def playback_controls(layout, context):
     row.operator("screen.keyframe_jump", text="", icon='NEXT_KEYFRAME').next = True
     row.operator("screen.frame_jump", text="", icon='FF').end = True
 
-    row = layout.row(align=True)
-    row.prop(tool_settings, "use_snap_playhead", text="")
-    sub = row.row(align=True)
-    sub.popover(panel="TIME_PT_playhead_snapping", text="")
+    if tool_settings:
+        row = layout.row(align=True)
+        row.prop(tool_settings, "use_snap_playhead", text="")
+        sub = row.row(align=True)
+        sub.popover(panel="TIME_PT_playhead_snapping", text="")
 
     layout.separator_spacer()
 
@@ -298,7 +301,7 @@ class TIME_PT_keyframing_settings(TimelinePanelButtons, Panel):
             self.bl_label = scene.keying_sets_all.active.bl_label
             if scene.keying_sets_all.active.bl_label in scene.keying_sets:
                 # Do not translate, this keying set is user-defined.
-                self.bl_translation_context = "Do not translate"
+                self.bl_translation_context = i18n_contexts.no_translation
             else:
                 # Use the keying set's translation context (default).
                 self.bl_translation_context = scene.keying_sets_all.active.bl_rna.translation_context

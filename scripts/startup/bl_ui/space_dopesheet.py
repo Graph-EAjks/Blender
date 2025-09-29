@@ -106,7 +106,7 @@ class DopesheetFilterPopoverBase:
             flow.prop(dopesheet, "show_armatures", text="Armatures")
         if bpy.data.cameras:
             flow.prop(dopesheet, "show_cameras", text="Cameras")
-        if bpy.data.grease_pencils_v3:
+        if bpy.data.grease_pencils:
             flow.prop(dopesheet, "show_gpencil", text="Grease Pencil Objects")
         if bpy.data.lights:
             flow.prop(dopesheet, "show_lights", text="Lights")
@@ -406,7 +406,7 @@ class DOPESHEET_MT_view(Menu):
         layout.prop(st, "show_region_ui")
         layout.prop(st, "show_region_hud")
         layout.prop(st, "show_region_channels")
-        layout.prop(st, "show_region_footer")
+        layout.prop(st, "show_region_footer", text="Playback Controls")
         layout.separator()
 
         layout.operator("action.view_selected")

@@ -1,9 +1,9 @@
 
 msgid ""
 msgstr ""
-"Project-Id-Version: Blender 5.0.0 Alpha (b'68bccbaeeefe')\n"
+"Project-Id-Version: Blender 5.0.0 Alpha (b'7089def6cbcb')\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-15 07:14+0000\n"
+"POT-Creation-Date: 2025-09-29 09:33+0000\n"
 "PO-Revision-Date: 2025-07-23 15:14+0000\n"
 "Last-Translator: Kamil <uhkamil@gmail.com>\n"
 "Language-Team: Polish <https://translate.blender.org/projects/blender-ui/ui/pl/>\n"
@@ -1396,10 +1396,6 @@ msgid "Armatures active edit bone"
 msgstr "Aktywna edycja kości szkieletu"
 
 
-msgid "Catalog Path"
-msgstr "Ścieżka katalogu"
-
-
 msgid "User Asset Libraries"
 msgstr "Biblioteki prefabrykatów użytkownika"
 
@@ -1569,10 +1565,6 @@ msgid "Space Type"
 msgstr "Typ przestrzeni"
 
 
-msgid "The space where the asset shelf is going to be used in"
-msgstr "Przestrzeń, w której będzie używana półka prefabrykatów"
-
-
 msgid "Preview Size"
 msgstr "Rozmiar podglądu"
 
@@ -1637,30 +1629,6 @@ msgid "32-bit integer"
 msgstr "32-bitowa liczba całkowita"
 
 
-msgid "Vector"
-msgstr "Wektor"
-
-
-msgid "3D vector with floating-point values"
-msgstr "wektor 3D z wartościami zmiennoprzecinkowymi"
-
-
-msgid "Byte Color"
-msgstr "Kolor bajtowy"
-
-
-msgid "RGBA color with 8-bit positive integer values"
-msgstr "Kolor RGBA z 8-bitowymi wartościami, dotatnich liczb całkowitych"
-
-
-msgid "String"
-msgstr "Łańcuch"
-
-
-msgid "Text string"
-msgstr "Łańcuch tekstowy"
-
-
 msgid "Boolean"
 msgstr "Wartość logiczna"
 
@@ -1669,12 +1637,28 @@ msgid "True or false"
 msgstr "Prawda lub fałsz"
 
 
-msgid "2D Vector"
-msgstr "Wektor 2D"
+msgid "Vector"
+msgstr "Wektor"
 
 
-msgid "2D vector with floating-point values"
-msgstr "Wektor 2D o wartościach zmiennoprzecinkowych"
+msgid "3D vector with floating-point values"
+msgstr "wektor 3D z wartościami zmiennoprzecinkowymi"
+
+
+msgid "Quaternion"
+msgstr "Kwaternion"
+
+
+msgid "Floating point quaternion rotation"
+msgstr "Zmienny punkt dla rotacji kwaternionowej"
+
+
+msgid "String"
+msgstr "Łańcuch"
+
+
+msgid "Text string"
+msgstr "Łańcuch tekstowy"
 
 
 msgid "8-Bit Integer"
@@ -1693,12 +1677,20 @@ msgid "32-bit signed integer vector"
 msgstr "Wektor z 32-bitową liczbą całkowitą ze znakiem"
 
 
-msgid "Quaternion"
-msgstr "Kwaternion"
+msgid "2D Vector"
+msgstr "Wektor 2D"
 
 
-msgid "Floating point quaternion rotation"
-msgstr "Zmienny punkt dla rotacji kwaternionowej"
+msgid "2D vector with floating-point values"
+msgstr "Wektor 2D o wartościach zmiennoprzecinkowych"
+
+
+msgid "Byte Color"
+msgstr "Kolor bajtowy"
+
+
+msgid "RGBA color with 8-bit positive integer values"
+msgstr "Kolor RGBA z 8-bitowymi wartościami, dotatnich liczb całkowitych"
 
 
 msgid "Domain"
@@ -1999,6 +1991,10 @@ msgstr "Wypal wieloskalowo"
 
 msgid "Bake directly from multires object"
 msgstr "Wypala bezpośrednio z obiektu wieloskalowego"
+
+
+msgid "Emission"
+msgstr "Emisja"
 
 
 msgid "Selected to Active"
@@ -4467,8 +4463,8 @@ msgid "Color management specific to display device"
 msgstr "Zarządzaniem kolorem zależne od urządzenia wyświetlającego"
 
 
-msgid "Display Device"
-msgstr "Urządzenie wyświetlające"
+msgid "Display"
+msgstr "Wyświetlanie"
 
 
 msgid "Input color space settings"
@@ -4519,8 +4515,8 @@ msgid "Use RGB curved for pre-display transformation"
 msgstr "Użyj zakrzywionego RGB dla transformacji obrazu przed wyświetleniem"
 
 
-msgid "View Transform"
-msgstr "Transformacje widoku"
+msgid "View"
+msgstr "Widok"
 
 
 msgid "View used when converting image to a display space"
@@ -6623,10 +6619,6 @@ msgstr "Płaszczyzna"
 
 msgid "Normal to Surface"
 msgstr "Wektor normalny do powierzchni"
-
-
-msgid "View"
-msgstr "Widok"
 
 
 msgid "Radius"
@@ -9018,16 +9010,12 @@ msgid "Append"
 msgstr "Dołącz"
 
 
-msgid "Import the assets as copied data-block, with no link to the original asset data-block"
-msgstr "Importuje prefabrykaty jako skopiowany blok danych, bez łącza do oryginalnego bloku danych prefabrykatu"
-
-
 msgid "Append (Reuse Data)"
 msgstr "Dołącz (Ponownie użyj danych)"
 
 
-msgid "Import the assets as copied data-block while avoiding multiple copies of nested, typically heavy data. For example the textures of a material asset, or the mesh of an object asset, don't have to be copied every time this asset is imported. The instances of the asset share the data instead"
-msgstr "Importuje prefabrykaty jako skopiowane bloki danych, unikając wielu kopii zagnieżdżonych, zazwyczaj dużych danych. Na przykład tekstury prefabrykatu materiału lub siatka prefabrykatu obiektu nie muszą być kopiowane za każdym razem, gdy ten prefabrykat jest importowany. Zamiast tego instancje prefabrykatu współdzielą dane"
+msgid "Pack"
+msgstr "Pakuj"
 
 
 msgid "Matrix"
@@ -10376,10 +10364,6 @@ msgid "Simple"
 msgstr "Prosty"
 
 
-msgid "Display"
-msgstr "Wyświetlanie"
-
-
 msgid "Steps"
 msgstr "Kroki"
 
@@ -11576,40 +11560,12 @@ msgid "Mask"
 msgstr "Maska"
 
 
-msgid "Face Data"
-msgstr "Dane ściany"
-
-
-msgid "Clean Up"
-msgstr "Sprzątanie"
-
-
-msgid "Merge"
-msgstr "Scal"
-
-
-msgid "Show/Hide"
-msgstr "Pokaż/Ukryj"
-
-
-msgid "Text"
-msgstr "Tekst"
-
-
-msgid "Metaball"
-msgstr "Metakula"
+msgid "Mirror"
+msgstr "Odbicie lustrzane"
 
 
 msgid "Snap"
 msgstr "Przyciągnij"
-
-
-msgid "Proportional Editing Falloff"
-msgstr "Proporcjonalne edytowanie spadku"
-
-
-msgid "Mirror"
-msgstr "Odbicie lustrzane"
 
 
 msgid "Local View"
@@ -11624,6 +11580,10 @@ msgid "Navigation"
 msgstr "Nawigacja"
 
 
+msgid "Proportional Editing Falloff"
+msgstr "Proporcjonalne edytowanie spadku"
+
+
 msgid "Select Linked"
 msgstr "Zaznacz powiązane"
 
@@ -11632,12 +11592,28 @@ msgid "Assign Material"
 msgstr "Przypisanie materiału"
 
 
+msgid "Layout"
+msgstr "Układ"
+
+
+msgid "Metaball"
+msgstr "Metakula"
+
+
 msgid "Light"
 msgstr "Światło"
 
 
 msgid "Light Probe"
 msgstr "Sonda świetlna"
+
+
+msgid "Keying"
+msgstr "Kluczowanie"
+
+
+msgid "Utilities"
+msgstr "Narzędzia"
 
 
 msgid "Rigid Body"
@@ -11656,6 +11632,14 @@ msgid "Quick Effects"
 msgstr "Szybkie efekty"
 
 
+msgid "Show/Hide"
+msgstr "Pokaż/Ukryj"
+
+
+msgid "Clean Up"
+msgstr "Sprzątanie"
+
+
 msgid "Asset"
 msgstr "Prefabrykat"
 
@@ -11666,6 +11650,42 @@ msgstr "Konwertuj"
 
 msgid "Bone Collections"
 msgstr "Kolekcja kości"
+
+
+msgid "Read"
+msgstr "Odczyt"
+
+
+msgid "Face Data"
+msgstr "Dane ściany"
+
+
+msgid "Write"
+msgstr "Zapis"
+
+
+msgid "Merge"
+msgstr "Scal"
+
+
+msgid "Gizmo"
+msgstr "Gizmo"
+
+
+msgid "Text"
+msgstr "Tekst"
+
+
+msgid "Import"
+msgstr "Importuj"
+
+
+msgid "Deprecated"
+msgstr "Przestarzałe"
+
+
+msgid "Math"
+msgstr "Matematyka"
 
 
 msgid "Catalog"
@@ -11730,40 +11750,8 @@ msgid "Area"
 msgstr "Obszar"
 
 
-msgid "Utilities"
-msgstr "Narzędzia"
-
-
-msgid "Deprecated"
-msgstr "Przestarzałe"
-
-
-msgid "Math"
-msgstr "Matematyka"
-
-
-msgid "Keying"
-msgstr "Kluczowanie"
-
-
-msgid "Import"
-msgstr "Importuj"
-
-
-msgid "Layout"
-msgstr "Układ"
-
-
 msgid "Node"
 msgstr "Węzeł"
-
-
-msgid "Read"
-msgstr "Odczyt"
-
-
-msgid "Write"
-msgstr "Zapis"
 
 
 msgctxt "NodeTree"
@@ -11771,8 +11759,9 @@ msgid "Constant"
 msgstr "Stały"
 
 
-msgid "Gizmo"
-msgstr "Gizmo"
+msgctxt "Operator"
+msgid "Swap"
+msgstr "Zamień"
 
 
 msgid "Add Modifier"
@@ -11785,11 +11774,6 @@ msgstr "Generuj"
 
 msgid "Physics"
 msgstr "Fizyka"
-
-
-msgctxt "Operator"
-msgid "Scene"
-msgstr "Scena"
 
 
 msgid "Transition"
@@ -11860,6 +11844,11 @@ msgstr "Rodzic"
 msgctxt "Operator"
 msgid "Empty"
 msgstr "Pusty"
+
+
+msgctxt "Operator"
+msgid "Lattice"
+msgstr "Kratownica"
 
 
 msgctxt "Constraint"
@@ -12365,10 +12354,6 @@ msgid "Brightness/Contrast"
 msgstr "Jasność/kontrast"
 
 
-msgid "Single"
-msgstr "Pojedyńczy"
-
-
 msgid "To"
 msgstr "Do"
 
@@ -12819,10 +12804,6 @@ msgid "Similar to the Principled BSDF node but uses the specular workflow instea
 msgstr "Podobny do węzła „Pryncypialna BSDF”, ale używa trybu refleksowego zamiast metalicznego, który działa poprzez określenie koloru odbicia skierowanego (wzdłuż wektora normalnego). Energia nie jest zachowywana, więc wynik może nie być fizycznie dokładny"
 
 
-msgid "Emission"
-msgstr "Emisja"
-
-
 msgid "Lambertian emission shader"
 msgstr "Shader emisji Lamberta"
 
@@ -13124,6 +13105,10 @@ msgstr "Węzeł tekstury"
 
 msgid "Node Output"
 msgstr "Wyjście węzła"
+
+
+msgid "Single"
+msgstr "Pojedyńczy"
 
 
 msgid "Bake Item"
@@ -16903,14 +16888,6 @@ msgid "Export only selected objects"
 msgstr "Eksportuje tylko zaznaczone obiekty"
 
 
-msgid "Visible Objects Only"
-msgstr "Tylko widoczne obiekty"
-
-
-msgid "Export only objects that are visible"
-msgstr "Eksportuje tylko obiekty, które są widoczne"
-
-
 msgctxt "Operator"
 msgid "Append"
 msgstr "Dołącz"
@@ -18109,6 +18086,10 @@ msgid "None"
 msgstr "Brak"
 
 
+msgid "Render Time"
+msgstr "Czas renderowania"
+
+
 msgid "Use Denoising"
 msgstr "Używa odszymiania"
 
@@ -18163,22 +18144,6 @@ msgstr "Obliczenia procesora graficznego"
 
 msgid "Use GPU compute device for rendering, configured in the system tab in the user preferences"
 msgstr "Używa urządzenia graficznego do renderowania, skonfigurowanego w zakładce „System” w preferencjach użytkownika"
-
-
-msgid "Feature set to use for rendering"
-msgstr "Zestaw funkcji używany do renderowania"
-
-
-msgid "Supported"
-msgstr "Wspierane"
-
-
-msgid "Only use finished and supported features"
-msgstr "Używa wyłącznie gotowych i wspieranych funkcji"
-
-
-msgid "Use experimental and incomplete features that might be broken or change in the future"
-msgstr "Używa eksperymentalnych i niekompletnych funkcji, które mogą ulec uszkodzeniu lub zmianie w przyszłości"
 
 
 msgid "Roughness-based"
@@ -19066,16 +19031,6 @@ msgstr "Edytuj drzewo"
 
 
 msgctxt "ID"
-msgid "Modifier"
-msgstr "Modyfikator"
-
-
-msgctxt "ID"
-msgid "Tool"
-msgstr "Narzędzie"
-
-
-msgctxt "ID"
 msgid "Shader Type"
 msgstr "Rodzaj cieniowania"
 
@@ -19156,6 +19111,11 @@ msgstr "Sortuj alfabetycznie"
 
 msgid "Filter method"
 msgstr "Metoda filtrowania"
+
+
+msgctxt "ID"
+msgid "Tool"
+msgstr "Narzędzie"
 
 
 msgid "Active Tool and Workspace settings"
@@ -19659,6 +19619,10 @@ msgstr "Aktywne narzędzie"
 
 msgid "Sort by Name"
 msgstr "Sortuj według nazwy"
+
+
+msgid "Import the assets as copied data-block, with no link to the original asset data-block"
+msgstr "Importuje prefabrykaty jako skopiowany blok danych, bez łącza do oryginalnego bloku danych prefabrykatu"
 
 
 msgctxt "File browser"
@@ -20354,6 +20318,21 @@ msgid "Variant"
 msgstr "Wariant"
 
 
+msgctxt "UI_Events_KeyMaps"
+msgid "Shift"
+msgstr "Shift"
+
+
+msgctxt "UI_Events_KeyMaps"
+msgid "Alt"
+msgstr "Alt"
+
+
+msgctxt "UI_Events_KeyMaps"
+msgid "Ctrl"
+msgstr "Ctrl"
+
+
 msgid "No active node."
 msgstr "Brak aktywnego węzła."
 
@@ -20556,13 +20535,13 @@ msgstr "Pierwsze kroki"
 
 
 msgctxt "Operator"
-msgid "Donate"
-msgstr "Wesprzyj"
+msgid "What's New"
+msgstr "Co nowego"
 
 
 msgctxt "Operator"
-msgid "What's New"
-msgstr "Co nowego"
+msgid "Donate"
+msgstr "Wesprzyj"
 
 
 msgctxt "Operator"
@@ -20638,11 +20617,6 @@ msgstr "Głośnik(i)"
 msgctxt "Operator"
 msgid "Manual"
 msgstr "Podręcznik"
-
-
-msgctxt "Operator"
-msgid "Tutorials"
-msgstr "Samouczki"
 
 
 msgctxt "Operator"
@@ -20973,10 +20947,6 @@ msgid "Date"
 msgstr "Data"
 
 
-msgid "Render Time"
-msgstr "Czas renderowania"
-
-
 msgid "Hostname"
 msgstr "Nazwa hosta"
 
@@ -21163,8 +21133,16 @@ msgid "Copy Settings to Defaults"
 msgstr "Kopiuj ustawienia do domyślnych"
 
 
+msgid "Viewport Overlays"
+msgstr "Nakładki rzutni"
+
+
 msgid "Viewport Gizmos"
 msgstr "Gizmos dla rzutni"
+
+
+msgid "Aspect Ratio"
+msgstr "Format obrazu"
 
 
 msgctxt "Operator"
@@ -21383,10 +21361,6 @@ msgid "Image*"
 msgstr "Obraz*"
 
 
-msgid "Aspect Ratio"
-msgstr "Format obrazu"
-
-
 msgid "Repeat Image"
 msgstr "Powtórz obraz"
 
@@ -21454,11 +21428,6 @@ msgstr "Dźwięk"
 msgctxt "Operator"
 msgid "Remove Meta"
 msgstr "Usuń meta"
-
-
-msgctxt "Operator"
-msgid "Swap"
-msgstr "Zamień"
 
 
 msgctxt "Operator"
@@ -21696,11 +21665,6 @@ msgstr "Pozycja X"
 
 
 msgctxt "Operator"
-msgid "Sequence Render Image"
-msgstr "Renderuj sekwencję obrazów"
-
-
-msgctxt "Operator"
 msgid "Left"
 msgstr "Lewo"
 
@@ -21783,10 +21747,6 @@ msgstr "Dodaj przejście"
 
 msgid "Unpack"
 msgstr "Rozpakuj"
-
-
-msgid "Pack"
-msgstr "Pakuj"
 
 
 msgid "Source Channel"
@@ -22047,6 +22007,10 @@ msgid "General"
 msgstr "Ogólne"
 
 
+msgid "More..."
+msgstr "Więcej..."
+
+
 msgctxt "Operator"
 msgid "Load Factory Blender Settings"
 msgstr "Załaduj ustawienia fabryczne Blendera"
@@ -22095,6 +22059,11 @@ msgstr "Szukaj operatora..."
 msgctxt "Operator"
 msgid "Release Notes"
 msgstr "Informacje o wydaniu"
+
+
+msgctxt "Operator"
+msgid "Tutorials"
+msgstr "Samouczki"
 
 
 msgid "No active item"
@@ -22350,16 +22319,6 @@ msgstr "Kursor do aktywnego"
 msgctxt "Operator"
 msgid "Perspective/Orthographic"
 msgstr "Perspektywiczny/prostokątny"
-
-
-msgctxt "Operator"
-msgid "Viewport Render Image"
-msgstr "Renderuj obraz rzutni"
-
-
-msgctxt "Operator"
-msgid "Viewport Render Keyframes"
-msgstr "Renderuj klatki kluczowe rzutni"
 
 
 msgctxt "Operator"
@@ -22779,10 +22738,6 @@ msgid "Object Gizmos"
 msgstr "Gizmos obiektu"
 
 
-msgid "Viewport Overlays"
-msgstr "Nakładki rzutni"
-
-
 msgid "Statistics"
 msgstr "Statystyka"
 
@@ -22800,18 +22755,8 @@ msgstr "Tekst atrybutu"
 
 
 msgctxt "Operator"
-msgid "Viewport Render Animation"
-msgstr "Renderuj animację rzutni"
-
-
-msgctxt "Operator"
 msgid "Armature"
 msgstr "Szkielet"
-
-
-msgctxt "Operator"
-msgid "Lattice"
-msgstr "Kratownica"
 
 
 msgctxt "Operator"
@@ -24461,10 +24406,6 @@ msgid "No Properties"
 msgstr "Brak właściwości"
 
 
-msgid "More..."
-msgstr "Więcej..."
-
-
 msgid "Reset operator defaults"
 msgstr "Resetuj domyślne dla operatora"
 
@@ -24770,12 +24711,12 @@ msgid "No mesh data to join"
 msgstr "Brak danych siatki do złączenia"
 
 
-msgid "No additional selected meshes with equal vertex count to join"
-msgstr "Brak zaznaczonych dodatkowych siatek z równą liczbą wierzchołków do złączenia"
-
-
 msgid "Joining results in %d vertices, limit is %ld"
 msgstr "Łączenie rezultatów w %d wierzchołkach, ograniczenie wynosi %ld"
+
+
+msgid "No additional selected meshes with equal vertex count to join"
+msgstr "Brak zaznaczonych dodatkowych siatek z równą liczbą wierzchołków do złączenia"
 
 
 msgid "Unassigned"
@@ -27663,21 +27604,6 @@ msgid "Enter"
 msgstr "Enter"
 
 
-msgctxt "UI_Events_KeyMaps"
-msgid "Alt"
-msgstr "Alt"
-
-
-msgctxt "UI_Events_KeyMaps"
-msgid "Shift"
-msgstr "Shift"
-
-
-msgctxt "UI_Events_KeyMaps"
-msgid "Ctrl"
-msgstr "Ctrl"
-
-
 msgid "No active window in context!"
 msgstr "Brak aktywnego okna w zawartości!"
 
@@ -27740,22 +27666,6 @@ msgstr "Zastąp oryginał"
 
 msgid "Fac"
 msgstr "Współczynnik"
-
-
-msgid "Bounding box"
-msgstr "Prostopadłościan brzegowy"
-
-
-msgid "Color Space:"
-msgstr "Przestrzeń kolorów:"
-
-
-msgid "Key Channel:"
-msgstr "Kanał klucza:"
-
-
-msgid "Despill Channel:"
-msgstr "Kanał Despill:"
 
 
 msgid "Result"
@@ -28477,14 +28387,14 @@ msgid "Import-Export"
 msgstr "Import-Eksport"
 
 
+msgid "Ignore Sharpness"
+msgstr "Ignoruj ostrość"
+
+
 msgid "Blend Radius"
 msgstr "Promień mieszania"
 
 
 msgid "Straighten Hair Curves"
 msgstr "Wyprostuj krzywe włosów"
-
-
-msgid "Ignore Sharpness"
-msgstr "Ignoruj ostrość"
 

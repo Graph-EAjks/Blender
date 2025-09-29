@@ -1,10 +1,10 @@
 
 msgid ""
 msgstr ""
-"Project-Id-Version: Blender 5.0.0 Alpha (b'68bccbaeeefe')\n"
+"Project-Id-Version: Blender 5.0.0 Alpha (b'7089def6cbcb')\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-15 07:14+0000\n"
-"PO-Revision-Date: 2025-09-15 07:20+0000\n"
+"POT-Creation-Date: 2025-09-29 09:33+0000\n"
+"PO-Revision-Date: 2025-09-25 20:59+0000\n"
 "Last-Translator: Gabriel Gazzán <gabcorreo@gmail.com>\n"
 "Language-Team: Spanish <https://translate.blender.org/projects/blender-ui/ui/es/>\n"
 "Language: es\n"
@@ -1828,10 +1828,6 @@ msgid "Armatures active edit bone"
 msgstr "Hueso editable activo del esqueleto"
 
 
-msgid "Catalog Path"
-msgstr "Ruta del catálogo"
-
-
 msgid "User Asset Libraries"
 msgstr "Bibliotecas de recursos del usuario"
 
@@ -2085,8 +2081,8 @@ msgid "Space Type"
 msgstr "Tipo de espacio"
 
 
-msgid "The space where the asset shelf is going to be used in"
-msgstr "El tipo de espacio donde será usado el banco de recursos"
+msgid "The space where the asset shelf will show up in. Ignored for popup asset shelves which can be displayed in any space."
+msgstr "El espacio en donde el banco de recursos será mostrado. Ignorado en el caso de bancos de recursos emergentes, los cuales podrán ser mostrados en cualquier espacio."
 
 
 msgid "Preview Size"
@@ -2169,6 +2165,14 @@ msgid "32-bit integer"
 msgstr "Entero de 32 bits"
 
 
+msgid "Boolean"
+msgstr "Booleana"
+
+
+msgid "True or false"
+msgstr "Verdadero o falso"
+
+
 msgid "Vector"
 msgstr "Vector"
 
@@ -2181,12 +2185,20 @@ msgid "RGBA color with 32-bit floating-point values"
 msgstr "Color RVAα con valores decimales de punto flotante de 32 bits"
 
 
-msgid "Byte Color"
-msgstr "Color byte"
+msgid "Quaternion"
+msgstr "Cuaternio"
 
 
-msgid "RGBA color with 8-bit positive integer values"
-msgstr "Color RVAα con valores enteros positivos de 8 bits"
+msgid "Floating point quaternion rotation"
+msgstr "Rotación cuaternio decimal"
+
+
+msgid "4x4 Matrix"
+msgstr "Matriz de 4x4"
+
+
+msgid "Floating point matrix"
+msgstr "Matriz decimal de punto flotante"
 
 
 msgid "String"
@@ -2195,22 +2207,6 @@ msgstr "Cadena"
 
 msgid "Text string"
 msgstr "Cadena de texto"
-
-
-msgid "Boolean"
-msgstr "Booleana"
-
-
-msgid "True or false"
-msgstr "Verdadero o falso"
-
-
-msgid "2D Vector"
-msgstr "Vector 2D"
-
-
-msgid "2D vector with floating-point values"
-msgstr "Vector 2D con valores decimales"
 
 
 msgid "8-Bit Integer"
@@ -2237,20 +2233,20 @@ msgid "32-bit signed integer vector"
 msgstr "Vector con valores enteros, con signo, de 32 bits"
 
 
-msgid "Quaternion"
-msgstr "Cuaternio"
+msgid "2D Vector"
+msgstr "Vector 2D"
 
 
-msgid "Floating point quaternion rotation"
-msgstr "Rotación cuaternio decimal"
+msgid "2D vector with floating-point values"
+msgstr "Vector 2D con valores decimales"
 
 
-msgid "4x4 Matrix"
-msgstr "Matriz de 4x4"
+msgid "Byte Color"
+msgstr "Color byte"
 
 
-msgid "Floating point matrix"
-msgstr "Matriz decimal de punto flotante"
+msgid "RGBA color with 8-bit positive integer values"
+msgstr "Color RVAα con valores enteros positivos de 8 bits"
 
 
 msgid "Domain"
@@ -2337,12 +2333,27 @@ msgid "Name of the Attribute"
 msgstr "Nombre del atributo"
 
 
+msgctxt "Amount"
+msgid "Storage Type"
+msgstr "Tipo de almacenamiento"
+
+
 msgid "Method used to store the data"
 msgstr "Método usado para almacenar los datos"
 
 
+msgctxt "Amount"
+msgid "Array"
+msgstr "Vector"
+
+
 msgid "Store a value for every element"
 msgstr "Guardará un valor para cada elemento"
+
+
+msgctxt "Amount"
+msgid "Single"
+msgstr "Individual"
 
 
 msgid "Store a single value for the entire domain"
@@ -2831,6 +2842,10 @@ msgstr "Agrega la contribución de la difusión"
 
 msgid "Add direct lighting contribution"
 msgstr "Agrega la contribución de la iluminación directa"
+
+
+msgid "Emission"
+msgstr "Emisión"
 
 
 msgid "Add emission contribution"
@@ -7392,12 +7407,12 @@ msgid "Color management specific to display device"
 msgstr "Administración de color específica para dispositivo de visualización"
 
 
-msgid "Display Device"
-msgstr "Dispositivo de visualización"
+msgid "Display"
+msgstr "Visualización"
 
 
-msgid "Display device name. For viewing, this is the display that will be emulated by limiting the gamut and HDR colors. For image and video output, this is the display space used for writing."
-msgstr "Nombre del dispositivo de visualización. Este es el dispositivo que será emulado limitando la gama y los colores HDR. Para la salida de imágenes y video, este será el espacio de visualización usado al guardar."
+msgid "Display name. For viewing, this is the display device that will be emulated by limiting the gamut and HDR colors. For image and video output, this is the display space used for writing."
+msgstr "Nombre del dispositivo de visualización. Este es el dispositivo que será emulado limitando el gama y los colores HDR. Para la producción de imágenes y video, este será el espacio de visualización usado al guardar."
 
 
 msgid "Input color space settings"
@@ -7418,6 +7433,14 @@ msgstr "Espacio de color original"
 
 msgid "Color space in the image file, to convert to and from when saving and loading the image"
 msgstr "Espacio de color en el archivo de imagen, desde el cual convertir al cargar y hacia el cual convertir al guardar la imagen"
+
+
+msgid "ACES 2.0 sRGB"
+msgstr "ACES 2.0 sRGB"
+
+
+msgid "ACES 2 Output Transform for 100 nit SDR Rec709"
+msgstr "Transformación de salida ACES 2 para SDR Rec709 de 100 cd/m²"
 
 
 msgid "ACES2065-1"
@@ -7457,7 +7480,7 @@ msgstr "Fílmica logarítmica"
 
 
 msgid "Log based filmic shaper with 16.5 stops of latitude, and 25 stops of dynamic range"
-msgstr "Transformación fílmica de tipo logarítmico con 16.5 paradas de latitud y 25 paradas de rango dinámico"
+msgstr "Transformación fílmica de tipo logarítmico con 16,5 paradas de latitud y 25 paradas de rango dinámico"
 
 
 msgid "Filmic sRGB"
@@ -7624,8 +7647,8 @@ msgid "Perform chromatic adaption from a different white point"
 msgstr "Realiza una adaptación cromática con respecto a un punto de blanco distinto"
 
 
-msgid "View Transform"
-msgstr "Transformación de visualización"
+msgid "View"
+msgstr "Vista"
 
 
 msgid "View used when converting image to a display space"
@@ -10537,10 +10560,6 @@ msgstr "Tangente a la superficie"
 
 msgid "Draw in the surface plane"
 msgstr "Dibuja en el plano de la superficie"
-
-
-msgid "View"
-msgstr "Vista"
 
 
 msgid "Draw in a plane aligned to the viewport"
@@ -14854,16 +14873,12 @@ msgid "Append"
 msgstr "Anexar"
 
 
-msgid "Import the assets as copied data-block, with no link to the original asset data-block"
-msgstr "Importar recursos como bloques de datos copiados, sin mantener vínculo con los bloques de datos originales"
-
-
 msgid "Append (Reuse Data)"
 msgstr "Anexar (reusar datos)"
 
 
-msgid "Import the assets as copied data-block while avoiding multiple copies of nested, typically heavy data. For example the textures of a material asset, or the mesh of an object asset, don't have to be copied every time this asset is imported. The instances of the asset share the data instead"
-msgstr "Importar recursos como bloques de datos copiados, evitando múltiples copias anidadas de datos, normalmente pesados. Por ejemplo, las texturas de un recurso de material o la malla de un recurso de objeto, no deberán ser copiados cada vez que este recurso sea importado. En vez de eso, las instancias del recurso compartirán los mismos datos"
+msgid "Pack"
+msgstr "Empacar"
 
 
 msgid "Instance Collections on Appending"
@@ -19171,21 +19186,12 @@ msgid "Mask Texture Overlay Alpha"
 msgstr "Alfa superposición textura de máscara"
 
 
+msgid "Falloff Curve"
+msgstr "Curva de decaimiento"
+
+
 msgid "Editable falloff curve"
 msgstr "Curva de decaimiento editable"
-
-
-msgid "Pressure Jitter Mapping"
-msgstr "Mapeo de presión a alteración"
-
-
-msgid "Curve used to map pressure to brush jitter"
-msgstr "Curva usada para mapear la presión a la alteración del pincel"
-
-
-msgctxt "Curve"
-msgid "Curve Preset"
-msgstr "Preajuste de curva"
 
 
 msgctxt "Curve"
@@ -19236,6 +19242,14 @@ msgstr "Inverso al cuadrado"
 msgctxt "Curve"
 msgid "Constant"
 msgstr "Constante"
+
+
+msgid "Pressure Jitter Mapping"
+msgstr "Mapeo de presión a alteración"
+
+
+msgid "Curve used to map pressure to brush jitter"
+msgstr "Curva usada para mapear la presión a la alteración del pincel"
 
 
 msgid "Pressure Size Mapping"
@@ -26782,10 +26796,6 @@ msgstr "Cruces"
 msgctxt "ParticleSettings"
 msgid "Axis"
 msgstr "Ejes"
-
-
-msgid "Display"
-msgstr "Visualización"
 
 
 msgid "Percentage of particles to display in 3D view"
@@ -34696,70 +34706,6 @@ msgid "Editor menu containing buttons"
 msgstr "Menú del editor que contiene botones"
 
 
-msgid "Mesh Select Mode"
-msgstr "Modo de selección de mallas"
-
-
-msgid "Face Data"
-msgstr "Datos de caras"
-
-
-msgid "Select by Face Strength"
-msgstr "Seleccionar por intensidad de caras"
-
-
-msgid "Set Face Strength"
-msgstr "Definir intensidad de caras"
-
-
-msgid "Clean Up"
-msgstr "Limpiar"
-
-
-msgid "Merge"
-msgstr "Fusionar"
-
-
-msgid "Show/Hide"
-msgstr "Mostrar / Ocultar"
-
-
-msgid "Special Characters"
-msgstr "Caracteres especiales"
-
-
-msgid "Kerning"
-msgstr "Espaciado"
-
-
-msgid "Text"
-msgstr "Texto"
-
-
-msgid "Metaball"
-msgstr "Metabola"
-
-
-msgid "Names"
-msgstr "Nombres"
-
-
-msgid "Bone Roll"
-msgstr "Giro de huesos"
-
-
-msgid "Pivot Point"
-msgstr "Punto de pivote"
-
-
-msgid "Snap"
-msgstr "Adherir"
-
-
-msgid "Proportional Editing Falloff"
-msgstr "Decaimiento de edición proporcional"
-
-
 msgid "Mask Edit"
 msgstr "Edición de máscara"
 
@@ -34778,6 +34724,10 @@ msgstr "Bloqueos de grupo de vértices"
 
 msgid "Mirror"
 msgstr "Simetrizar"
+
+
+msgid "Snap"
+msgstr "Adherir"
 
 
 msgid "UV Mapping"
@@ -34812,6 +34762,10 @@ msgid "Select More/Less"
 msgstr "Seleccionar más / menos"
 
 
+msgid "Proportional Editing Falloff"
+msgstr "Decaimiento de edición proporcional"
+
+
 msgid "Select Similar"
 msgstr "Seleccionar similar"
 
@@ -34832,6 +34786,18 @@ msgid "Assign Material"
 msgstr "Asignar material"
 
 
+msgid "Layout"
+msgstr "Organizar"
+
+
+msgid "Render Preview"
+msgstr "Procesar previsualización"
+
+
+msgid "Metaball"
+msgstr "Metabola"
+
+
 msgid "Light"
 msgstr "Luz"
 
@@ -34840,12 +34806,28 @@ msgid "Light Probe"
 msgstr "Sonda de luz"
 
 
+msgid "Adjust"
+msgstr "Ajustar"
+
+
+msgid "Keying"
+msgstr "Recortar"
+
+
+msgid "Tracking"
+msgstr "Rastreo"
+
+
 msgid "Add Image"
 msgstr "Agregar imagen"
 
 
 msgid "Relations"
 msgstr "Relaciones"
+
+
+msgid "Utilities"
+msgstr "Utilitarios"
 
 
 msgid "Rigid Body"
@@ -34862,6 +34844,14 @@ msgstr "Rastrear"
 
 msgid "Quick Effects"
 msgstr "Efectos rápidos"
+
+
+msgid "Show/Hide"
+msgstr "Mostrar / Ocultar"
+
+
+msgid "Clean Up"
+msgstr "Limpiar"
 
 
 msgid "Asset"
@@ -34916,6 +34906,10 @@ msgid "Bone Collections"
 msgstr "Colecciones de huesos"
 
 
+msgid "Names"
+msgstr "Nombres"
+
+
 msgid "Toggle Bone Options"
 msgstr "Alternar opciones de huesos"
 
@@ -34926,6 +34920,90 @@ msgstr "Habilitar opciones huesos"
 
 msgid "Disable Bone Options"
 msgstr "Deshabilitar opciones huesos"
+
+
+msgid "Mesh Select Mode"
+msgstr "Modo de selección de mallas"
+
+
+msgid "Read"
+msgstr "Lectura"
+
+
+msgid "Face Data"
+msgstr "Datos de caras"
+
+
+msgid "Sample"
+msgstr "Muestreo"
+
+
+msgid "Write"
+msgstr "Escritura"
+
+
+msgid "Select by Face Strength"
+msgstr "Seleccionar por intensidad de caras"
+
+
+msgid "Set Face Strength"
+msgstr "Definir intensidad de caras"
+
+
+msgid "Primitives"
+msgstr "Primitivas"
+
+
+msgid "Merge"
+msgstr "Fusionar"
+
+
+msgid "Gizmo"
+msgstr "Manipulador"
+
+
+msgid "Instances"
+msgstr "Instancias"
+
+
+msgid "Special Characters"
+msgstr "Caracteres especiales"
+
+
+msgid "Kerning"
+msgstr "Espaciado"
+
+
+msgid "Text"
+msgstr "Texto"
+
+
+msgid "Import"
+msgstr "Importar"
+
+
+msgid "Bone Roll"
+msgstr "Giro de huesos"
+
+
+msgid "Deprecated"
+msgstr "Obsoleto"
+
+
+msgid "List"
+msgstr "Lista"
+
+
+msgid "Math"
+msgstr "Operar"
+
+
+msgid "UV"
+msgstr "UV"
+
+
+msgid "Pivot Point"
+msgstr "Punto de pivote"
 
 
 msgid "Keyframe Insert Pie"
@@ -35108,10 +35186,6 @@ msgid "Simplify Stroke"
 msgstr "Simplificar trazo"
 
 
-msgid "UV"
-msgstr "UV"
-
-
 msgid "Align"
 msgstr "Alinear"
 
@@ -35167,69 +35241,13 @@ msgid "Track"
 msgstr "Pista"
 
 
-msgid "Utilities"
-msgstr "Utilitarios"
-
-
-msgid "Deprecated"
-msgstr "Obsoleto"
-
-
-msgid "Math"
-msgstr "Operar"
-
-
-msgid "Primitives"
-msgstr "Primitivas"
-
-
-msgid "Adjust"
-msgstr "Ajustar"
-
-
-msgid "Keying"
-msgstr "Recortar"
-
-
-msgid "Import"
-msgstr "Importar"
-
-
-msgid "Layout"
-msgstr "Organizar"
-
-
-msgid "List"
-msgstr "Lista"
-
-
 msgid "Node"
 msgstr "Nodo"
-
-
-msgid "Read"
-msgstr "Lectura"
-
-
-msgid "Sample"
-msgstr "Muestreo"
-
-
-msgid "Write"
-msgstr "Escritura"
 
 
 msgctxt "NodeTree"
 msgid "Constant"
 msgstr "Constante"
-
-
-msgid "Gizmo"
-msgstr "Manipulador"
-
-
-msgid "Instances"
-msgstr "Instancias"
 
 
 msgid "Node Color Specials"
@@ -35304,8 +35322,9 @@ msgid "Node Wrangler"
 msgstr "Node Wrangler"
 
 
-msgid "Switch Type to..."
-msgstr "Cambiar tipo a..."
+msgctxt "Operator"
+msgid "Swap"
+msgstr "Intercambiar"
 
 
 msgid "Light Linking Specials"
@@ -35362,11 +35381,6 @@ msgstr "Preajustes de densidad de píxeles"
 
 msgid "Effect Strip"
 msgstr "Clip de efecto"
-
-
-msgctxt "Operator"
-msgid "Scene"
-msgstr "Escena"
 
 
 msgid "Transition"
@@ -35562,6 +35576,11 @@ msgstr "Asignar superior"
 msgctxt "Operator"
 msgid "Empty"
 msgstr "Vacío"
+
+
+msgctxt "Operator"
+msgid "Lattice"
+msgstr "Jaula"
 
 
 msgctxt "Constraint"
@@ -40337,10 +40356,6 @@ msgid "Center of the hook, used for falloff and display"
 msgstr "Centro del gancho, usado para decaimiento y visualización"
 
 
-msgid "Falloff Curve"
-msgstr "Curva de decaimiento"
-
-
 msgid "Custom falloff curve"
 msgstr "Curva de decaimiento personalizada"
 
@@ -41964,6 +41979,14 @@ msgid "Subdivision surface modifier"
 msgstr "Modificador de subdivisión de superficies"
 
 
+msgid "Edge Length"
+msgstr "Longitud de bordes"
+
+
+msgid "Pixel Size"
+msgstr "Tamaño píxeles"
+
+
 msgid "Number of subdivisions to perform in the 3D viewport"
 msgstr "Cantidad de subdivisiones a usar en las vistas 3D"
 
@@ -41982,6 +42005,10 @@ msgstr "Crea una superficie curva suavizada utilizando el método de subdivisió
 
 msgid "Subdivide faces without changing shape"
 msgstr "Subdivide las caras sin cambiar su forma general"
+
+
+msgid "Use Adaptive Subdivision"
+msgstr "Usar subdivisión adaptativa"
 
 
 msgid "Use Limit Surface"
@@ -43596,6 +43623,11 @@ msgid "Opacity of the image"
 msgstr "Opacidad de la imagen"
 
 
+msgctxt "MovieClip"
+msgid "Markers"
+msgstr "Marcadores"
+
+
 msgid "Collection of markers in track"
 msgstr "Colección de marcadores en el rastreo"
 
@@ -44120,6 +44152,11 @@ msgid "Average error of re-projection"
 msgstr "Error promedio de la reproyección"
 
 
+msgctxt "MovieClip"
+msgid "Bundle"
+msgstr "Marcador 3D"
+
+
 msgid "Position of bundle reconstructed from this track"
 msgstr "Posición del marcador 3D reconstruida a partir de este rastro"
 
@@ -44400,10 +44437,6 @@ msgid "Type of NLA Strip"
 msgstr "Tipo de clip de ANL"
 
 
-msgid "Action Clip"
-msgstr "Clip de acción"
-
-
 msgid "NLA Strip references some Action"
 msgstr "El clip ANL referencia a alguna acción"
 
@@ -44412,16 +44445,8 @@ msgid "NLA Strip 'transitions' between adjacent strips"
 msgstr "El clip de ANL 'transiciona' entre los clips adyacentes"
 
 
-msgid "Meta"
-msgstr "Meta"
-
-
 msgid "NLA Strip acts as a container for adjacent strips"
 msgstr "El clip de ANL actúa como un contenedor para los clips adyacentes"
-
-
-msgid "Sound Clip"
-msgstr "Clip de sonido"
 
 
 msgid "NLA Strip representing a sound event for speakers"
@@ -44673,38 +44698,6 @@ msgid "Overlay a foreground image onto a background image"
 msgstr "Permite superponer una imagen, delante de otra imagen de fondo"
 
 
-msgid "Operation Type"
-msgstr "Tipo de operación"
-
-
-msgid "The type of alpha over operation"
-msgstr "Tipo de operación al superponer con alfa"
-
-
-msgid "Over"
-msgstr "Superponer"
-
-
-msgid "The foreground goes over the background according to the alpha of the foreground"
-msgstr "Superpone el de arriba sobre el de abajo, de acuerdo al canal alfa del de arriba"
-
-
-msgid "Disjoint Over"
-msgstr "Superponer dividido"
-
-
-msgid "The foreground goes over the background according to the alpha of the foreground while assuming the background is being held out by the foreground"
-msgstr "Superpone el de arriba sobre el de abajo, de acuerdo al canal alfa del de arriba, asumiendo a la vez que el de abajo está siendo bloqueado por el de arriba"
-
-
-msgid "Conjoint Over"
-msgstr "Superponer asociado"
-
-
-msgid "The foreground goes over the background according to the alpha of the foreground but the foreground completely covers the background if it is more opaque"
-msgstr "Superpone el de arriba sobre el de abajo, de acuerdo al canal alfa del de arriba, pero el de arriba cubrirá completamente al de abajo en caso de ser más opaco"
-
-
 msgid "Smooth away jagged edges"
 msgstr "Permite suavizar bordes serruchados"
 
@@ -44761,68 +44754,6 @@ msgid "Create matte based on differences in color channels"
 msgstr "Permite crear un mate basado en las diferencias en los canales de color"
 
 
-msgid "RGB (Red, Green, Blue) color space"
-msgstr "Espacio de color RVA (Rojo, Verde, Azul)"
-
-
-msgid "HSV (Hue, Saturation, Value) color space"
-msgstr "Espacio de color TSV (Tono, Saturación, Valor)"
-
-
-msgid "YUV"
-msgstr "YUV"
-
-
-msgid "YUV (Y - luma, U V - chroma) color space"
-msgstr "Espacio de color YUV (Y - luma, U V - croma)"
-
-
-msgid "YCbCr"
-msgstr "YCbCr"
-
-
-msgid "YCbCr (Y - luma, Cb - blue-difference chroma, Cr - red-difference chroma) color space"
-msgstr "Espacio de color YCbCr (Y - luma, Cb - croma como azul-luma, Cr - croma como rojo-luma)"
-
-
-msgctxt "Color"
-msgid "Limit Channel"
-msgstr "Limitar canal"
-
-
-msgid "Limit by this channel's value"
-msgstr "Limita por el valor de este canal"
-
-
-msgid "Algorithm"
-msgstr "Algoritmo"
-
-
-msgid "Algorithm to use to limit channel"
-msgstr "Algoritmo a usar para limitar canal"
-
-
-msgid "Single"
-msgstr "Individual"
-
-
-msgid "Limit by single channel"
-msgstr "Limitar en base a un único canal"
-
-
-msgid "Limit by maximum of other channels"
-msgstr "Limitar en base al máximo de otros canales"
-
-
-msgctxt "Color"
-msgid "Channel"
-msgstr "Canal"
-
-
-msgid "Channel used to determine matte"
-msgstr "Canal a usar para determinar el mate"
-
-
 msgid "Chroma Key"
 msgstr "Recortar por croma (simple)"
 
@@ -44837,26 +44768,6 @@ msgstr "Balance de color"
 
 msgid "Adjust color and values"
 msgstr "Permite ajustar colores y valores"
-
-
-msgid "Correction Formula"
-msgstr "Método"
-
-
-msgid "Lift/Gamma/Gain"
-msgstr "realce-gama-ganancia"
-
-
-msgid "Offset/Power/Slope (ASC-CDL)"
-msgstr "desplazamiento-potencia-pendiente (ASC-CDL)"
-
-
-msgid "ASC-CDL standard color correction"
-msgstr "Corección de color estándar ASC-CDL"
-
-
-msgid "Chromatic adaption from a different white point"
-msgstr "Adaptación cromática desde un punto de blanco distinto"
 
 
 msgid "Input White Point"
@@ -44895,50 +44806,6 @@ msgid "Remove colors from a blue or green screen, by reducing one RGB channel co
 msgstr "Permite eliminar colores de una pantalla azul o verde, reduciendo uno de los canales RVA en comparación con los otros"
 
 
-msgid "Red spill suppression"
-msgstr "Supresión de derrame rojo"
-
-
-msgid "Green spill suppression"
-msgstr "Supresión de derrame verde"
-
-
-msgid "Blue spill suppression"
-msgstr "Supresión de derrame azul"
-
-
-msgid "Limit by red"
-msgstr "Limitar por rojo"
-
-
-msgid "Limit by green"
-msgstr "Limitar por verde"
-
-
-msgid "Limit by blue"
-msgstr "Limitar por azul"
-
-
-msgid "Simple limit algorithm"
-msgstr "Algoritmo de limitación simple"
-
-
-msgid "Average limit algorithm"
-msgstr "Algoritmo de limitación por promedio"
-
-
-msgid "ITU 601"
-msgstr "ITU 601"
-
-
-msgid "ITU 709"
-msgstr "ITU 709"
-
-
-msgid "JPEG"
-msgstr "JPEG"
-
-
 msgid "Combine Color"
 msgstr "Combinar color"
 
@@ -44963,8 +44830,16 @@ msgid "Use HSL (Hue, Saturation, Lightness) color processing"
 msgstr "Usar procesamiento de color TSL (Tono, Saturación, Luminosidad)"
 
 
+msgid "YCbCr"
+msgstr "YCbCr"
+
+
 msgid "Use YCbCr (Y - luma, Cb - blue-difference chroma, Cr - red-difference chroma) color processing"
 msgstr "Usar procesamiento de color YCbCr (Y - luma, Cb - croma como azul-luma, Cr - croma como rojo-luma)"
+
+
+msgid "YUV"
+msgstr "YUV"
 
 
 msgid "Use YUV (Y - luma, U V - chroma) color processing"
@@ -44973,6 +44848,18 @@ msgstr "Usar procesamiento de color YUV (Y - luma, U V - croma)"
 
 msgid "Color space used for YCbCrA processing"
 msgstr "Espacio de color usado para el procesamiento YCbCr α"
+
+
+msgid "ITU 601"
+msgstr "ITU 601"
+
+
+msgid "ITU 709"
+msgstr "ITU 709"
+
+
+msgid "JPEG"
+msgstr "JPEG"
 
 
 msgid "Convert Colorspace"
@@ -45287,56 +45174,12 @@ msgid "Create matte based on 3D distance between colors"
 msgstr "Permite crear un mate basado en la distancia, en espacio tridimensional, entre los colores de la imagen y del fondo"
 
 
-msgid "RGB color space"
-msgstr "Espacio de color RVA"
-
-
-msgid "YCbCr suppression"
-msgstr "Supresión YCbCr"
-
-
 msgid "Double Edge Mask"
 msgstr "Máscara de doble borde"
 
 
 msgid "Create a gradient between two masks"
 msgstr "Permite crear un gradiente entre dos máscaras"
-
-
-msgid "Buffer Edge Mode"
-msgstr "Modo del buffer de bordes"
-
-
-msgid "Bleed Out"
-msgstr "Extender hacia afuera"
-
-
-msgid "Allow mask pixels to bleed along edges"
-msgstr "Permite que los píxeles de la máscara se extiendan más allá de los bordes"
-
-
-msgid "Keep In"
-msgstr "Mantener dentro"
-
-
-msgid "Restrict mask pixels from touching edges"
-msgstr "Evita que los píxeles de la máscara toquen los bordes"
-
-
-msgid "Inner Edge Mode"
-msgstr "Modo del borde interior"
-
-
-msgid "All pixels on inner mask edge are considered during mask calculation"
-msgstr "Todos los píxeles sobre el borde interior de la máscara son tomados en cuenta durante el cálculo de la máscara"
-
-
-msgid "Adjacent Only"
-msgstr "Sólo los adyacentes"
-
-
-msgid "Only inner mask pixels adjacent to outer mask pixels are considered during mask calculation"
-msgstr "Sólo los píxeles de la máscara interior adyacentes a los píxeles de la máscara exterior se tomarán en cuenta durante el cálculo de la máscara"
 
 
 msgid "Ellipse Mask"
@@ -45567,26 +45410,6 @@ msgid "Convert to and from premultiplied (associated) alpha"
 msgstr "Permite convertir el alfa entre premultiplicado y directo"
 
 
-msgid "Conversion between premultiplied alpha and key alpha"
-msgstr "Conversión entre alfa premultiplicado y alfa directo"
-
-
-msgid "To Premultiplied"
-msgstr "A premultiplicado"
-
-
-msgid "Convert straight to premultiplied"
-msgstr "Convierte directo a premultiplicado"
-
-
-msgid "To Straight"
-msgstr "A directo"
-
-
-msgid "Convert premultiplied to straight"
-msgstr "Convierte premultiplicado a directo"
-
-
 msgid "A color picker"
 msgstr "Un selector de color"
 
@@ -45707,22 +45530,6 @@ msgid "Add an alpha channel to an image"
 msgstr "Permite agregar un canal alfa a la imagen"
 
 
-msgid "Apply Mask"
-msgstr "Aplicar máscara"
-
-
-msgid "Multiply the input image's RGBA channels by the alpha input value"
-msgstr "Multiplica los canales RVAα de la imagen de entrada por el valor Alfa"
-
-
-msgid "Replace Alpha"
-msgstr "Reemplazar alfa"
-
-
-msgid "Replace the input image's alpha channel by the alpha input value"
-msgstr "Reemplaza el canal alfa de la imagen de entrada con el valor Alfa"
-
-
 msgid "Combine two images for side-by-side display. Typically used in combination with a Viewer node"
 msgstr "Permite combinar dos imágenes para su visualización lado a lado. Normalmente usado en combinación con un nodo Visor"
 
@@ -45819,6 +45626,10 @@ msgid "Align Euler to Vector"
 msgstr "Alinear euler a vector"
 
 
+msgid "Orient an Euler rotation along the given direction"
+msgstr "Orienta una rotación Euler a lo largo de una dirección indicada"
+
+
 msgid "Axis to align to the vector"
 msgstr "Eje a alinear con el vector"
 
@@ -45863,6 +45674,10 @@ msgid "Align Rotation to Vector"
 msgstr "Alinear rotación a vector"
 
 
+msgid "Orient a rotation along the given direction"
+msgstr "Orienta una rotación a lo largo de una dirección indicada"
+
+
 msgid "Axes to Rotation"
 msgstr "Ejes a rotación"
 
@@ -45889,6 +45704,10 @@ msgstr "Eje que será alineado tanto como sea posible, luego de la alineación d
 
 msgid "Axis Angle to Rotation"
 msgstr "Eje y ángulo a rotación"
+
+
+msgid "Build a rotation from an axis and a rotation around that axis"
+msgstr "Construye una rotación a partir de un eje y una rotación alrededor del mismo"
 
 
 msgid "Bit Math"
@@ -45941,6 +45760,10 @@ msgstr "Rota los valores de los bits de A la cantidad especificada en Desplazami
 
 msgid "Boolean Math"
 msgstr "Operar (booleana)"
+
+
+msgid "Perform a logical operation on the given boolean inputs"
+msgstr "Realiza una operación lógica sobre las entradas booleanas indicadas"
 
 
 msgid "True when both inputs are true"
@@ -45999,6 +45822,10 @@ msgid "True when the first input is true and the second is false (not imply)"
 msgstr "Verdadero cuando la primera entrada sea verdadera y la segunda falsa (Implicación Opuesta)"
 
 
+msgid "Combine four channels into a single color, based on a particular color model"
+msgstr "Combina cuatro canales en un único color, basándose en un modelo de color específico"
+
+
 msgid "Combine Matrix"
 msgstr "Combinar matriz"
 
@@ -46011,8 +45838,16 @@ msgid "Combine Transform"
 msgstr "Combinar transformaciones"
 
 
+msgid "Combine a translation vector, a rotation, and a scale vector into a transformation matrix"
+msgstr "Combina un vector de transformación, una rotación y un vector de escala en una matriz de transformaciones"
+
+
 msgid "Compare"
 msgstr "Comparar"
+
+
+msgid "Perform a comparison operation on the two given inputs"
+msgstr "Realiza una operación de comparación entre las dos entradas indicadas"
 
 
 msgid "Input Type"
@@ -46107,12 +45942,24 @@ msgid "Euler to Rotation"
 msgstr "Euler a rotación"
 
 
+msgid "Build a rotation from separate angles around each axis"
+msgstr "Construye una rotación a partir de ángulos independientes alrededor de cada eje"
+
+
 msgid "Find in String"
 msgstr "Buscar en texto"
 
 
+msgid "Find the number of times a given string occurs in another string and the position of the first match"
+msgstr "Halla la cantidad de veces que una determinada cadena ocurre dentro de otra cadena, así como la posición de la primera coincidencia"
+
+
 msgid "Float to Integer"
 msgstr "Decimal a entero"
+
+
+msgid "Convert the given floating-point number to an integer, with a choice of methods"
+msgstr "Convierte el número decimal proporcionado en un entero, con la posibilidad de escoger un método"
 
 
 msgctxt "NodeTree"
@@ -46172,12 +46019,48 @@ msgid "Hash Value"
 msgstr "Valor de identificación"
 
 
+msgid "Generate a randomized integer using the given input value as a seed"
+msgstr "Producirá un entero aleatorio, usando el valor de entrada como semilla"
+
+
+msgid "Provide a True/False value that can be connected to other nodes in the tree"
+msgstr "Producirá un valor Verdadero/Falso que podrá ser conectado a otros nodos del árbol"
+
+
 msgid "Input value used for unconnected socket"
 msgstr "Valor usado cuando el conector se encuentra desconectado"
 
 
+msgid "Output a color value chosen with the color picker widget"
+msgstr "Producirá un valor de color, escogido mediante el selector de color"
+
+
+msgid "Provide an integer value that can be connected to other nodes in the tree"
+msgstr "Producirá un valor entero que podrá ser conectado a otros nodos del árbol"
+
+
+msgid "Provide a rotation value that can be connected to other nodes in the tree"
+msgstr "Producirá un valor de rotación que podrá ser conectado a otros nodos del árbol"
+
+
+msgid "Output string characters that cannot be typed directly with the keyboard"
+msgstr "Producirá caracteres de texto que no es posible introducir directamente con un teclado"
+
+
+msgid "Provide a string value that can be connected to other nodes in the tree"
+msgstr "Producirá una cadena de texto que podrá ser conectada a otros nodos del árbol"
+
+
+msgid "Provide a vector value that can be connected to other nodes in the tree"
+msgstr "Producirá un valor vectorial que podrá ser conectado a otros nodos del árbol"
+
+
 msgid "Integer Math"
 msgstr "Operar (enteros)"
+
+
+msgid "Perform various math operations on the given integer inputs"
+msgstr "Realizará varias operaciones matemáticas sobre los valores enteros de entrada proporcionados"
 
 
 msgctxt "NodeTree"
@@ -46351,20 +46234,40 @@ msgid "Invert Matrix"
 msgstr "Invertir matriz"
 
 
+msgid "Compute the inverse of the given matrix, if one exists"
+msgstr "Calculará la inversión de la matriz proporcionada, si existiera"
+
+
 msgid "Invert Rotation"
 msgstr "Invertir rotación"
+
+
+msgid "Compute the inverse of the given rotation"
+msgstr "Calculará la inversión de la rotación proporcionada"
 
 
 msgid "Match String"
 msgstr "Coincidir cadena"
 
 
+msgid "Check if a given string exists within another string"
+msgstr "Comprobará la existencia de una cadena de texto proporcionada dentro de otra cadena"
+
+
 msgid "Matrix Determinant"
 msgstr "Determinante de matriz"
 
 
+msgid "Compute the determinant of the given matrix"
+msgstr "Calculará el determinante de la matriz proporcionada"
+
+
 msgid "Multiply Matrices"
 msgstr "Multiplicar matrices"
+
+
+msgid "Perform a matrix multiplication on two input matrices"
+msgstr "Realizará una multiplicación matricial de las dos matrices de entrada"
 
 
 msgid "Project Point"
@@ -46379,16 +46282,32 @@ msgid "Quaternion to Rotation"
 msgstr "Cuaternio a rotación"
 
 
+msgid "Build a rotation from quaternion components"
+msgstr "Construirá una rotación a partir de componentes de cuaternios"
+
+
 msgid "Random Value"
 msgstr "Valor aleatorio"
+
+
+msgid "Output a randomized value"
+msgstr "Producirá un valor aleatorio"
 
 
 msgid "Replace String"
 msgstr "Reemplazar texto"
 
 
+msgid "Replace a given string segment with another"
+msgstr "Reemplazará una cadena de texto dada por otra"
+
+
 msgid "Rotate Euler"
 msgstr "Rotar (Euler)"
+
+
+msgid "Apply a secondary Euler rotation to a given Euler rotation"
+msgstr "Aplicará una rotación Euler secundaria a una rotación Euler proporcionada"
 
 
 msgid "Method used to describe the rotation"
@@ -46419,6 +46338,10 @@ msgid "Rotate Rotation"
 msgstr "Rotar rotación"
 
 
+msgid "Apply a secondary rotation to a given rotation value"
+msgstr "Aplicará una rotación secundaria a un valor de rotación proporcionado"
+
+
 msgid "Base orientation for the rotation"
 msgstr "Orientación base para la rotación"
 
@@ -46431,16 +46354,36 @@ msgid "Rotate Vector"
 msgstr "Rotar vector"
 
 
+msgid "Apply a rotation to a given vector"
+msgstr "Aplicará una rotación a un vector proporcionado"
+
+
 msgid "Rotation to Axis Angle"
 msgstr "Rotación a eje y ángulo"
+
+
+msgid "Convert a rotation to axis angle components"
+msgstr "Convertirá una rotación en componentes de eje y ángulo"
 
 
 msgid "Rotation to Euler"
 msgstr "Rotación a Euler"
 
 
+msgid "Convert a standard rotation value to an Euler rotation"
+msgstr "Convertirá un valor de rotación estándar en una rotación Euler"
+
+
 msgid "Rotation to Quaternion"
 msgstr "Rotación a cuaternio"
+
+
+msgid "Retrieve the quaternion components representing a rotation"
+msgstr "Obtendrá los componentes de cuaternios para representar a una rotación dada"
+
+
+msgid "Split a color into separate channels, based on a particular color model"
+msgstr "Dividirá un color en canales separados, basándose en un modelo de color específico"
 
 
 msgid "Separate Matrix"
@@ -46455,32 +46398,64 @@ msgid "Separate Transform"
 msgstr "Separar transformaciones"
 
 
+msgid "Split a transformation matrix into a translation vector, a rotation, and a scale vector"
+msgstr "Dividirá una matriz de transformaciones en un vector de traslación, una rotación y un vector de escala"
+
+
 msgid "Slice String"
 msgstr "Recortar texto"
+
+
+msgid "Extract a string segment from a larger string"
+msgstr "Extraerá un segmento de una cadena de texto, a partir de una cadena más extensa"
 
 
 msgid "String Length"
 msgstr "Longitud de texto"
 
 
+msgid "Output the number of characters in the given string"
+msgstr "Hallará la cantidad de caracteres de la cadena de texto proporcionada"
+
+
 msgid "String to Value"
 msgstr "Texto a valor"
+
+
+msgid "Derive a numeric value from a given string representation"
+msgstr "Derivará un valor numérico a partir de su representación como cadena de texto"
 
 
 msgid "Transform Direction"
 msgstr "Transformar dirección"
 
 
+msgid "Apply a transformation matrix (excluding translation) to the given vector"
+msgstr "Aplicará una matriz de transformaciones (excluyendo la traslación) al vector proporcionado"
+
+
 msgid "Transform Point"
 msgstr "Transformar punto"
+
+
+msgid "Apply a transformation matrix to the given vector"
+msgstr "Aplicará una matriz de transformaciones al vector proporcionado"
 
 
 msgid "Transpose Matrix"
 msgstr "Transponer matriz"
 
 
+msgid "Flip a matrix over its diagonal, turning columns into rows and vice-versa"
+msgstr "Volteará una matriz en torno a su diagonal, convirtiendo sus columnas en filas y viceversa"
+
+
 msgid "Value to String"
 msgstr "Valor a texto"
+
+
+msgid "Generate a string representation of the given input value"
+msgstr "Generará la representación como cadena de texto del valor numérico proporcionado"
 
 
 msgid "Geometry Node"
@@ -47219,8 +47194,8 @@ msgid "Get volume grid from a volume geometry with the specified name"
 msgstr "Permite obtener una cuadrícula volumétrica a partir de la geometría de un volumen con el nombre especificado"
 
 
-msgid "Type of grid data"
-msgstr "Tipo de datos de la cuadrícula"
+msgid "Node socket data type"
+msgstr "Tipo de datos del conector de nodo"
 
 
 msgid "Dial Gizmo"
@@ -47724,6 +47699,10 @@ msgid "List Length"
 msgstr "Longitud de lista"
 
 
+msgid "Count how many items are in a given list"
+msgstr "Contará cuántos elementos existen en la lista proporcionada"
+
+
 msgid "Material Selection"
 msgstr "Seleccionar por material"
 
@@ -48180,8 +48159,8 @@ msgid "Sample Grid"
 msgstr "Muestrear cuadrícula"
 
 
-msgid "Node socket data type"
-msgstr "Tipo de datos del conector de nodo"
+msgid "Retrieve values from the specified volume grid"
+msgstr "Obtendrá valores a partir de la cuadrícula volumétrica indicada"
 
 
 msgid "Sample Grid Index"
@@ -48540,6 +48519,10 @@ msgid "Store grid data in a volume geometry with the specified name"
 msgstr "Permite almacenar datos de una cuadrícula en la geometría de un volumen con el nombre especificado"
 
 
+msgid "Type of grid data"
+msgstr "Tipo de datos de la cuadrícula"
+
+
 msgid "Single precision float"
 msgstr "Decimal de precisión simple"
 
@@ -48828,10 +48811,6 @@ msgid "Display the input data in the Spreadsheet Editor"
 msgstr "Muestra los datos de entrada en el editor Planilla"
 
 
-msgid "Domain to evaluate the field on"
-msgstr "Dominio en el cual evaluar el campo"
-
-
 msgid "Viewport Transform"
 msgstr "Transformación de la vista"
 
@@ -48882,6 +48861,10 @@ msgstr "Permite combinar los valores de varios conectores en uno solo."
 
 msgid "Evaluate Closure"
 msgstr "Evaluar clausura"
+
+
+msgid "Execute a given closure"
+msgstr "Ejecuta una clausura indicada"
 
 
 msgid "Input Items"
@@ -49447,10 +49430,6 @@ msgstr "BSDF Especular"
 
 msgid "Similar to the Principled BSDF node but uses the specular workflow instead of metallic, which functions by specifying the facing (along normal) reflection color. Energy is not conserved, so the result may not be physically accurate"
 msgstr "Similar al BSDF Principista pero usando un flujo de trabajo especular, en vez de metálico, lo cual se logra especificando el color de reflexión incidente (a lo largo de la normal). No existe conservación de la energía, de manera que el resultado no estará necesariamente de acuerdo a los principios físicos"
-
-
-msgid "Emission"
-msgstr "Emisión"
 
 
 msgid "Lambertian emission shader"
@@ -50048,6 +50027,10 @@ msgid "Line Style Output"
 msgstr "Estilo de línea"
 
 
+msgid "Control the mixing of texture information into the base color of line styles"
+msgstr "Controla la mezcla de información de la textura sobre el color base de los estilos de líneas"
+
+
 msgid "Material Output"
 msgstr "Material"
 
@@ -50502,20 +50485,28 @@ msgid "Generate a procedural sky texture"
 msgstr "Genera una textura procedimental de cielo"
 
 
+msgid "Aerosols"
+msgstr "Aerosoles"
+
+
+msgid ""
+"Density of dust, pollution and water droplets.\n"
+"0 means no aerosols, 1 means urban city aerosols"
+msgstr ""
+"Densidad de polvo, polución y gotículas de agua.\n"
+"0 significa ausencia total, 1 un nivel normal en ciudades"
+
+
 msgid "Air"
 msgstr "Aire"
 
 
 msgid ""
 "Density of air molecules.\n"
-"• 0 - No air.\n"
-"• 1 - Clear day atmosphere.\n"
-"• 2 - Highly polluted day"
+"0 means no air, 1 means urban city air"
 msgstr ""
-"Densidad de las moléculas de aire.\n"
-"• 0 - Sin aire.\n"
-"• 1 - Día despejado.\n"
-"• 2 - Día de alta polución"
+"Densidad de moléculas de aire.\n"
+"0 significa ausencia total, 1 un nivel normal en ciudades"
 
 
 msgid "Altitude"
@@ -50526,22 +50517,12 @@ msgid "Height from sea level"
 msgstr "Altitud desde el nivel del mar"
 
 
-msgid "Dust"
-msgstr "Polvo"
+msgid "Ground Albedo"
+msgstr "Albedo a nivel de suelo"
 
 
-msgid ""
-"Density of dust molecules and water droplets.\n"
-"• 0 - No dust.\n"
-"• 1 - Clear day atmosphere.\n"
-"• 5 - City like atmosphere.\n"
-"• 10 - Hazy day"
-msgstr ""
-"Densidad de las moléculas de polvo y las gotículas de agua.\n"
-"• 0 - Sin polvo.\n"
-"• 1 - Día despejado.\n"
-"• 5 - Ciudad.\n"
-"• 10 - Día brumoso"
+msgid "Ground color that is subtly reflected in the sky"
+msgstr "Color que será ligeramente reflejado desde el suelo hacia el cielo"
 
 
 msgid "Ozone"
@@ -50550,14 +50531,10 @@ msgstr "Ozono"
 
 msgid ""
 "Density of ozone layer.\n"
-"• 0 - No ozone.\n"
-"• 1 - Clear day atmosphere.\n"
-"• 2 - City like atmosphere"
+"0 means no ozone, 1 means urban city ozone"
 msgstr ""
-"Densidad de capa de ozono.\n"
-"• 0 - Sin ozono.\n"
-"• 1 - Día despejado.\n"
-"• 2 - Ciudad"
+"Densidad de la capa de ozono.\n"
+"0 significa ausencia total, 1 un nivel normal en ciudades"
 
 
 msgid "Sky Type"
@@ -50568,12 +50545,44 @@ msgid "Which sky model should be used"
 msgstr "El tipo de modelo de cielo a ser usado"
 
 
-msgid "Nishita"
-msgstr "Nishita"
+msgid "Single Scattering"
+msgstr "Dispersión única"
 
 
-msgid "Nishita 1993 improved"
-msgstr "Nishita 1993 mejorado"
+msgid "Single scattering sky model"
+msgstr "Modelo de cielo con una única dispersión"
+
+
+msgid "Multiple Scattering"
+msgstr "Dispersión múltiple"
+
+
+msgid "Multiple scattering sky model (more accurate)"
+msgstr "Modelo de cielo con múltiples dispersiones (más preciso)"
+
+
+msgid "Preetham"
+msgstr "Preetham"
+
+
+msgid "Preetham 1999 (Legacy)"
+msgstr "Preetham 1999 (antiguo)"
+
+
+msgid "Hosek / Wilkie"
+msgstr "Hosek / Wilkie"
+
+
+msgid "Hosek / Wilkie 2012 (Legacy)"
+msgstr "Hosek / Wilkie 2012 (antiguo)"
+
+
+msgid "Sun Direction"
+msgstr "Dirección del sol"
+
+
+msgid "Direction from where the sun is shining"
+msgstr "Dirección desde donde proviene la luz del sol"
 
 
 msgid "Sun Disc"
@@ -50581,7 +50590,7 @@ msgstr "Disco solar"
 
 
 msgid "Include the sun itself in the output"
-msgstr "Permite incluir al Sol en el cielo producido"
+msgstr "Permite incluir al sol en el cielo producido"
 
 
 msgid "Sun Elevation"
@@ -50589,15 +50598,15 @@ msgstr "Elevación solar"
 
 
 msgid "Sun angle from horizon"
-msgstr "Ángulo del Sol con respecto al horizonte"
+msgstr "Ángulo del sol con respecto al horizonte"
 
 
 msgid "Sun Intensity"
 msgstr "Intensidad solar"
 
 
-msgid "Strength of sun"
-msgstr "Intensidad de la luz del Sol"
+msgid "Strength of Sun"
+msgstr "Intensidad del sol"
 
 
 msgid "Sun Rotation"
@@ -50605,7 +50614,7 @@ msgstr "Rotación solar"
 
 
 msgid "Rotation of sun around zenith"
-msgstr "Rotación del Sol alrededor del cenit"
+msgstr "Rotación del sol alrededor del cenit"
 
 
 msgid "Sun Size"
@@ -50614,6 +50623,14 @@ msgstr "Tamaño del sol"
 
 msgid "Size of sun disc"
 msgstr "Tamaño del disco solar"
+
+
+msgid "Turbidity"
+msgstr "Turbidez"
+
+
+msgid "Atmospheric turbidity"
+msgstr "Turbidez atmosférica"
 
 
 msgid "Voronoi Texture"
@@ -50792,8 +50809,16 @@ msgid "White Noise Texture"
 msgstr "Ruido blanco"
 
 
+msgid "Calculate a random value or color based on an input seed"
+msgstr "Calcula un valor o un color aleatorio basado en una semilla de entrada"
+
+
 msgid "UV Along Stroke"
 msgstr "UV a lo largo del trazo"
+
+
+msgid "UV coordinates that map a texture along the stroke length"
+msgstr "Coordenadas UV usadas para mapear una textura a lo largo de la extensión del trazo"
 
 
 msgid "Use Tips"
@@ -51269,6 +51294,10 @@ msgstr "El conector espera una cuadrícula"
 
 msgid "Socket expects a list"
 msgstr "El conector espera una lista"
+
+
+msgid "Single"
+msgstr "Individual"
 
 
 msgid "Socket expects a single value"
@@ -52945,6 +52974,10 @@ msgid "Merge Images"
 msgstr "Fusionar imágenes"
 
 
+msgid "Enable nodes on a light"
+msgstr "Habilita el uso de nodos para definir una luz"
+
+
 msgctxt "Operator"
 msgid "Use Nodes"
 msgstr "Usar nodos"
@@ -53671,6 +53704,10 @@ msgstr "Ir al árbol de nodos superior"
 msgctxt "Operator"
 msgid "Parent Node Tree"
 msgstr "Árbol de nodos superior"
+
+
+msgid "Toggle a specific viewer node using 1,2,..,9 keys"
+msgstr "Activa/desactiva un nodo Visor específico usando las teclas 1 al 9"
 
 
 msgctxt "Operator"
@@ -55571,24 +55608,6 @@ msgstr "Alteración"
 
 msgid "Generated"
 msgstr "Generado"
-
-
-msgctxt "Operator"
-msgid "Next Layer"
-msgstr "Capa siguiente"
-
-
-msgid "Switch to editing action in animation layer above the current action in the NLA Stack"
-msgstr "Cambiar a editar la acción en la capa de animación por encima de la acción actual, en la lista de ANL"
-
-
-msgctxt "Operator"
-msgid "Previous Layer"
-msgstr "Capa anterior"
-
-
-msgid "Switch to editing action in animation layer below the current action in the NLA Stack"
-msgstr "Cambiar a editar la acción en la capa de animación por debajo de la acción actual, en la lista de ANL"
 
 
 msgctxt "Operator"
@@ -69780,6 +69799,14 @@ msgid "Merge vertices based on their proximity"
 msgstr "Fusiona vértices basándose en su proximidad"
 
 
+msgid "Centroid Merge"
+msgstr "Fusionar en centroide"
+
+
+msgid "Move vertices to the centroid of the duplicate cluster, otherwise the vertex closest to the centroid is used."
+msgstr "Mueve los vértices hacia el centroide del grupo de duplicados, en caso contrario se usará el vértice más cercano al centroide."
+
+
 msgid "Sharp Edges"
 msgstr "Bordes definidos"
 
@@ -71367,6 +71394,14 @@ msgid "Add a reroute node"
 msgstr "Agrega un nodo de redirección"
 
 
+msgid "Input Node"
+msgstr "Nodo de entrada"
+
+
+msgid "Output Node"
+msgstr "Nodo de salida"
+
+
 msgctxt "Operator"
 msgid "Attach Nodes"
 msgstr "Incorporar nodos"
@@ -72658,6 +72693,15 @@ msgstr "Crear un nuevo árbol de nodos encapsulado, a medida que sea requerido p
 
 
 msgctxt "Operator"
+msgid "Toggle Viewer Node"
+msgstr "Alternar nodo Visor"
+
+
+msgid "Toggle selected viewer node in compositor and geometry nodes"
+msgstr "Activa/desactiva el nodo Visor seleccionado en el compositor y los nodos de geometría"
+
+
+msgctxt "Operator"
 msgid "Move and Attach"
 msgstr "Mover e incorporar"
 
@@ -73746,6 +73790,47 @@ msgstr "Enlace de deformación laplaciana"
 
 msgid "Bind mesh to system in laplacian deform modifier"
 msgstr "Enlaza la malla al sistema en el modificador Deformación laplaciana"
+
+
+msgctxt "Operator"
+msgid "Add Lattice Deformer"
+msgstr "Agregar jaula de deformación"
+
+
+msgid "Add a lattice and use it to deform selected objects"
+msgstr "Agrega una jaula y la usa para deformar los objetos seleccionados"
+
+
+msgid "Add Modifiers"
+msgstr "Agregar modificadores"
+
+
+msgid "Automatically add lattice modifiers to selected objects"
+msgstr "Agrega automáticamente modificadores Jaula a los objetos seleccionados"
+
+
+msgid "Fit to Selected"
+msgstr "Ajustar a la selección"
+
+
+msgid "Resize lattice to fit selected deformable objects"
+msgstr "Redimensiona la jaula para ajustarla a los objetos deformables seleccionados"
+
+
+msgid "Add margin to lattice dimensions"
+msgstr "Agrega un margen a las dimensiones de la jaula"
+
+
+msgid "Lattice resolution in U direction"
+msgstr "Resolución de la jaula en la dirección U"
+
+
+msgid "Lattice resolution in V direction"
+msgstr "Resolución de la jaula en la dirección V"
+
+
+msgid "Lattice resolution in W direction"
+msgstr "Resolución de la jaula en la dirección W"
 
 
 msgctxt "Operator"
@@ -74849,10 +74934,6 @@ msgstr "Cómo especificar la cantidad de detalle para la nueva malla"
 
 msgid "Specify target number of faces relative to the current mesh"
 msgstr "Permite especificar la cantidad objetivo de caras, relativo a la malla actual"
-
-
-msgid "Edge Length"
-msgstr "Longitud de bordes"
 
 
 msgid "Input target edge length in the new mesh"
@@ -75984,11 +76065,11 @@ msgstr "Aplica a los grupos de vértices no seleccionados"
 
 msgctxt "Operator"
 msgid "Mirror Vertex Group"
-msgstr "Simetrizar grupo de vértices"
+msgstr "Reflejar grupo de vértices"
 
 
 msgid "Mirror vertex group, flip weights and/or names, editing only selected vertices, flipping when both sides are selected otherwise copy from unselected"
-msgstr "Simetriza grupos de vértices, invierte sus influencias y/o nombres, editando sólo los vértices seleccionados, invirtiéndolos cuando ambos lados estén seleccionados y, en caso contrario, copiando desde el lado no seleccionado al opuesto"
+msgstr "Refleja el grupo de vértices, las influencias y/o nombres de los vértices seleccionados, invirtiéndolos completamente cuando ambos lados estén seleccionados o, en caso contrario, copiando desde el lado no seleccionado al opuesto"
 
 
 msgid "All Groups"
@@ -75996,28 +76077,28 @@ msgstr "Todos los grupos"
 
 
 msgid "Mirror all vertex groups weights"
-msgstr "Simetriza las influencias de todos los grupos de vértices"
+msgstr "Refleja las influencias de todos los grupos de vértices"
 
 
 msgid "Flip Group Names"
-msgstr "Invertir nombres de grupos"
+msgstr "Voltear nombres de grupos"
 
 
 msgid "Flip vertex group names"
-msgstr "Invierte los nombres de los grupos de vértices simetrizados"
+msgstr "Invierte los nombres de los grupos de vértices"
 
 
 msgid "Mirror Weights"
-msgstr "Simetrizar influencias"
+msgstr "Reflejar influencias"
 
 
 msgid "Mirror weights"
-msgstr "Simetriza las influencias"
+msgstr "Refleja las influencias"
 
 
 msgctxt "Operator"
 msgid "Move Vertex Group"
-msgstr "Mover grupos vértices"
+msgstr "Mover grupo de vértices"
 
 
 msgid "Move the active vertex group up/down in the list"
@@ -79399,6 +79480,10 @@ msgid "Render active scene"
 msgstr "Procesa la escena activa"
 
 
+msgid "Frame to end rendering animation at. If not specified, the scene end frame will be assumed. This should only be specified if doing an animation render"
+msgstr "Fotograma en el que finalizar el procesamiento. Cuando no se especifique, se usará el fotograma final de la escena. Esto solamente debería ser especificado al realizar el procesamiento de una animación"
+
+
 msgid "Render Layer"
 msgstr "Capa de procesamiento"
 
@@ -79409,6 +79494,10 @@ msgstr "Capa individual de procesamiento a ser re procesada (usado sólo cuando 
 
 msgid "Scene to render, current scene if not specified"
 msgstr "Escena a procesar, la escena actual si no se especifica"
+
+
+msgid "Frame to start rendering animation at. If not specified, the scene start frame will be assumed. This should only be specified if doing an animation render"
+msgstr "Fotograma en el que iniciar el procesamiento. Cuando no se especifique, se usará el fotograma inicial de la escena. Esto solamente debería ser especificado al realizar el procesamiento de una animación"
 
 
 msgid "Use 3D Viewport"
@@ -80521,6 +80610,10 @@ msgstr "Mapa de teclado"
 
 msgid "File Paths"
 msgstr "Rutas de archivo"
+
+
+msgid "Developer Tools"
+msgstr "Herramientas para desarrolladores"
 
 
 msgid "Experimental"
@@ -85162,16 +85255,16 @@ msgid "Largest to Smallest"
 msgstr "Mayor a menor"
 
 
-msgid "Sort Islands from Largest to Smallest"
-msgstr "Ordenar las islas de la mayor a la menor"
+msgid "Sort islands from largest to smallest"
+msgstr "Ordenar las islas mayor a menor"
 
 
 msgid "Smallest to Largest"
 msgstr "Menor a mayor"
 
 
-msgid "Sort Islands from Smallest to Largest"
-msgstr "Ordenar las islas de la menor a la mayor"
+msgid "Sort islands from smallest to largest"
+msgstr "Ordenar las islas menor a mayor"
 
 
 msgid "Preserve island order"
@@ -85256,6 +85349,15 @@ msgstr "Escalar hasta límites"
 
 msgid "Scale UV coordinates to bounds after unwrapping"
 msgstr "Escala las coordenadas UV hasta los límites, luego de desplegarlas"
+
+
+msgctxt "Operator"
+msgid "Set User Region"
+msgstr "Definir región de usuario"
+
+
+msgid "Set the boundaries of the user region"
+msgstr "Define límites para la región del usuario"
 
 
 msgctxt "Operator"
@@ -85680,6 +85782,14 @@ msgstr "Marco delimitador original"
 
 msgid "Pack to starting bounding box of islands"
 msgstr "Empaca hacia el marco delimitador inicial de las islas"
+
+
+msgid "Custom Region"
+msgstr "Región personalizada"
+
+
+msgid "Pack islands to custom region"
+msgstr "Empaca las islas hacia una región personalizada"
 
 
 msgctxt "Operator"
@@ -87287,14 +87397,6 @@ msgstr "Exportar coordenadas UV"
 
 msgid "Export color attributes"
 msgstr "Exportar atributos de color"
-
-
-msgid "Visible Objects Only"
-msgstr "Sólo objetos visibles"
-
-
-msgid "Export only objects that are visible"
-msgstr "Exportar sólo los objetos visibles"
 
 
 msgid "Transform Samples"
@@ -89449,14 +89551,6 @@ msgid "Export instanced objects as references in USD rather than real objects"
 msgstr "Exportar objetos instanciados como referencias en el USD, en vez de objetos reales"
 
 
-msgid "Visible Only"
-msgstr "Sólo objetos visibles"
-
-
-msgid "Only export visible objects. Invisible parents of exported objects are exported as empty transforms"
-msgstr "Exportar sólo los objetos visibles. Los superiores de dichos objetos, que no se encontraran también visibles, serán exportados como transformaciones vacías"
-
-
 msgid "Xform Ops"
 msgstr "Operadores transf."
 
@@ -90202,12 +90296,36 @@ msgid "Show Brush On Surface"
 msgstr "Mostrar pincel sobre superficie"
 
 
+msgid "Show Jitter Curve"
+msgstr "Mostrar curva de alteración"
+
+
+msgid "Show jitter curve"
+msgstr "Muestra la curva de alteración"
+
+
 msgid "Fast Navigate"
 msgstr "Navegación rápida"
 
 
 msgid "For multires, show low resolution while navigating the view"
 msgstr "Para multi-resolución, mostrar en baja resolución al navegar en la vista"
+
+
+msgid "Show Size Curve"
+msgstr "Mostrar curva de tamaño"
+
+
+msgid "Show size curve"
+msgstr "Muestra la curva de tamaño"
+
+
+msgid "Show Strength Curve"
+msgstr "Mostrar curva de intensidad"
+
+
+msgid "Show strength curve"
+msgstr "Muestra la curva de intensidad"
 
 
 msgid "Tiling offset for the X Axis"
@@ -90678,22 +90796,6 @@ msgid "Panel containing UI elements"
 msgstr "Panel que contiene elementos de la interfaz"
 
 
-msgid "glTF Variants"
-msgstr "Variantes glTF"
-
-
-msgid "glTF Material Variants"
-msgstr "Variantes de material glTF"
-
-
-msgid "glTF"
-msgstr "glTF"
-
-
-msgid "glTF Animations"
-msgstr "Animaciones glTF"
-
-
 msgid "Active Tool"
 msgstr "Herramienta activa"
 
@@ -90826,6 +90928,22 @@ msgid "VR Info"
 msgstr "Info de RV"
 
 
+msgid "glTF Variants"
+msgstr "Variantes glTF"
+
+
+msgid "glTF Material Variants"
+msgstr "Variantes de material glTF"
+
+
+msgid "glTF"
+msgstr "glTF"
+
+
+msgid "glTF Animations"
+msgstr "Animaciones glTF"
+
+
 msgid "Import Settings"
 msgstr "Opciones de importación"
 
@@ -90882,12 +91000,17 @@ msgid "Footage Settings"
 msgstr "Opciones de la película"
 
 
-msgid "Marker Display"
-msgstr "Visualización de marcadores"
+msgctxt "MovieClip"
+msgid "Marker"
+msgstr "Marcador"
 
 
 msgid "Mask Settings"
 msgstr "Opciones de máscaras"
+
+
+msgid "Marker Display"
+msgstr "Visualización de marcadores"
 
 
 msgid "Mask Display"
@@ -92087,6 +92210,14 @@ msgstr "Solapa"
 
 msgid "Toolbar Item"
 msgstr "Elemento de barra de herramientas"
+
+
+msgid "Scrubbing / Markers"
+msgstr "Recorrer / Marcadores"
+
+
+msgid "Toolbar / Sidebar"
+msgstr "Barra de herramientas / Barra lateral"
 
 
 msgid "Strip Color Tags"
@@ -94934,7 +95065,7 @@ msgstr "A lo largo de qué eje el ratón 3D ampliará la vista"
 
 
 msgid "Forward/Backward"
-msgstr "Adelante/Atrás"
+msgstr "Adelante / Atrás"
 
 
 msgid "Zoom by pulling the 3D Mouse cap upwards or pushing the cap downwards"
@@ -96193,10 +96324,6 @@ msgid "Tooltips"
 msgstr "Descripciones"
 
 
-msgid "Display tooltips (when disabled, hold Alt to force display)"
-msgstr "Mostrar descripciones de herramientas (cuando estén desactivadas, presionar Alt forzará su visualización)"
-
-
 msgid "Python Tooltips"
 msgstr "Descripciones Python"
 
@@ -97332,14 +97459,6 @@ msgid "AO distance used for approximate global illumination (0 means use world s
 msgstr "Distancia de oclusión ambiental usada para asemejarse a una iluminación global (0 para usar las opciones globales)"
 
 
-msgid "Dicing Scale"
-msgstr "Escala de subdivisión"
-
-
-msgid "Multiplier for scene dicing rate (located in the Subdivision panel)"
-msgstr "Multiplicador para tasa de subdivisión (ubicado en el panel de Subdivisión)"
-
-
 msgid "Cast Shadow Caustics"
 msgstr "Proyectar cáusticas en sombras"
 
@@ -97362,14 +97481,6 @@ msgstr "Intervalos de movimiento"
 
 msgid "Control accuracy of motion blur, more steps gives more memory usage (actual number of steps is 2^(steps - 1))"
 msgstr "Control de precisión para el desenfoque por movimiento, más intervalos requieren mayor uso de memoria (el número real de intervalos es 2^(Intervalos - 1))"
-
-
-msgid "Use Adaptive Subdivision"
-msgstr "Usar subdivisión adaptativa"
-
-
-msgid "Use adaptive render time subdivision"
-msgstr "Usar subdivisión adaptativa al momento del procesamiento"
 
 
 msgid "Use Camera Cull"
@@ -97418,6 +97529,10 @@ msgstr "Depuración muestreo"
 
 msgid "Number of samples per pixel taken, divided by the maximum number of samples. To analyze adaptive sampling"
 msgstr "Cantidad de muestras tomadas por cada píxel, divididas por la cantidad máxima de muestras. Útil para analizar el muestreo adaptativo"
+
+
+msgid "Render Time"
+msgstr "Tiempo procesamiento"
 
 
 msgid "Use Denoising"
@@ -97748,10 +97863,6 @@ msgid "Dicing Rate"
 msgstr "Tasa de subdivisión"
 
 
-msgid "Size of a micropolygon in pixels"
-msgstr "Tamaño de los micropolígonos (en píxeles)"
-
-
 msgid "Diffuse Bounces"
 msgstr "Rebotes de difusión"
 
@@ -97814,22 +97925,6 @@ msgstr "Reemplazar la iluminación global con oclusión ambiental después de un
 
 msgid "Add ambient occlusion to diffuse surfaces"
 msgstr "Agregar oclusión ambiental a las superficies difusas"
-
-
-msgid "Feature set to use for rendering"
-msgstr "Conjunto de características a usar al procesar"
-
-
-msgid "Supported"
-msgstr "Soportado"
-
-
-msgid "Only use finished and supported features"
-msgstr "Sólo usar características finalizadas y soportadas"
-
-
-msgid "Use experimental and incomplete features that might be broken or change in the future"
-msgstr "Usar características experimentales e incompletas que pueden no funcionar o cambiar en el futuro"
 
 
 msgid "Image brightness scale"
@@ -97960,10 +98055,6 @@ msgid "Max Subdivisions"
 msgstr "Subdivisiones máx"
 
 
-msgid "Stop subdividing when this level is reached even if the dice rate would produce finer tessellation"
-msgstr "Dejar de subdividir al alcanzar este nivel, aún en caso de que, por el nivel de subdivisión, se debiera producir una teselación más fina"
-
-
 msgid "Min Light Bounces"
 msgstr "Rebotes de luz mín"
 
@@ -98050,10 +98141,6 @@ msgstr "Previsualizar reducción de ruido por GPU"
 
 msgid "Viewport Dicing Rate"
 msgstr "Tasa de subdivisión de vistas"
-
-
-msgid "Size of a micropolygon in pixels during preview render"
-msgstr "Tamaño del micropolígono durante la previsualización (en píxeles)"
 
 
 msgid "Pause Preview"
@@ -98220,6 +98307,10 @@ msgid "Tile Size"
 msgstr "Tamaño de celdas"
 
 
+msgid "Render high resolution images in tiles of this size, to reduce memory usage. Tiles are cached to disk while rendering to save memory"
+msgstr "Procesar imágenes de alta resolución usando celdas de un tamaño específico, para reducir el uso de memoria. Para ahorrar memoria, las celdas se almacenarán temporalmente en un caché en disco, durante el procesamiento"
+
+
 msgid "Limit the render time (excluding synchronization time). Zero disables the limit"
 msgstr "Limita el tiempo de procesamiento (excluyendo el tiempo de sincronización). Cero para deshabilitar el límite"
 
@@ -98254,6 +98345,14 @@ msgstr "Usar semilla animada"
 
 msgid "Use different seed values (and hence noise patterns) at different frames"
 msgstr "Usa distintos valores de semilla (y por tanto patrones de ruido) en cada fotograma"
+
+
+msgid "Auto Tile"
+msgstr "Celdas automáticas"
+
+
+msgid "Deprecated, tiling is always enabled"
+msgstr "Obsoleta, el procesamiento mediante celdas estará siempre activo"
 
 
 msgid "Allow objects to be culled based on the camera frustum"
@@ -98382,14 +98481,6 @@ msgstr "Probabilidad de guía en volumen"
 
 msgid "The probability of guiding a direction inside a volume"
 msgstr "La probabilidad de guiar una dirección dentro de un volumen"
-
-
-msgid "Unbiased"
-msgstr "Sin desviación"
-
-
-msgid "If enabled, volume rendering converges to the correct result with sufficiently large numbers of samples, but might appear noisier in the process"
-msgstr "En caso de estar activa, el procesamiento del volumen convergerá al resultado correcto con una cantidad suficientemente grande de muestras, pero es posible que pueda lucir más ruidoso durante el proceso"
 
 
 msgid "Render pass to show in the 3D Viewport"
@@ -100495,10 +100586,6 @@ msgstr "Factor de PPM"
 
 msgid "The pixel density meta-data written to supported image formats. This value is multiplied by the PPM-base which defines the unit (typically inches or meters)"
 msgstr "Los metadatos de densidad de píxeles escritos en los formatos de imagen soportados. Este valor será multiplicado por la base de PPM que determina la unidad (usualmente pulgadas o metros)"
-
-
-msgid "Pixel Size"
-msgstr "Tamaño píxeles"
 
 
 msgid "Pixel size for viewport rendering"
@@ -103714,6 +103801,10 @@ msgid "Editing context being displayed"
 msgstr "Contexto de edición mostrado"
 
 
+msgid "Overlay Settings"
+msgstr "Opciones de sobreimpresión"
+
+
 msgid "Path Length"
 msgstr "Longitud de trayectoria"
 
@@ -104389,10 +104480,6 @@ msgid "Mask editing"
 msgstr "Edición de máscaras"
 
 
-msgid "Overlay Settings"
-msgstr "Opciones de sobreimpresión"
-
-
 msgid "Settings for display of overlays in the UV/Image editor"
 msgstr "Opciones para la visualización de elementos sobreimpresos en los editores de UV e imágenes"
 
@@ -104640,24 +104727,6 @@ msgstr "Dirección en la que desplazar los nodos durante la inserción"
 msgctxt "ID"
 msgid "Node Tree Sub-Type"
 msgstr "Sub tipo del árbol de nodos"
-
-
-msgctxt "ID"
-msgid "Modifier"
-msgstr "Modificador"
-
-
-msgid "Edit node group from active object's active modifier"
-msgstr "Edita un grupo de nodos del modificador activo del objeto activo"
-
-
-msgctxt "ID"
-msgid "Tool"
-msgstr "Herramienta"
-
-
-msgid "Edit any geometry node group for use as an operator"
-msgstr "Edita un grupo de nodos de cualquier geometría para ser usado como un operador"
 
 
 msgid "Settings for display of overlays in the Node Editor"
@@ -105053,6 +105122,11 @@ msgstr "Espacio de propiedades"
 
 msgid "Properties space data"
 msgstr "Datos del espacio de propiedades"
+
+
+msgctxt "ID"
+msgid "Tool"
+msgstr "Herramienta"
 
 
 msgid "Active Tool and Workspace settings"
@@ -105828,6 +105902,10 @@ msgstr "Permitir la selección de sondas de luz"
 
 msgid "Allow selection of mesh objects"
 msgstr "Permitir la selección de mallas"
+
+
+msgid "Meta"
+msgstr "Meta"
 
 
 msgid "Allow selection of metaballs"
@@ -106896,6 +106974,111 @@ msgstr "Mezclar colores"
 
 
 msgctxt "Color"
+msgid "Blending Mode"
+msgstr "Modo de fundido"
+
+
+msgctxt "Color"
+msgid "Darken"
+msgstr "Oscurecer"
+
+
+msgctxt "Color"
+msgid "Multiply"
+msgstr "Multiplicar"
+
+
+msgctxt "Color"
+msgid "Color Burn"
+msgstr "Subexponer color"
+
+
+msgctxt "Color"
+msgid "Linear Burn"
+msgstr "Subexposición lineal"
+
+
+msgctxt "Color"
+msgid "Lighten"
+msgstr "Aclarar"
+
+
+msgctxt "Color"
+msgid "Screen"
+msgstr "Tramar"
+
+
+msgctxt "Color"
+msgid "Color Dodge"
+msgstr "Sobreexponer color"
+
+
+msgctxt "Color"
+msgid "Add"
+msgstr "Adicionar"
+
+
+msgctxt "Color"
+msgid "Overlay"
+msgstr "Superponer"
+
+
+msgctxt "Color"
+msgid "Soft Light"
+msgstr "Luz suave"
+
+
+msgctxt "Color"
+msgid "Hard Light"
+msgstr "Luz fuerte"
+
+
+msgctxt "Color"
+msgid "Vivid Light"
+msgstr "Luz intensa"
+
+
+msgctxt "Color"
+msgid "Linear Light"
+msgstr "Luz lineal"
+
+
+msgctxt "Color"
+msgid "Pin Light"
+msgstr "Luz focal"
+
+
+msgctxt "Color"
+msgid "Difference"
+msgstr "Diferencia"
+
+
+msgctxt "Color"
+msgid "Exclusion"
+msgstr "Exclusión"
+
+
+msgctxt "Color"
+msgid "Subtract"
+msgstr "Sustraer"
+
+
+msgctxt "Color"
+msgid "Hue"
+msgstr "Tono"
+
+
+msgctxt "Color"
+msgid "Saturation"
+msgstr "Saturación"
+
+
+msgctxt "Color"
+msgid "Color"
+msgstr "Color"
+
+
+msgctxt "Color"
 msgid "Value"
 msgstr "Valor"
 
@@ -107470,6 +107653,18 @@ msgid "Correction Method"
 msgstr "Método"
 
 
+msgid "Lift/Gamma/Gain"
+msgstr "realce-gama-ganancia"
+
+
+msgid "Offset/Power/Slope (ASC-CDL)"
+msgstr "desplazamiento-potencia-pendiente (ASC-CDL)"
+
+
+msgid "ASC-CDL standard color correction"
+msgstr "Corección de color estándar ASC-CDL"
+
+
 msgid "Color balance gain (highlights)"
 msgstr "Ganancia (luces)"
 
@@ -107721,6 +107916,10 @@ msgstr "Modificador de curvas RVA para el clip de la secuencia"
 
 msgid "Hue correction modifier for sequence strip"
 msgstr "Modificador Corrección de tono del clip de la secuencia"
+
+
+msgid "Mask modifier for sequence strip"
+msgstr "Modificador Máscara del clip de la secuencia"
 
 
 msgid "Tone mapping modifier"
@@ -108124,10 +108323,6 @@ msgid "Fine tune of the texture mapping X, Y and Z locations"
 msgstr "Afina las posiciones X, Y y Z del mapeo de la textura"
 
 
-msgid "Output Node"
-msgstr "Nodo de salida"
-
-
 msgid "Which output node to use, for node-based textures"
 msgstr "Qué nodo de salida usar, para texturas basadas en nodos"
 
@@ -108486,6 +108681,10 @@ msgid "Name of the theme"
 msgstr "Nombre del tema"
 
 
+msgid "Theme properties for common editor regions"
+msgstr "Opciones del tema para las regiones comunes de los editores"
+
+
 msgid "Active Theme Area"
 msgstr "Área del tema activo"
 
@@ -108644,6 +108843,14 @@ msgstr "Grupo de canales"
 
 msgid "Active Channel Group"
 msgstr "Grupo de canales activo"
+
+
+msgid "Selected Channel"
+msgstr "Canal seleccionado"
+
+
+msgid "Sub-channels"
+msgstr "Sub canales"
 
 
 msgid "Color of regular keyframe"
@@ -109030,10 +109237,6 @@ msgid "Active Vertex/Edge/Face"
 msgstr "Vértice/Borde/Cara - Activo"
 
 
-msgid "Face Dot Selected"
-msgstr "Cara - Punto seleccionado"
-
-
 msgid "Face Mode Selection"
 msgstr "Cara - Selección modal"
 
@@ -109044,14 +109247,6 @@ msgstr "Cara - Selección"
 
 msgid "Face Dot Size"
 msgstr "Cara - Tamaño punto"
-
-
-msgid "Paint Curve Handle"
-msgstr "Curva de pintura - Asa"
-
-
-msgid "Paint Curve Pivot"
-msgstr "Curva de pintura - Pivote"
 
 
 msgid "Stitch Preview Active Island"
@@ -109346,10 +109541,6 @@ msgid "Group Socket Node"
 msgstr "Conector nodo de grupo"
 
 
-msgid "Input Node"
-msgstr "Nodo de entrada"
-
-
 msgid "Matte Node"
 msgstr "Nodo de mate"
 
@@ -109442,6 +109633,18 @@ msgid "Search Match"
 msgstr "Coincidencia de búsqueda"
 
 
+msgid "Shared Region Properties"
+msgstr "Propiedades de regiones comunes"
+
+
+msgid "Theme settings for regions that are common among editors"
+msgstr "Opciones del tema para regiones comunes a varios editores"
+
+
+msgid "Asset Shelf Region Theme"
+msgstr "Región Banco de recursos"
+
+
 msgid "Theme settings for asset shelves"
 msgstr "Opciones del tema para bancos de recursos"
 
@@ -109450,8 +109653,28 @@ msgid "Header Background"
 msgstr "Fondo de encabezado"
 
 
+msgid "Source List Region Settings"
+msgstr "Opciones región lista de origen"
+
+
 msgid "Selected Text"
 msgstr "Texto seleccionado"
+
+
+msgid "Scrubbing & Markers Region Settings"
+msgstr "Opciones región de marcadores y recorrer"
+
+
+msgid "Timestamp"
+msgstr "Código de tiempo"
+
+
+msgid "Marker Selected"
+msgstr "Marcador seleccionado"
+
+
+msgid "Sidebar & Toolbar Region Settings"
+msgstr "Opciones región barras lateral y de herramientas"
 
 
 msgid "Navigation/Tabs Background"
@@ -109954,29 +110177,12 @@ msgid "Clipping Border"
 msgstr "Límite de recorte"
 
 
-msgid "Edge Bevel"
-msgstr "Borde - Biselado"
-
-
-msgctxt "WindowManager"
-msgid "Edge Crease"
-msgstr "Plegado de bordes"
-
-
 msgid "Edge Mode Selection"
 msgstr "Borde - Selección modal"
 
 
-msgid "Edge Seam"
-msgstr "Borde - Costura"
-
-
 msgid "Edge Selection"
 msgstr "Selección de bordes"
-
-
-msgid "Edge Sharp"
-msgstr "Borde - Definido"
 
 
 msgid "Edge Angle Text"
@@ -110005,14 +110211,6 @@ msgstr "Cara - Orientación frontal"
 
 msgid "Face Retopology"
 msgstr "Cara - Retopología"
-
-
-msgid "Freestyle Edge Mark"
-msgstr "Borde marcado de Freestyle"
-
-
-msgid "Freestyle Face Mark"
-msgstr "Cara marcada de Freestyle"
 
 
 msgid "Grease Pencil Vertex"
@@ -110069,10 +110267,6 @@ msgstr "Grease Pencil - Fotograma clave"
 
 msgid "Color for indicating Grease Pencil keyframes"
 msgstr "Color de los fotogramas clave de Grease Pencil"
-
-
-msgid "Vertex Bevel"
-msgstr "Vértice - Biselado"
 
 
 msgid "Vertex Group Unreferenced"
@@ -110989,6 +111183,14 @@ msgid "Transform the parents, leaving the children in place"
 msgstr "Permite transformar al objeto superior de una jerarquía, manteniendo incambiados a sus subordinados"
 
 
+msgid "UV Custom Region"
+msgstr "Región personalizada UV"
+
+
+msgid "Custom defined region"
+msgstr "Región personalizada"
+
+
 msgid "UV Island Selection"
 msgstr "Selección de islas UV"
 
@@ -111458,6 +111660,10 @@ msgstr "Método predefinido de importación"
 
 msgid "Determine how the asset will be imported, unless overridden by the Asset Browser"
 msgstr "Determina cómo será importado el recurso, a menos que sea redefinido en el Explorador de recursos"
+
+
+msgid "Import the assets as copied data-block, with no link to the original asset data-block"
+msgstr "Importar recursos como bloques de datos copiados, sin mantener vínculo con los bloques de datos originales"
 
 
 msgid "Import the assets as copied data-block while avoiding multiple copies of nested, typically heavy data. For example the textures of a material asset, or the mesh of an object asset, don't have to be copied every time this asset is imported. The instances of the asset share the data instead."
@@ -117905,6 +118111,10 @@ msgid "Module Debug"
 msgstr "Depuración de módulo"
 
 
+msgid "May work poorly with render tiling"
+msgstr "Podría funcionar de manera pobre al procesar usando celdas"
+
+
 msgid "Cycles built without Embree support"
 msgstr "Cycles ha sido compilado sin soporte para Embree"
 
@@ -118245,14 +118455,6 @@ msgid "Replace Links"
 msgstr "Reemplazar conexiones"
 
 
-msgid "This operator is removed due to the changes of node menus."
-msgstr "Este operador ha sido eliminado debido a los cambios en los menús de los nodos."
-
-
-msgid "A native implementation of the function is expected in the future."
-msgstr "Se espera que existe una implementación nativa de la función en el futuro."
-
-
 msgctxt "Operator"
 msgid "Select frame's members (children)"
 msgstr "Selecciona los nodos contenidos en el marco"
@@ -118451,6 +118653,21 @@ msgstr "Algunas conexiones han sido perdidas debido a una cantidad distinta de c
 
 msgid "Edit tags for auto texture detection in Principled BSDF setup"
 msgstr "Editar etiquetas para detección automática de texturas en una configuración de BSDF Principista"
+
+
+msgctxt "UI_Events_KeyMaps"
+msgid "Shift"
+msgstr "Mayús (SHIFT)"
+
+
+msgctxt "UI_Events_KeyMaps"
+msgid "Alt"
+msgstr "ALT"
+
+
+msgctxt "UI_Events_KeyMaps"
+msgid "Ctrl"
+msgstr "CTRL"
 
 
 msgid "Viewer image not found."
@@ -119260,10 +119477,6 @@ msgstr "Importar PO..."
 msgctxt "Operator"
 msgid "Invert Selection"
 msgstr "Invertir selección"
-
-
-msgid "Tracking"
-msgstr "Rastreo"
 
 
 msgid "Positional"
@@ -120152,17 +120365,17 @@ msgstr "Primeros pasos"
 
 
 msgctxt "Operator"
-msgid "Donate"
-msgstr "Donar"
-
-
-msgctxt "Operator"
 msgid "What's New"
 msgstr "Novedades"
 
 
 msgid "Running in Offline Mode"
 msgstr "Funcionando en modo sin conexión"
+
+
+msgctxt "Operator"
+msgid "Donate"
+msgstr "Donar"
 
 
 msgctxt "Operator"
@@ -120321,11 +120534,6 @@ msgstr "Manual"
 
 
 msgctxt "Operator"
-msgid "Tutorials"
-msgstr "Tutoriales"
-
-
-msgctxt "Operator"
 msgid "Support"
 msgstr "Soporte"
 
@@ -120457,46 +120665,6 @@ msgstr "Rotación"
 
 msgid "New Group"
 msgstr "Nuevo grupo"
-
-
-msgid "Switch Stereo View"
-msgstr "Intercambiar vista estereoscópica"
-
-
-msgid "Mix Vector"
-msgstr "Mezclar (vectores)"
-
-
-msgid "CSV (.csv)"
-msgstr "CSV (.csv)"
-
-
-msgid "Wavefront (.obj)"
-msgstr "Wavefront (.obj)"
-
-
-msgid "Stanford PLY (.ply)"
-msgstr "PLY de Stanford (.ply)"
-
-
-msgid "STL (.stl)"
-msgstr "STL (.stl)"
-
-
-msgid "Text (.txt)"
-msgstr "Texto (.txt)"
-
-
-msgid "OpenVDB (.vdb)"
-msgstr "OpenVDB (.vdb)"
-
-
-msgid "For Each Element"
-msgstr "Para cada elemento"
-
-
-msgid "Determinant"
-msgstr "Determinante"
 
 
 msgid "Calculation Range"
@@ -121052,7 +121220,7 @@ msgstr "Ordenar por jerarquía de huesos"
 
 msgctxt "Operator"
 msgid "Mirror Vertex Group (Topology)"
-msgstr "Simetrizar grupo de vértices (topología)"
+msgstr "Reflejar grupo de vértices (topología)"
 
 
 msgctxt "Operator"
@@ -121463,10 +121631,6 @@ msgstr "Nuevo"
 
 msgid "Date"
 msgstr "Fecha"
-
-
-msgid "Render Time"
-msgstr "Tiempo procesamiento"
 
 
 msgid "Hostname"
@@ -122555,10 +122719,6 @@ msgid "name"
 msgstr "nombre"
 
 
-msgid "Display Thin"
-msgstr "Mostrar delgado"
-
-
 msgid "B/W"
 msgstr "ByN"
 
@@ -122724,16 +122884,20 @@ msgid "Set Floor"
 msgstr "Definir piso"
 
 
+msgid "Display Thin"
+msgstr "Mostrar delgado"
+
+
+msgid "Viewport Overlays"
+msgstr "Sobreimpresos Vista 3D"
+
+
 msgid "Viewport Gizmos"
 msgstr "Manipuladores"
 
 
-msgid "3D Markers"
-msgstr "Marcadores 3D"
-
-
-msgid "Display Aspect Ratio"
-msgstr "Proporción de visualización"
+msgid "Aspect Ratio"
+msgstr "Proporción"
 
 
 msgctxt "Operator"
@@ -122830,6 +122994,10 @@ msgstr "Definir fotograma A"
 msgctxt "Operator"
 msgid "Set Keyframe B"
 msgstr "Definir fotograma B"
+
+
+msgid "3D Markers"
+msgstr "Marcadores 3D"
 
 
 msgid "Tracks for Rotation/Scale"
@@ -123580,10 +123748,6 @@ msgid "Image*"
 msgstr "Imagen*"
 
 
-msgid "Aspect Ratio"
-msgstr "Proporción"
-
-
 msgid "Repeat Image"
 msgstr "Repetir imagen"
 
@@ -123699,11 +123863,6 @@ msgstr "Crear meta-clip"
 msgctxt "Operator"
 msgid "Remove Meta"
 msgstr "Eliminar meta-clip"
-
-
-msgctxt "Operator"
-msgid "Swap"
-msgstr "Intercambiar"
 
 
 msgctxt "Operator"
@@ -124114,13 +124273,13 @@ msgstr "Rehacer"
 
 
 msgctxt "Operator"
-msgid "Refresh All"
-msgstr "Refrescar todo"
+msgid "Render Sequencer Animation"
+msgstr "Procesar animación del editor de video"
 
 
 msgctxt "Operator"
-msgid "Sequence Render Animation"
-msgstr "Procesar animación"
+msgid "Refresh All"
+msgstr "Refrescar todo"
 
 
 msgctxt "Operator"
@@ -124261,6 +124420,11 @@ msgid "Set Preview Range to Strips"
 msgstr "Definir rango previsualización de clips"
 
 
+msgctxt "Operator"
+msgid "Render Sequencer Image"
+msgstr "Procesar imagen del editor de video"
+
+
 msgid "Preview During Transform"
 msgstr "Previsualizar durante transformaciones"
 
@@ -124272,11 +124436,6 @@ msgstr "Ajustar previsualización a ventana"
 
 msgid "Auto Zoom"
 msgstr "Ampliación automática"
-
-
-msgctxt "Operator"
-msgid "Sequence Render Image"
-msgstr "Procesar imagen"
 
 
 msgctxt "Operator"
@@ -124346,16 +124505,6 @@ msgstr "Texto"
 msgctxt "Operator"
 msgid "Adjustment Layer"
 msgstr "Capa de ajuste"
-
-
-msgctxt "Operator"
-msgid "Empty Scene"
-msgstr "Escena vacía"
-
-
-msgctxt "Operator"
-msgid "Scene..."
-msgstr "Escena..."
 
 
 msgctxt "Operator"
@@ -124468,6 +124617,11 @@ msgid "Stretch To Fill"
 msgstr "Estirar hasta rellenar"
 
 
+msgctxt "Sequence"
+msgid "Split"
+msgstr "Dividir"
+
+
 msgid "Default Fade"
 msgstr "Fundido predefinido"
 
@@ -124524,6 +124678,11 @@ msgid "Remove Gaps (All)"
 msgstr "Eliminar huecos (todo)"
 
 
+msgctxt "Sequence"
+msgid "Hold Split"
+msgstr "Dividir y congelar"
+
+
 msgctxt "Operator"
 msgid "Delete Strip & Data"
 msgstr "Borrar clips y datos"
@@ -124561,10 +124720,6 @@ msgstr "Agregar transición"
 
 msgid "Unpack"
 msgstr "Desempacar"
-
-
-msgid "Pack"
-msgstr "Empacar"
 
 
 msgid "Original frame range: {:d}-{:d} ({:d})"
@@ -125016,6 +125171,10 @@ msgid "General"
 msgstr "Genérico"
 
 
+msgid "More..."
+msgstr "Más..."
+
+
 msgctxt "Operator"
 msgid "Load Factory Blender Settings"
 msgstr "Cargar configuración de fábrica"
@@ -125064,6 +125223,11 @@ msgstr "Buscar operador..."
 msgctxt "Operator"
 msgid "Release Notes"
 msgstr "Novedades de la versión"
+
+
+msgctxt "Operator"
+msgid "Tutorials"
+msgstr "Tutoriales"
 
 
 msgid "Sequence Strip Name"
@@ -125634,16 +125798,6 @@ msgstr "Perspectiva / Ortogonal"
 
 
 msgctxt "Operator"
-msgid "Viewport Render Image"
-msgstr "Procesar imagen"
-
-
-msgctxt "Operator"
-msgid "Viewport Render Keyframes"
-msgstr "Procesar fotogramas clave"
-
-
-msgctxt "Operator"
 msgid "Toggle Local View"
 msgstr "Alternar vista local"
 
@@ -125954,6 +126108,11 @@ msgstr "Importar OpenVDB..."
 msgctxt "Volume"
 msgid "Empty"
 msgstr "Vacío"
+
+
+msgctxt "Operator"
+msgid "Lattice Deform Selected"
+msgstr "Deformar selección con jaula"
 
 
 msgctxt "Operator"
@@ -126697,10 +126856,6 @@ msgid "Look At"
 msgstr "Objetivo"
 
 
-msgid "Viewport Overlays"
-msgstr "Sobreimpresos Vista 3D"
-
-
 msgctxt "View3D"
 msgid "Floor"
 msgstr "Piso"
@@ -126833,11 +126988,6 @@ msgstr "Encuadrar último trazo"
 
 
 msgctxt "Operator"
-msgid "Viewport Render Animation"
-msgstr "Procesar animación"
-
-
-msgctxt "Operator"
 msgid "Roll Left"
 msgstr "Balancear a izquierda"
 
@@ -126890,11 +127040,6 @@ msgstr "Flecha individual"
 msgctxt "Operator"
 msgid "Armature"
 msgstr "Esqueleto"
-
-
-msgctxt "Operator"
-msgid "Lattice"
-msgstr "Jaula"
 
 
 msgctxt "Operator"
@@ -128712,10 +128857,6 @@ msgstr "grupos_de_nodos"
 
 msgid "Use node groups to reuse the same menu multiple times"
 msgstr "Usa grupos de nodos para permitir la reutilización del mismo menú varias veces"
-
-
-msgid "The node input does not support fields"
-msgstr "La entrada del nodo no soporta campos"
 
 
 msgid "The links form a cycle which is not supported"
@@ -131546,14 +131687,6 @@ msgid "RGB values"
 msgstr "Valores RVA"
 
 
-msgid "Scene linear working space RGB values"
-msgstr "Valores de color RVA en espacio de color lineal de la escena"
-
-
-msgid "Perceptually uniform RGB values, matching the color picker"
-msgstr "Valores RVA perceptivamente uniformes, coincidiendo con los del selector de color"
-
-
 msgid "Hue, Saturation, Lightness"
 msgstr "Tono, Saturación, Luminosidad"
 
@@ -132238,10 +132371,6 @@ msgid "No Properties"
 msgstr "Sin propiedades"
 
 
-msgid "More..."
-msgstr "Más..."
-
-
 msgid "Reset operator defaults"
 msgstr "Restablece los valores predefinidos del operador"
 
@@ -132900,6 +133029,10 @@ msgid "No mesh data to join"
 msgstr "Ningún dato de malla a unir"
 
 
+msgid "Joining results in %d vertices, limit is %ld"
+msgstr "La unión produce %d vértices, el límite es %ld"
+
+
 msgid "No source mesh objects selected"
 msgstr "Ningún objeto de tipo malla seleccionado"
 
@@ -132922,10 +133055,6 @@ msgstr "No soportado al esculpir con topología dinámica"
 
 msgid "Mesh faces and vertices reordered spatially"
 msgstr "Caras y vértices de la malla reordenados espacialmente"
-
-
-msgid "Joining results in %d vertices, limit is %ld"
-msgstr "La unión produce %d vértices, el límite es %ld"
 
 
 msgid "Updated %d shape key(s)"
@@ -133199,10 +133328,6 @@ msgstr "No se encontraron objetos desde donde capturar"
 
 msgid "Baking Multires..."
 msgstr "Capturando Multi-resolución..."
-
-
-msgid "Combined bake pass requires Emit, or a light pass with Direct or Indirect contributions enabled"
-msgstr "La pasada de captura Combinada requiere tener habilitada la Emisión o una pasada con contribuciones de luz Directa o Indirecta"
 
 
 msgid "Bake pass requires Direct, Indirect, or Color contributions to be enabled"
@@ -134665,6 +134790,14 @@ msgid "Rendering..."
 msgstr "Procesando..."
 
 
+msgid "Frame start/end specified in a non-animation render"
+msgstr "Fotograma de inicio/fin especificado para procesar una imagen fija"
+
+
+msgid "Start frame is larger than end frame"
+msgstr "El fotograma inicial es mayor que el final"
+
+
 msgid "Cannot write a single file with an animation format selected"
 msgstr "No es posible guardar un único archivo con el formato de animación seleccionado"
 
@@ -135492,14 +135625,6 @@ msgstr "La acción+contenedor ya han sido escondidos"
 
 msgid "Could not unassign the active Action"
 msgstr "No fue posible anular la asignación de la acción activa"
-
-
-msgid "Could not find current NLA Track"
-msgstr "No fue posible encontrar la pista actual de ANL"
-
-
-msgid "Internal Error: Could not find Animation Data/NLA Stack to use"
-msgstr "Error interno: No fue posible encontrar datos de animación o lista de ANL para usar"
 
 
 msgid "Could not assign a new Action to %s"
@@ -136657,6 +136782,10 @@ msgstr "Reproducción  Escalar"
 
 msgid "Active Strip Name"
 msgstr "Nombre del clip activo"
+
+
+msgid "Action Clip"
+msgstr "Clip de acción"
 
 
 msgid "Temp-Meta"
@@ -138019,10 +138148,6 @@ msgid "(Layer)"
 msgstr "(Capa)"
 
 
-msgid "Class"
-msgstr "Clase"
-
-
 msgid "Fog Volume"
 msgstr "Volumen de niebla"
 
@@ -138031,12 +138156,20 @@ msgid "Level Set"
 msgstr "Conjunto de niveles"
 
 
+msgid "Class"
+msgstr "Clase"
+
+
 msgid "(Geometry)"
 msgstr "(Geometría)"
 
 
 msgid "No Data-Block"
 msgstr "Ningún bloque de datos"
+
+
+msgid "For Each Element"
+msgstr "Para cada elemento"
 
 
 msgid "No Active Context"
@@ -138129,10 +138262,6 @@ msgstr "Python deshabilitado en esta compilación del programa"
 
 msgid "File path property not set"
 msgstr "La propiedad de ruta de archivo no fue definida"
-
-
-msgid "Text not used by any node, no update done"
-msgstr "Texto no usado por ningún nodo, no fue actualizado"
 
 
 msgid "No file path for \"%s\""
@@ -141270,6 +141399,10 @@ msgid "'show_locked_time' is not supported for the '%s' editor"
 msgstr "'show_locked_time' no es soportado por el editor '%s'"
 
 
+msgid "uninitialized file-list"
+msgstr "lista de archivos no inicializada"
+
+
 msgid "Track '%s' is not found in the tracking object %s"
 msgstr "No se encontró el rastro '%s' en el objeto de rastreo %s"
 
@@ -141572,21 +141705,6 @@ msgstr "Botón 12"
 msgctxt "UI_Events_KeyMaps"
 msgid "Enter"
 msgstr "Intro (ENTER)"
-
-
-msgctxt "UI_Events_KeyMaps"
-msgid "Alt"
-msgstr "ALT"
-
-
-msgctxt "UI_Events_KeyMaps"
-msgid "Shift"
-msgstr "Mayús (SHIFT)"
-
-
-msgctxt "UI_Events_KeyMaps"
-msgid "Ctrl"
-msgstr "CTRL"
 
 
 msgid "No active window in context!"
@@ -142414,14 +142532,6 @@ msgid "Using both CPU and GPU subdivision"
 msgstr "Usando subdivisión por CPU y GPU"
 
 
-msgid "Viewport {:.2f} px"
-msgstr "Vistas {:.2f} px"
-
-
-msgid "Render {:.2f} px"
-msgstr "Procesamiento {:.2f} px"
-
-
 msgid "SurfaceDeform"
 msgstr "Deformar_con_superficie"
 
@@ -142642,10 +142752,6 @@ msgid "Bokeh"
 msgstr "Bokeh"
 
 
-msgid "Bounding box"
-msgstr "Marco delimitador"
-
-
 msgid "Flaps"
 msgstr "Aletas"
 
@@ -142682,16 +142788,28 @@ msgid "Bright"
 msgstr "Brillo"
 
 
-msgid "Color Space:"
-msgstr "Espacio de color:"
+msgid "YUV Key Channel"
+msgstr "Canal de recorte YUV"
 
 
-msgid "Key Channel:"
-msgstr "Canal de recorte:"
+msgid "YCbCr Key Channel"
+msgstr "Canal de recorte YCbCr"
 
 
-msgid "Limiting Channel:"
-msgstr "Canal limitador:"
+msgid "RGB Limit Channel"
+msgstr "Limitar canal RVA"
+
+
+msgid "HSV Limit Channel"
+msgstr "Limitar canal TSV"
+
+
+msgid "YUV Limit Channel"
+msgstr "Limitar canal YUV"
+
+
+msgid "YCbCr Limit Channel"
+msgstr "Limitar canal YCbCr"
 
 
 msgid "Channel values lower than this minimum are keyed"
@@ -142730,8 +142848,12 @@ msgid "If the difference in value between the color and key color is less than t
 msgstr "En caso de que la diferencia de valor entre el color y el color de recorte fuera menor que este umbral, será recortado"
 
 
-msgid "Despill Channel:"
-msgstr "Suprimir derrame de canal:"
+msgid "Spill Channel"
+msgstr "Suprimir derrame de canal"
+
+
+msgid "Limit Channel"
+msgstr "Limitar canal"
 
 
 msgid "Limit Strength"
@@ -142994,12 +143116,12 @@ msgid "Pick"
 msgstr "Escoger"
 
 
-msgid "Amount of influence the node exerts on the image"
-msgstr "Cantidad de influencia que el nodo ejercerá sobre la imagen"
-
-
 msgid "Image/Color input on which RGB color transformation will be applied"
 msgstr "Entrada de imagen o color sobre la cual se aplicará la transformación de color RVA"
+
+
+msgid "Amount of influence the node exerts on the image"
+msgstr "Cantidad de influencia que el nodo ejercerá sobre la imagen"
 
 
 msgid "Input color that should be mapped to black"
@@ -143122,20 +143244,28 @@ msgid "If the distance between the color and the key color in the given color sp
 msgstr "En caso de que la distancia entre el color y el color de recorte en el espacio de color seleccionado fuera menor que este umbral, será parcialmente recortado, en caso contrario no lo será"
 
 
-msgid "Inner Edge:"
-msgstr "Borde interior:"
-
-
-msgid "Buffer Edge:"
-msgstr "Borde de colchón:"
+msgid "Outer Mask"
+msgstr "Máscara exterior"
 
 
 msgid "Inner Mask"
 msgstr "Máscara interior"
 
 
-msgid "Outer Mask"
-msgstr "Máscara exterior"
+msgid "Image Edges"
+msgstr "Límites de la imagen"
+
+
+msgid "Only Inside Outer"
+msgstr "Sólo de adentro hacia afuera"
+
+
+msgid "The edges of the image that intersects the outer mask will be considered edges of the outer mask. Otherwise, the outer mask will be considered open-ended"
+msgstr "Los límites de la imagen que intersecten a la máscara exterior serán considerados como bordes de la máscara exterior. En caso contrario, la máscara exterior será considerada como abierta"
+
+
+msgid "Only edges of the inner mask that lie inside the outer mask will be considered. Otherwise, all edges of the inner mask will be considered"
+msgstr "Sólo los límites de la máscara interior que se encuentren dentro de la máscara exterior serán considerados. En caso contrario, todos los bordes de la máscara interior serán considerados"
 
 
 msgid "Item Format"
@@ -143866,6 +143996,10 @@ msgstr "Verdadero cuando la matriz de entrada sea invertible"
 
 msgid "The string to find in the input string"
 msgstr "El texto a buscar en el texto de entrada"
+
+
+msgid "Determinant"
+msgstr "Determinante"
 
 
 msgid "The string to replace each match with"
@@ -144808,6 +144942,10 @@ msgid "The middle value in each group when all values are sorted from lowest to 
 msgstr "El valor medio en cada grupo cuando todos los valores se encuentran ordenados desde el más bajo al más alto"
 
 
+msgid "The values the minimum and maximum will be calculated from"
+msgstr "Los valores a partir de los que se calculará el mínimo y máximo"
+
+
 msgid "The lowest value in each group"
 msgstr "El valor más bajo de cada grupo"
 
@@ -144842,6 +144980,14 @@ msgstr "Geometría principal"
 
 msgid "Generated Geometry"
 msgstr "Geometría generada"
+
+
+msgid "For Each Element {} Main"
+msgstr "Para cada elemento {} Principal"
+
+
+msgid "For Each Element {} Generated"
+msgstr "Para cada elemento {} Generada"
 
 
 msgid "Each output field has to correspond to a geometry that is above it"
@@ -145151,6 +145297,10 @@ msgid "Face Area Field"
 msgstr "Campo de área de cara"
 
 
+msgid "Planar"
+msgstr "Plano"
+
+
 msgctxt "NodeTree"
 msgid "Planar"
 msgstr "Plana"
@@ -145158,10 +145308,6 @@ msgstr "Plana"
 
 msgid "The distance a point can be from the surface before the face is no longer considered planar"
 msgstr "La distancia a la que puede encontrarse un punto con respecto a la superficie, antes de que la cara deje de ser considerada como plana"
-
-
-msgid "Planar"
-msgstr "Plano"
 
 
 msgid "Vertex Count"
@@ -146612,6 +146758,10 @@ msgid " (Deprecated)"
 msgstr " (obsoleto)"
 
 
+msgid "Update based on linked bundle signature"
+msgstr "Actualizar basándose en la firma del paquete conectado"
+
+
 msgid "Add Inputs"
 msgstr "Agregar entradas"
 
@@ -146634,6 +146784,10 @@ msgstr "Eliminar salidas"
 
 msgid "Change Outputs"
 msgstr "Cambiar salidas"
+
+
+msgid "Update based on linked closure signature"
+msgstr "Actualizar basándose en la firma de la clausura conectada"
 
 
 msgid "No bundle signature found"
@@ -147209,6 +147363,10 @@ msgid "Strength of the light source"
 msgstr "Intensidad de la fuente lumínica"
 
 
+msgid "Color input on which inversion will be applied"
+msgstr "Entrada de color sobre la que se aplicará la inversión"
+
+
 msgid "Facing"
 msgstr "De frente"
 
@@ -147601,6 +147759,10 @@ msgstr "Ángulo a rotar el vector de entrada"
 
 msgid "The amount of rotation on each axis, around the X, Y, then Z axes in that order"
 msgstr "La magnitud de rotación en cada eje, alrededor de los ejes X, Y y Z (en ese orden)"
+
+
+msgid "Vector, point, or normal which will be used for conversion between spaces"
+msgstr "Vector, punto o normal que será usado para la conversión entre espacios"
 
 
 msgid "No mesh in active object"
@@ -149705,6 +149867,22 @@ msgid "Utility"
 msgstr "Utilitarios"
 
 
+msgid "Offset Vector"
+msgstr "Vector de desplazamiento"
+
+
+msgid "Smooth by Angle"
+msgstr "Suavizar por ángulo"
+
+
+msgid "Maximum face angle for smooth edges"
+msgstr "Ángulo máximo entre caras para sombrear los bordes como suaves"
+
+
+msgid "Ignore Sharpness"
+msgstr "Ignorar definidos"
+
+
 msgid "Attach Hair Curves to Surface"
 msgstr "Anclar curvas de pelo a superficie"
 
@@ -150325,10 +150503,6 @@ msgid "Deforms hair curves using a random vector per point to frizz them"
 msgstr "Deforma las curvas de pelo usando un vector aleatorio por cada punto, para provocar un encrespamiento de las mismas"
 
 
-msgid "Offset Vector"
-msgstr "Vector de desplazamiento"
-
-
 msgid "Vector by which each point was offset during deformation"
 msgstr "Vector usado para desplazar cada punto durante la deformación"
 
@@ -150803,16 +150977,4 @@ msgstr "Máscara para mezclar el efecto general"
 
 msgid "Trim hair curves randomly up to a certain amount"
 msgstr "Recorta las curvas de pelo de forma aleatoria hasta una cierta magnitud"
-
-
-msgid "Smooth by Angle"
-msgstr "Suavizar por ángulo"
-
-
-msgid "Maximum face angle for smooth edges"
-msgstr "Ángulo máximo entre caras para sombrear los bordes como suaves"
-
-
-msgid "Ignore Sharpness"
-msgstr "Ignorar definidos"
 

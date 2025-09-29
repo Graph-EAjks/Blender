@@ -110,7 +110,7 @@ class SocketTooltipBuilder {
     if (socket_.type == SOCK_MENU) {
       return true;
     }
-    if (socket_.flag & SOCK_HIDE_LABEL) {
+    if (socket_.runtime->declaration && socket_.runtime->declaration->optional_label) {
       return true;
     }
     return false;
@@ -376,10 +376,10 @@ class SocketTooltipBuilder {
       return;
     }
     if (!enum_item->description.empty()) {
-      this->add_text_field(enum_item->description, UI_TIP_LC_VALUE);
+      this->add_text_field(TIP_(enum_item->description), UI_TIP_LC_VALUE);
       this->add_space();
     }
-    this->build_tooltip_value_and_type_oneline(enum_item->name, TIP_("Menu"));
+    this->build_tooltip_value_and_type_oneline(TIP_(enum_item->name), TIP_("Menu"));
   }
 
   void build_tooltip_value_int(const int value)

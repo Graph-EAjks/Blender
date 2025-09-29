@@ -170,8 +170,8 @@ void uvedit_face_select_shared_vert(
  * Selects UV edges and shared vertices according to sticky_flag.
  *
  * \param sticky_flag:
- * - #SI_STICKY_LOC: selects all UV edges that share the same mesh vertices and UV coordinates.
- * - #SI_STICKY_VERTEX: selects all UV edges sharing the same mesh vertices.
+ * - #UV_STICKY_LOCATION: selects all UV edges that share the same mesh vertices and UV coords.
+ * - #UV_STICKY_VERT: selects all UV edges sharing the same mesh vertices.
  */
 void uvedit_edge_select_shared_vert(const Scene *scene,
                                     BMesh *bm,
@@ -183,8 +183,8 @@ void uvedit_edge_select_shared_vert(const Scene *scene,
  * Selects shared UVs based on #sticky_flag.
  *
  * \param sticky_flag: Type of sticky selection:
- * - #SI_STICKY_LOC: selects all UVs sharing same mesh vertex and UV coordinates.
- * - #SI_STICKY_VERTEX: selects all UVs sharing same mesh vertex.
+ * - #UV_STICKY_LOCATION: selects all UVs sharing same mesh vertex and UV coords.
+ * - #UV_STICKY_VERT: selects all UVs sharing same mesh vertex.
  */
 void uvedit_uv_select_shared_vert(const Scene *scene,
                                   BMesh *bm,
@@ -220,13 +220,12 @@ void ED_uvedit_sticky_selectmode_update(bContext *C);
 void ED_uvedit_selectmode_flush(const Scene *scene, BMesh *bm);
 
 /**
- * Mode independent UV de-selection flush.
+ * Mode independent UV selection/de-selection flush from vertices.
+ *
+ * \param select: When true, flush the selection state to de-selected elements,
+ * otherwise perform the opposite, flushing de-selection.
  */
-void uvedit_deselect_flush(const Scene *scene, BMesh *bm);
-/**
- * Mode independent UV selection flush.
- */
-void uvedit_select_flush(const Scene *scene, BMesh *bm);
+void uvedit_select_flush_from_verts(const Scene *scene, BMesh *bm, bool select);
 
 bool ED_uvedit_nearest_uv_multi(const View2D *v2d,
                                 const Scene *scene,
@@ -248,7 +247,7 @@ BMLoop *ED_uvedit_active_edge_loop_get(BMesh *bm);
 
 /**
  * Intentionally don't return #UV_SELECT_ISLAND as it's not an element type.
- * In this case return #UV_SELECT_VERTEX as a fallback.
+ * In this case return #UV_SELECT_VERT as a fallback.
  */
 char ED_uvedit_select_mode_get(const Scene *scene);
 bool ED_uvedit_select_island_check(const ToolSettings *ts);
