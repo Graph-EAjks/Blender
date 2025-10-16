@@ -376,11 +376,11 @@ set(RUBBERBAND_COPYRIGHT "Copyright (c) 2025 Particular Programs Ltd")
 # Additionally, keep the PYTHON_PIP_VERSION in sync with the pip version bundled
 # into Python.
 
-set(PYTHON_VERSION 3.11.13)
-set(PYTHON_SHORT_VERSION 3.11)
-set(PYTHON_SHORT_VERSION_NO_DOTS 311)
+set(PYTHON_VERSION 3.13.9)
+set(PYTHON_SHORT_VERSION 3.13)
+set(PYTHON_SHORT_VERSION_NO_DOTS 313)
 set(PYTHON_URI https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VERSION}.tar.xz)
-set(PYTHON_HASH ec39a8018b9eedf6f0edeb44533bd279)
+set(PYTHON_HASH 516aabdf3de01eeefb6de1aacf9df810)
 set(PYTHON_HASH_TYPE MD5)
 set(PYTHON_FILE Python-${PYTHON_VERSION}.tar.xz)
 set(PYTHON_CPE "cpe:2.3:a:python:python:${PYTHON_VERSION}:-:*:*:*:*:*:*")
@@ -475,14 +475,22 @@ set(AUTOPEP8_VERSION 2.3.1)
 # Needed by: `autopep8` (so the version doesn't change on rebuild).
 set(PYCODESTYLE_VERSION 2.13)
 # Build system for other packages (not used by Blender at run-time).
-set(MESON_VERSION 0.63.0)
+set(MESON_VERSION 1.9.0)
+# Build time requirements for numpy and cython
+set(MESON_PYTHON_VERSION 0.18.0)
+set(SETUPTOOLS_VERSION 80.9.0)
+set(SPIN_VERSION 0.15)
+set(PACKAGING_VERSION 25.0)
+set(PYPROJECT_METADATA_VERSION  0.9.1)
+
+
 
 # When this numpy version is bumped, please also change the limit value set for variable `install_requires`
 # in build_files/utils/make_bpy_wheel.py
-set(NUMPY_VERSION 1.26.4)
-set(NUMPY_SHORT_VERSION 1.26)
+set(NUMPY_VERSION 2.3.4)
+set(NUMPY_SHORT_VERSION 2.3)
 set(NUMPY_URI https://github.com/numpy/numpy/releases/download/v${NUMPY_VERSION}/numpy-${NUMPY_VERSION}.tar.gz)
-set(NUMPY_HASH 19550cbe7bedd96a928da9d4ad69509d)
+set(NUMPY_HASH 8717ed1828a8a390c454c6636e91c46a)
 set(NUMPY_HASH_TYPE MD5)
 set(NUMPY_FILE numpy-${NUMPY_VERSION}.tar.gz)
 set(NUMPY_CPE "cpe:2.3:a:numpy:numpy:${NUMPY_VERSION}:*:*:*:*:*:*:*")

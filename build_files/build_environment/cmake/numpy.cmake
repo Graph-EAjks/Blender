@@ -17,6 +17,15 @@ endif()
 
 set(NUMPY_POSTFIX)
 
+if(WIN32)
+  file(WRITE ${CMAKE_BINARY_DIR}/fix_path.bat
+    "set PATH=${LIBDIR}/python;${LIBDIR}/python/scripts;%PATH%\n"
+  )
+  set(NUMPY_CONF ${CMAKE_BINARY_DIR}/fix_path.bat)
+else()
+  set(NUMPY_CONF echo .)
+endif()
+
 ExternalProject_Add(external_numpy
   URL file://${PACKAGE_DIR}/${NUMPY_FILE}
   DOWNLOAD_DIR ${DOWNLOAD_DIR}
@@ -27,11 +36,7 @@ ExternalProject_Add(external_numpy
   LOG_BUILD 1
   BUILD_IN_SOURCE 1
 
-  BUILD_COMMAND
-    ${PYTHON_BINARY} setup.py
-      build ${NUMPY_BUILD_OPTION} -j${PYTHON_MAKE_THREADS}
-      install
-      --old-and-unmanageable
+  BUILD_COMMAND ${NUMPY_CONF} && ${PYTHON_BINARY} -m pip install --no-build-isolation .
 
   INSTALL_COMMAND ""
 )
