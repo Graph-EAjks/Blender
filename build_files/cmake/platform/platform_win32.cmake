@@ -597,17 +597,17 @@ if(WITH_JACK)
   )
 endif()
 
-set(_PYTHON_VERSION "3.11")
+set(_PYTHON_VERSION "3.13")
 string(REPLACE "." "" _PYTHON_VERSION_NO_DOTS ${_PYTHON_VERSION})
 
 # Enable for a short time when bumping to the next Python version.
-if(FALSE)
+if(TRUE)
   if(NOT EXISTS ${LIBDIR}/python/${_PYTHON_VERSION_NO_DOTS})
-    set(_PYTHON_VERSION "3.12")
+    set(_PYTHON_VERSION "3.11")
     string(REPLACE "." "" _PYTHON_VERSION_NO_DOTS ${_PYTHON_VERSION})
     if(NOT EXISTS ${LIBDIR}/python/${_PYTHON_VERSION_NO_DOTS})
       message(FATAL_ERROR
-        "Missing python libraries! Neither 3.12 nor 3.11 are found in ${LIBDIR}/python"
+        "Missing python libraries! Neither 3.13 nor 3.11 are found in ${LIBDIR}/python"
       )
     endif()
   endif()
@@ -626,7 +626,7 @@ if(WITH_PYTHON)
   set(PYTHON_LIBRARY_DEBUG ${LIBDIR}/python/${_PYTHON_VERSION_NO_DOTS}/libs/python${_PYTHON_VERSION_NO_DOTS}_d.lib)
 
   set(PYTHON_INCLUDE_DIR ${LIBDIR}/python/${_PYTHON_VERSION_NO_DOTS}/include)
-  set(PYTHON_NUMPY_INCLUDE_DIRS ${LIBDIR}/python/${_PYTHON_VERSION_NO_DOTS}/lib/site-packages/numpy/core/include)
+  set(PYTHON_NUMPY_INCLUDE_DIRS ${LIBDIR}/python/${_PYTHON_VERSION_NO_DOTS}/lib/site-packages/numpy/_core/include)
   set(NUMPY_FOUND ON)
   # uncached vars
   set(PYTHON_INCLUDE_DIRS "${PYTHON_INCLUDE_DIR}")
