@@ -109,10 +109,9 @@ struct PaintStroke {
   int event_type;
   /* check if stroke variables have been initialized */
   bool stroke_init;
-  /* check if various brush mapping variables have been initialized */
-  bool brush_init;
+  /* check if input variables have been initialized (e.g. cursor position & pressure)*/
+  bool input_init;
   float2 initial_mouse;
-  /* cached_pressure stores initial pressure for size pressure influence mainly */
   float cached_size_pressure;
   /* last pressure will store last pressure value for use in interpolation for space strokes */
   float last_pressure;
@@ -334,36 +333,35 @@ bool paint_brush_update(bContext *C,
    *      brush coord/pressure/etc.
    *      It's more an events design issue, which doesn't split coordinate/pressure/angle
    *      changing events. We should avoid this after events system re-design */
-  if (!stroke->brush_init) {
+  if (!stroke->input_init) {
     copy_v2_v2(stroke->initial_mouse, mouse);
     copy_v2_v2(paint_runtime.last_rake, mouse);
     copy_v2_v2(paint_runtime.tex_mouse, mouse);
     copy_v2_v2(paint_runtime.mask_tex_mouse, mouse);
     stroke->cached_size_pressure = pressure;
-    BKE_curvemapping_init(brush.curve_size);
-    BKE_curvemapping_init(brush.curve_strength);
-    BKE_curvemapping_init(brush.curve_jitter);
 
-    stroke->brush_init = true;
+    stroke->input_init = true;
   }
 
   if (paint_supports_dynamic_size(brush, mode)) {
     copy_v2_v2(paint_runtime.tex_mouse, mouse);
     copy_v2_v2(paint_runtime.mask_tex_mouse, mouse);
-    stroke->cached_size_pressure = BKE_curvemapping_evaluateF(brush.curve_size, 0, pressure);
   }
 
   /* Truly temporary data that isn't stored in properties */
 
   paint_runtime.stroke_active = true;
-  paint_runtime.size_pressure_value = stroke->cached_size_pressure;
+  const float pressure_to_evaluate = paint_supports_dynamic_size(brush, mode) ?
+                                         pressure :
+                                         stroke->cached_size_pressure;
+  paint_runtime.size_pressure_value = BKE_brush_use_size_pressure(&brush) ?
+                                          BKE_curvemapping_evaluateF(
+                                              brush.curve_size, 0, pressure_to_evaluate) :
+                                          1.0f;
 
-  paint_runtime.pixel_radius = BKE_brush_radius_get(paint, &brush);
+  paint_runtime.pixel_radius = BKE_brush_radius_get(paint, &brush) *
+                               paint_runtime.size_pressure_value;
   paint_runtime.initial_pixel_radius = BKE_brush_radius_get(paint, &brush);
-
-  if (BKE_brush_use_size_pressure(&brush) && paint_supports_dynamic_size(brush, mode)) {
-    paint_runtime.pixel_radius *= stroke->cached_size_pressure;
-  }
 
   if (paint_supports_dynamic_tex_coords(brush, mode)) {
 
@@ -1587,6 +1585,10 @@ wmOperatorStatus paint_stroke_modal(bContext *C,
         stroke->stroke_cursor = WM_paint_cursor_activate(
             SPACE_TYPE_ANY, RGN_TYPE_ANY, paint_brush_cursor_poll, paint_draw_line_cursor, stroke);
       }
+
+      BKE_curvemapping_init(br->curve_size);
+      BKE_curvemapping_init(br->curve_strength);
+      BKE_curvemapping_init(br->curve_jitter);
 
       first_dab = true;
     }

@@ -1,10 +1,10 @@
 
 msgid ""
 msgstr ""
-"Project-Id-Version: Blender 5.0.0 Beta (b'702691150287')\n"
+"Project-Id-Version: Blender 5.0.0 Beta (b'd29f9f6118e5')\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-13 16:12+0000\n"
-"PO-Revision-Date: 2025-09-09 13:59+0000\n"
+"POT-Creation-Date: 2025-11-10 09:45+0000\n"
+"PO-Revision-Date: 2025-10-30 01:59+0000\n"
 "Last-Translator: Alessandro Vecchio <alessandrovecchio1907@gmail.com>\n"
 "Language-Team: Italian <https://translate.blender.org/projects/blender-ui/ui/it/>\n"
 "Language: it\n"
@@ -14577,10 +14577,6 @@ msgid "Amount of random elements that are going to be affected by the brush"
 msgstr "Ammontare di elementi casuali che saranno interessati dal pennello"
 
 
-msgid "Direction"
-msgstr "Direzione"
-
-
 msgid "Add effect of brush"
 msgstr "Aggiunge l'effetto del pennello"
 
@@ -19925,10 +19921,6 @@ msgid "Sync to audio playback, dropping frames"
 msgstr "Sincronizza alla riproduzione audio, scartando fotogrammi"
 
 
-msgid "Second"
-msgstr "Secondi"
-
-
 msgid "Timeline Markers"
 msgstr "Marcatori Timeline"
 
@@ -21925,6 +21917,10 @@ msgstr "Ctrl"
 
 msgid "Control key pressed"
 msgstr "Tasto Ctrl premuto"
+
+
+msgid "Direction"
+msgstr "Direzione"
 
 
 msgid "North"
@@ -24554,34 +24550,6 @@ msgid "Material slot name"
 msgstr "Nome dello slot materiale"
 
 
-msgid "Metaball"
-msgstr "Metaball"
-
-
-msgid "Light"
-msgstr "Luce"
-
-
-msgid "Light Probe"
-msgstr "Sensore di Luce"
-
-
-msgid "Add Image"
-msgstr "Aggiungi Immagine"
-
-
-msgid "Relations"
-msgstr "Relazioni"
-
-
-msgid "Rigid Body"
-msgstr "Corpo Rigido"
-
-
-msgid "Apply"
-msgstr "Applica"
-
-
 msgid "Track"
 msgstr "Traccia"
 
@@ -24630,10 +24598,6 @@ msgid "Random Mask"
 msgstr "Maschera Casuale"
 
 
-msgid "Layout"
-msgstr "Layout"
-
-
 msgid "Clear Transform"
 msgstr "Cancella Trasformazione"
 
@@ -24654,8 +24618,8 @@ msgid "Names"
 msgstr "Nomi"
 
 
-msgid "Adjust"
-msgstr "Regola"
+msgid "Apply"
+msgstr "Applica"
 
 
 msgid "Toggle Bone Options"
@@ -24670,28 +24634,16 @@ msgid "Disable Bone Options"
 msgstr "Disabilita Opzioni Osso"
 
 
-msgid "Keying"
-msgstr "Keying"
+msgid "Layout"
+msgstr "Layout"
 
 
 msgid "Mesh Select Mode"
 msgstr "Modalità Selezione Mesh"
 
 
-msgid "Tracking"
-msgstr "Tracciamento"
-
-
-msgid "Utilities"
-msgstr "Utilità"
-
-
 msgid "Face Data"
 msgstr "Dati Faccia"
-
-
-msgid "Math"
-msgstr "Matematica"
 
 
 msgid "Select by Face Strength"
@@ -24706,6 +24658,26 @@ msgid "Merge"
 msgstr "Unisci"
 
 
+msgid "Adjust"
+msgstr "Regola"
+
+
+msgid "Keying"
+msgstr "Keying"
+
+
+msgid "Tracking"
+msgstr "Tracciamento"
+
+
+msgid "Utilities"
+msgstr "Utilità"
+
+
+msgid "Math"
+msgstr "Matematica"
+
+
 msgid "Special Characters"
 msgstr "Caratteri Speciali"
 
@@ -24716,6 +24688,10 @@ msgstr "Crenatura"
 
 msgid "Text"
 msgstr "Testo"
+
+
+msgid "Metaball"
+msgstr "Metaball"
 
 
 msgid "Bone Roll"
@@ -24742,12 +24718,12 @@ msgid "Automasking"
 msgstr "Automascheramento"
 
 
-msgid "Read"
-msgstr "Lettura"
-
-
 msgid "Face Sets Edit"
 msgstr "Modifica Sets di Facce"
+
+
+msgid "Read"
+msgstr "Lettura"
 
 
 msgid "Sample"
@@ -24762,16 +24738,8 @@ msgid "Primitives"
 msgstr "Primitive"
 
 
-msgid "Instances"
-msgstr "Istanze"
-
-
 msgid "Mirror"
 msgstr "Specchia"
-
-
-msgid "Import"
-msgstr "Importa"
 
 
 msgid "UV Mapping"
@@ -24806,16 +24774,16 @@ msgid "Select More/Less"
 msgstr "Seleziona Più/Meno"
 
 
+msgid "Instances"
+msgstr "Istanze"
+
+
 msgid "Select Similar"
 msgstr "Seleziona Simili"
 
 
 msgid "Select All by Trait"
 msgstr "Seleziona Tutto per Caratteristica"
-
-
-msgid "UV"
-msgstr "UV"
 
 
 msgid "Select Linked"
@@ -24826,16 +24794,44 @@ msgid "Select Loops"
 msgstr "Seleziona Anelli"
 
 
-msgid "Basic"
-msgstr "Di Base"
+msgid "Import"
+msgstr "Importa"
 
 
 msgid "Assign Material"
 msgstr "Assegna Materiale"
 
 
+msgid "UV"
+msgstr "UV"
+
+
+msgid "Light"
+msgstr "Luce"
+
+
+msgid "Light Probe"
+msgstr "Sensore di Luce"
+
+
+msgid "Add Image"
+msgstr "Aggiungi Immagine"
+
+
+msgid "Relations"
+msgstr "Relazioni"
+
+
+msgid "Rigid Body"
+msgstr "Corpo Rigido"
+
+
 msgid "Keyframe Insert Pie"
 msgstr "Torta Inserisci Keyframe"
+
+
+msgid "Basic"
+msgstr "Di Base"
 
 
 msgid "Bone Collection Specials"
@@ -28389,14 +28385,6 @@ msgstr "Mantieni Confini"
 
 msgid "Nodes Modifier"
 msgstr "Modificatore Nodi"
-
-
-msgid "Bake Target"
-msgstr "Target Precalcolo"
-
-
-msgid "Packed"
-msgstr "Compresso"
 
 
 msgid "Pack the baked data into the .blend file"
@@ -45088,10 +45076,6 @@ msgid "Add IK to Bone"
 msgstr "Aggiunge IK all'Osso"
 
 
-msgid "Add IK Constraint to the active Bone"
-msgstr "Aggiunge un vincolo IK all'osso attivo"
-
-
 msgid "With Targets"
 msgstr "Con Obiettivi"
 
@@ -46619,10 +46603,6 @@ msgstr "Utilizza le informazioni del canale alpha dell'immagine"
 msgctxt "Operator"
 msgid "Add Scene Strip"
 msgstr "Aggiunge Spezzone Scena"
-
-
-msgid "Add a strip to the sequencer using a Blender scene as a source"
-msgstr "Aggiunge uno spezzone al sequencer utilizzando una scena Blender come sorgente"
 
 
 msgid "Select a strip (last selected becomes the \"active strip\")"
@@ -49780,6 +49760,10 @@ msgid "Textures Directory"
 msgstr "Cartella Texture"
 
 
+msgid "Packed"
+msgstr "Compresso"
+
+
 msgid "All Custom"
 msgstr "Tutto Personalizzato"
 
@@ -50138,10 +50122,6 @@ msgid "Active Palette Color"
 msgstr "Colore Tavolozza Attivo"
 
 
-msgid "Auto-Masking"
-msgstr "Auto-Mascheramento"
-
-
 msgid "Shadow Settings"
 msgstr "Impostazioni Ombra"
 
@@ -50192,6 +50172,10 @@ msgstr "Giacitura Tratto"
 
 msgid "Stereoscopy"
 msgstr "Stereoscopia"
+
+
+msgid "Auto-Masking"
+msgstr "Auto-Mascheramento"
 
 
 msgid "Chain Scaling"
@@ -56841,18 +56825,6 @@ msgid "Stereo Mode"
 msgstr "Modalità Stereo"
 
 
-msgid "Cross"
-msgstr "Croce"
-
-
-msgid "Alpha Under"
-msgstr "Sotto Trasparenza"
-
-
-msgid "Gamma Cross"
-msgstr "Incrocio Gamma"
-
-
 msgid "Y position of the sequence strip"
 msgstr "Posizione Y dello spezzone sequenza"
 
@@ -60308,12 +60280,16 @@ msgid "Image path {!r} not found, image may be packed or unsaved"
 msgstr "Percorso dell'immagine {!r} non trovato, forse l'immagine è incorporata o non salvata"
 
 
+msgid "No nodes selected."
+msgstr "Nessuno nodo selezionato."
+
+
 msgid "Active camera is not in this scene"
 msgstr "La camera attiva non è in questa scena"
 
 
-msgid "Modifiers cannot be added to object: "
-msgstr "Non possono essere aggiunti modificatori all'oggetto: "
+msgid "Modifiers cannot be added to object: {:s}"
+msgstr "Non è possibile aggiungere modificatori all'oggetto: {:s}"
 
 
 msgid "Fur Material"
@@ -60477,8 +60453,8 @@ msgid "User Communities"
 msgstr "Comunità Utenti"
 
 
-msgid "Failed to assign value: "
-msgstr "Impossibile impostare il valore: "
+msgid "Failed to assign value: {:s}"
+msgstr "Impossibile impostare il valore: {:s}"
 
 
 msgid "Strip(s)"
@@ -61270,6 +61246,10 @@ msgstr "Minuscolo"
 
 msgid "Fuel"
 msgstr "Combustibile"
+
+
+msgid "Second"
+msgstr "Secondi"
 
 
 msgid "X Lower"
@@ -62261,6 +62241,11 @@ msgstr "Cambia Percorso/Files"
 msgctxt "Operator"
 msgid "Swap Data"
 msgstr "Scambia Dati"
+
+
+msgctxt "Operator"
+msgid "Copy to Selected Strips..."
+msgstr "Copia agli Spezzoni Selezionati..."
 
 
 msgctxt "Operator"
@@ -65803,22 +65788,6 @@ msgid "Add IK"
 msgstr "Aggiungi Cinematica Inversa (IK)"
 
 
-msgid "To Active Bone"
-msgstr "All'Osso Attivo"
-
-
-msgid "To Active Object"
-msgstr "All'Oggetto Attivo"
-
-
-msgid "To New Empty Object"
-msgstr "A Nuovo Oggetto Vuoto"
-
-
-msgid "Without Targets"
-msgstr "Senza Obiettivi"
-
-
 msgid "Child Of constraint not found"
 msgstr "Vincolo Figlio Di non trovato"
 
@@ -67895,6 +67864,10 @@ msgid "Unable to create socket"
 msgstr "Impossibile creare il connettore"
 
 
+msgid "Anisotropic"
+msgstr "Anisotropico"
+
+
 msgid "Unable to locate socket '%s' in node"
 msgstr "Impossibile trovare il connettore '%s' nel nodo"
 
@@ -68111,6 +68084,11 @@ msgid "Flaps"
 msgstr "Lembi"
 
 
+msgctxt "Color"
+msgid "Spill Channel"
+msgstr "Canale Dispersione"
+
+
 msgid "Correction for shadows"
 msgstr "Correzione per le ombre"
 
@@ -68185,10 +68163,6 @@ msgstr "Modulazione Colore"
 
 msgid "Fac"
 msgstr "Fatt"
-
-
-msgid "Anisotropic"
-msgstr "Anisotropico"
 
 
 msgid "Uniformity"
@@ -68819,6 +68793,10 @@ msgstr "Orlo"
 
 msgid "Blender File View"
 msgstr "Visualizza File di Blender"
+
+
+msgid "Failed to open file browser!"
+msgstr "Impossibile aprire il file browser!"
 
 
 msgid "To make changes to Preferences permanent, use \"Save Preferences\""

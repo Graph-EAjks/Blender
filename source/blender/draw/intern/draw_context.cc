@@ -10,6 +10,7 @@
 
 #include "CLG_log.h"
 
+#include "BLI_enum_flags.hh"
 #include "BLI_function_ref.hh"
 #include "BLI_listbase.h"
 #include "BLI_map.hh"
@@ -21,7 +22,6 @@
 #include "BLI_sys_types.h"
 #include "BLI_task.h"
 #include "BLI_threads.h"
-#include "BLI_utildefines.h"
 
 #include "BLF_api.hh"
 
@@ -239,43 +239,20 @@ struct ExtractionGraph {
  public:
   TaskGraph *graph = BLI_task_graph_create();
 
- private:
-  /* WORKAROUND: BLI_gset_free is not allowing to pass a data pointer to the free function. */
-  static thread_local TaskGraph *task_graph_ptr_;
-
- public:
   ~ExtractionGraph()
   {
     BLI_assert_msg(graph == nullptr, "Missing call to work_and_wait");
   }
 
-  /* `delayed_extraction` is a set of object to add to the graph before running.
-   * The non-null, the set is consumed and freed after use. */
-  void work_and_wait(GSet *&delayed_extraction)
+  void work_and_wait()
   {
     BLI_assert_msg(graph, "Trying to submit more than once");
-
-    if (delayed_extraction) {
-      task_graph_ptr_ = graph;
-      BLI_gset_free(delayed_extraction, delayed_extraction_free_callback);
-      task_graph_ptr_ = nullptr;
-      delayed_extraction = nullptr;
-    }
 
     BLI_task_graph_work_and_wait(graph);
     BLI_task_graph_free(graph);
     graph = nullptr;
   }
-
- private:
-  static void delayed_extraction_free_callback(void *object)
-  {
-    blender::draw::drw_batch_cache_generate_requested_evaluated_mesh_or_curve(
-        reinterpret_cast<Object *>(object), *task_graph_ptr_);
-  }
 };
-
-thread_local TaskGraph *ExtractionGraph::task_graph_ptr_ = nullptr;
 
 /** \} */
 
@@ -705,13 +682,18 @@ static bool supports_handle_ranges(DupliObject *dupli, Object *parent)
     return !BKE_modifiers_findby_type(ob, eModifierType_Fluid);
   }
 
+  if (ob_type == OB_GREASE_PENCIL) {
+    GreasePencil *grease_pencil = reinterpret_cast<GreasePencil *>(dupli->ob_data);
+    return grease_pencil->flag & GREASE_PENCIL_STROKE_ORDER_3D;
+  }
+
   return true;
 }
 
 enum class InstancesFlags : uint8_t {
   IsNegativeScale = 1 << 0,
 };
-ENUM_OPERATORS(InstancesFlags, InstancesFlags::IsNegativeScale);
+ENUM_OPERATORS(InstancesFlags);
 
 struct InstancesKey {
   uint64_t hash_value;
@@ -896,8 +878,9 @@ static void foreach_obref_in_scene(DRWContext &draw_ctx,
       }
 
       tmp_object.light_linking = ob->light_linking;
-      SET_FLAG_FROM_TEST(
-          tmp_object.transflag, bool(key.flags & InstancesFlags::IsNegativeScale), OB_NEG_SCALE);
+      SET_FLAG_FROM_TEST(tmp_object.transflag,
+                         flag_is_set(key.flags, InstancesFlags::IsNegativeScale),
+                         OB_NEG_SCALE);
       /* Should use DrawInstances data instead. */
       tmp_object.runtime->object_to_world = float4x4();
       tmp_object.runtime->world_to_object = float4x4();
@@ -995,7 +978,13 @@ void DRWContext::sync(iter_callback_t iter_callback)
   iter_callback(dupli_handler, extraction);
 
   dupli_handler.extract_all(extraction);
-  extraction.work_and_wait(this->delayed_extraction);
+  for (Object *object : this->delayed_extraction) {
+    blender::draw::drw_batch_cache_generate_requested_evaluated_mesh_or_curve(object,
+                                                                              *extraction.graph);
+  }
+  this->delayed_extraction.clear();
+
+  extraction.work_and_wait();
 
   DRW_curves_update(*view_data_active->manager);
 }
@@ -1021,6 +1010,12 @@ void DRWContext::engines_draw_scene()
   blender::draw::command::StateSet::set();
 
   view_data_active->foreach_enabled_engine([&](DrawEngine &instance) {
+#ifdef __APPLE__
+    if (G.debug & G_DEBUG_GPU) {
+      /* Put each engine inside their own command buffers. */
+      GPU_flush();
+    }
+#endif
     GPU_debug_group_begin(instance.name_get().c_str());
     instance.draw(*DRW_manager_get());
     GPU_debug_group_end();
@@ -2041,9 +2036,6 @@ void DRW_draw_depth_loop(Depsgraph *depsgraph,
         return false;
       }
       if (use_only_selected && !(ob.base_flag & BASE_SELECTED)) {
-        return false;
-      }
-      if ((ob.base_flag & BASE_SELECTABLE) == 0) {
         return false;
       }
       return true;

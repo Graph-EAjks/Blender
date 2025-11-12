@@ -1,9 +1,9 @@
 
 msgid ""
 msgstr ""
-"Project-Id-Version: Blender 5.0.0 Beta (b'702691150287')\n"
+"Project-Id-Version: Blender 5.0.0 Beta (b'd29f9f6118e5')\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-13 16:12+0000\n"
+"POT-Creation-Date: 2025-11-10 09:45+0000\n"
 "PO-Revision-Date: 2025-07-23 14:59+0000\n"
 "Last-Translator: Deniz Jones <sdfoakes@gmail.com>\n"
 "Language-Team: English (United Kingdom) <https://translate.blender.org/projects/blender-ui/ui/en_GB/>\n"
@@ -19040,10 +19040,6 @@ msgid "Amount of random elements that are going to be affected by the brush"
 msgstr "Amount of random elements that are going to be affected by the brush"
 
 
-msgid "Direction"
-msgstr "Direction"
-
-
 msgid "Add effect of brush"
 msgstr "Add effect of brush"
 
@@ -27452,10 +27448,6 @@ msgid "Sync to audio playback, dropping frames"
 msgstr "Sync to audio playback, dropping frames"
 
 
-msgid "Second"
-msgstr "Second"
-
-
 msgid "Timeline Markers"
 msgstr "Timeline Markers"
 
@@ -30316,6 +30308,10 @@ msgstr "Control key pressed, -1 for any state"
 
 msgid "Control key pressed"
 msgstr "Control key pressed"
+
+
+msgid "Direction"
+msgstr "Direction"
 
 
 msgid "The direction (only applies to drag events)"
@@ -33999,34 +33995,6 @@ msgid "Editor menu containing buttons"
 msgstr "Editor menu containing buttons"
 
 
-msgid "Metaball"
-msgstr "Metaball"
-
-
-msgid "Light"
-msgstr "Light"
-
-
-msgid "Light Probe"
-msgstr "Light Probe"
-
-
-msgid "Add Image"
-msgstr "Add Image"
-
-
-msgid "Relations"
-msgstr "Relations"
-
-
-msgid "Rigid Body"
-msgstr "Rigid Body"
-
-
-msgid "Apply"
-msgstr "Apply"
-
-
 msgid "Track"
 msgstr "Track"
 
@@ -34083,10 +34051,6 @@ msgid "Random Mask"
 msgstr "Random Mask"
 
 
-msgid "Layout"
-msgstr "Layout"
-
-
 msgid "Clear Transform"
 msgstr "Clear Transform"
 
@@ -34107,8 +34071,8 @@ msgid "Names"
 msgstr "Names"
 
 
-msgid "Adjust"
-msgstr "Adjust"
+msgid "Apply"
+msgstr "Apply"
 
 
 msgid "Toggle Bone Options"
@@ -34123,28 +34087,16 @@ msgid "Disable Bone Options"
 msgstr "Disable Bone Options"
 
 
-msgid "Keying"
-msgstr "Keying"
+msgid "Layout"
+msgstr "Layout"
 
 
 msgid "Mesh Select Mode"
 msgstr "Mesh Select Mode"
 
 
-msgid "Tracking"
-msgstr "Tracking"
-
-
-msgid "Utilities"
-msgstr "Utilities"
-
-
 msgid "Face Data"
 msgstr "Face Data"
-
-
-msgid "Math"
-msgstr "Maths"
 
 
 msgid "Select by Face Strength"
@@ -34159,6 +34111,26 @@ msgid "Merge"
 msgstr "Merge"
 
 
+msgid "Adjust"
+msgstr "Adjust"
+
+
+msgid "Keying"
+msgstr "Keying"
+
+
+msgid "Tracking"
+msgstr "Tracking"
+
+
+msgid "Utilities"
+msgstr "Utilities"
+
+
+msgid "Math"
+msgstr "Maths"
+
+
 msgid "Special Characters"
 msgstr "Special Characters"
 
@@ -34169,6 +34141,10 @@ msgstr "Kerning"
 
 msgid "Text"
 msgstr "Text"
+
+
+msgid "Metaball"
+msgstr "Metaball"
 
 
 msgid "Bone Roll"
@@ -34195,12 +34171,12 @@ msgid "Automasking"
 msgstr "Automasking"
 
 
-msgid "Read"
-msgstr "Read"
-
-
 msgid "Face Sets Edit"
 msgstr "Face Sets Edit"
+
+
+msgid "Read"
+msgstr "Read"
 
 
 msgid "Sample"
@@ -34215,20 +34191,8 @@ msgid "Primitives"
 msgstr "Primitives"
 
 
-msgid "Gizmo"
-msgstr "Gizmo"
-
-
-msgid "Instances"
-msgstr "Instances"
-
-
 msgid "Mirror"
 msgstr "Mirror"
-
-
-msgid "Import"
-msgstr "Import"
 
 
 msgid "UV Mapping"
@@ -34255,16 +34219,20 @@ msgid "Align View to Active"
 msgstr "Align View to Active"
 
 
-msgid "Deprecated"
-msgstr "Deprecated"
-
-
 msgid "View Regions"
 msgstr "View Regions"
 
 
 msgid "Select More/Less"
 msgstr "Select More/Less"
+
+
+msgid "Gizmo"
+msgstr "Gizmo"
+
+
+msgid "Instances"
+msgstr "Instances"
 
 
 msgid "Select Similar"
@@ -34275,10 +34243,6 @@ msgid "Select All by Trait"
 msgstr "Select All by Trait"
 
 
-msgid "UV"
-msgstr "UV"
-
-
 msgid "Select Linked"
 msgstr "Select Linked"
 
@@ -34287,20 +34251,52 @@ msgid "Select Loops"
 msgstr "Select Loops"
 
 
-msgid "Animals"
-msgstr "Animals"
+msgid "Import"
+msgstr "Import"
 
 
-msgid "Basic"
-msgstr "Basic"
+msgid "Deprecated"
+msgstr "Deprecated"
 
 
 msgid "Assign Material"
 msgstr "Assign Material"
 
 
+msgid "UV"
+msgstr "UV"
+
+
+msgid "Light"
+msgstr "Light"
+
+
+msgid "Light Probe"
+msgstr "Light Probe"
+
+
+msgid "Add Image"
+msgstr "Add Image"
+
+
+msgid "Relations"
+msgstr "Relations"
+
+
+msgid "Rigid Body"
+msgstr "Rigid Body"
+
+
 msgid "Keyframe Insert Pie"
 msgstr "Keyframe Insert Pie"
+
+
+msgid "Animals"
+msgstr "Animals"
+
+
+msgid "Basic"
+msgstr "Basic"
 
 
 msgid "Bone Collection Specials"
@@ -40133,16 +40129,8 @@ msgid "Location on disk where the bake data is stored"
 msgstr "Location on disk where the bake data is stored"
 
 
-msgid "Bake Target"
-msgstr "Bake Target"
-
-
 msgid "Where to store the baked data"
 msgstr "Where to store the baked data"
-
-
-msgid "Packed"
-msgstr "Packed"
 
 
 msgid "Pack the baked data into the .blend file"
@@ -50746,10 +50734,6 @@ msgstr "Still"
 
 msgid "Bake a single frame"
 msgstr "Bake a single frame"
-
-
-msgid "Inherit from Modifier"
-msgstr "Inherit from Modifier"
 
 
 msgid "Use setting from the modifier"
@@ -69798,10 +69782,6 @@ msgid "Collapse"
 msgstr "Collapse"
 
 
-msgid "Add bake item"
-msgstr "Add bake item"
-
-
 msgid "Remove an item from the index switch"
 msgstr "Remove an item from the index switch"
 
@@ -76542,10 +76522,6 @@ msgid "Add IK to Bone"
 msgstr "Add IK to Bone"
 
 
-msgid "Add IK Constraint to the active Bone"
-msgstr "Add IK Constraint to the active Bone"
-
-
 msgid "With Targets"
 msgstr "With Targets"
 
@@ -80355,17 +80331,9 @@ msgid "Add Scene Strip"
 msgstr "Add Scene Strip"
 
 
-msgid "Add a strip to the sequencer using a Blender scene as a source"
-msgstr "Add a strip to the sequencer using a Blender scene as a source"
-
-
 msgctxt "Operator"
 msgid "Add Strip with a new Scene"
 msgstr "Add Strip with a new Scene"
-
-
-msgid "Create a new Strip and assign a new Scene as source"
-msgstr "Create a new Strip and assign a new Scene as source"
 
 
 msgid "Add new Strip with a new empty Scene with default settings"
@@ -86954,6 +86922,10 @@ msgid "Don't import textures"
 msgstr "Don't import textures"
 
 
+msgid "Packed"
+msgstr "Packed"
+
+
 msgid "Import textures as packed data"
 msgstr "Import textures as packed data"
 
@@ -88021,26 +87993,6 @@ msgid "Panel containing UI elements"
 msgstr "Panel containing UI elements"
 
 
-msgid "Auto-Masking"
-msgstr "Auto-Masking"
-
-
-msgid "Curves Sculpt Add Curve Options"
-msgstr "Curves Sculpt Add Curve Options"
-
-
-msgid "Curves Sculpt Parameter Falloff"
-msgstr "Curves Sculpt Parameter Falloff"
-
-
-msgid "Curves Grow/Shrink Scaling"
-msgstr "Curves Grow/Shrink Scaling"
-
-
-msgid "Viewport Debug"
-msgstr "Viewport Debug"
-
-
 msgid "VR"
 msgstr "VR"
 
@@ -88163,6 +88115,26 @@ msgstr "Stereoscopy"
 
 msgid "Multi Frame"
 msgstr "Multi Frame"
+
+
+msgid "Auto-Masking"
+msgstr "Auto-Masking"
+
+
+msgid "Curves Sculpt Add Curve Options"
+msgstr "Curves Sculpt Add Curve Options"
+
+
+msgid "Curves Sculpt Parameter Falloff"
+msgstr "Curves Sculpt Parameter Falloff"
+
+
+msgid "Curves Grow/Shrink Scaling"
+msgstr "Curves Grow/Shrink Scaling"
+
+
+msgid "Viewport Debug"
+msgstr "Viewport Debug"
 
 
 msgid "Import Settings"
@@ -103313,16 +103285,9 @@ msgid "Method for controlling how the strip combines with other strips"
 msgstr "Method for controlling how the strip combines with other strips"
 
 
-msgid "Cross"
-msgstr "Cross"
-
-
-msgid "Alpha Under"
-msgstr "Alpha Under"
-
-
-msgid "Gamma Cross"
-msgstr "Gamma Cross"
+msgctxt "Color"
+msgid "Value"
+msgstr "Value"
 
 
 msgid "Y position of the sequence strip"
@@ -103574,11 +103539,6 @@ msgstr "Alpha Under Strip"
 
 msgid "Color Mix Strip"
 msgstr "Color Mix Strip"
-
-
-msgctxt "Color"
-msgid "Value"
-msgstr "Value"
 
 
 msgid "Color Strip"
@@ -113691,10 +113651,6 @@ msgid "External shader script must have .osl or .oso extension, or be a module n
 msgstr "External shader script must have .osl or .oso extension, or be a module name"
 
 
-msgid "Failed to write .oso file next to external .osl file at "
-msgstr "Failed to write .oso file next to external .osl file at "
-
-
 msgid "Use Intel OpenImageDenoise AI denoiser"
 msgstr "Use Intel OpenImageDenoise AI denoiser"
 
@@ -114374,10 +114330,6 @@ msgid "Selected nodes are not of the same type as {}"
 msgstr "Selected nodes are not of the same type as {}"
 
 
-msgid "Ignored {} (not of the same type as {}), "
-msgstr "Ignored {} (not of the same type as {}), "
-
-
 msgid "No folder selected"
 msgstr "No folder selected"
 
@@ -114450,16 +114402,16 @@ msgid "This node has no inputs to swap"
 msgstr "This node has no inputs to swap"
 
 
+msgid "Ignored {} (not of the same type as {})"
+msgstr "Ignored {} (not of the same type as {})"
+
+
 msgid "Ignored {}"
 msgstr "Ignored {}"
 
 
 msgid "This node has no input connections to swap"
 msgstr "This node has no input connections to swap"
-
-
-msgid "Ignored {} (not of the same type as {})"
-msgstr "Ignored {} (not of the same type as {})"
 
 
 msgid "Some connections have been lost due to differing numbers of output sockets"
@@ -115468,6 +115420,10 @@ msgid "No Action slot is assigned, so there is nothing to un-assign"
 msgstr "No Action slot is assigned, so there is nothing to un-assign"
 
 
+msgid "No objects selected"
+msgstr "No objects selected"
+
+
 msgid "Go to pose mode to copy pose bone colors"
 msgstr "Go to pose mode to copy pose bone colors"
 
@@ -115592,10 +115548,6 @@ msgid "Unable to mirror, no mirror object/bone configured"
 msgstr "Unable to mirror, no mirror object/bone configured"
 
 
-msgid "Unsupported mode: %r"
-msgstr "Unsupported mode: %r"
-
-
 msgid "Some strings were fixed, don't forget to save the .blend file to keep those changes"
 msgstr "Some strings were fixed, don't forget to save the .blend file to keep those changes"
 
@@ -115610,10 +115562,6 @@ msgstr "Previews clear process failed for file '{:s}'!"
 
 msgid "No active camera in the scene"
 msgstr "No active camera in the scene"
-
-
-msgid "Unexpected modifier type: "
-msgstr "Unexpected modifier type: "
 
 
 msgid "Target object not specified"
@@ -115776,10 +115724,6 @@ msgid "Object: {:s}, Mesh: '{:s}' has {:d} loops (for {:d} faces), expected {:d}
 msgstr "Object: {:s}, Mesh: '{:s}' has {:d} loops (for {:d} faces), expected {:d}"
 
 
-msgid "Modifiers cannot be added to object: "
-msgstr "Modifiers cannot be added to object: "
-
-
 msgid "Object {!r} already has {!r} F-Curve(s). Remove these before trying again"
 msgstr "Object {!r} already has {!r} F-Curve(s). Remove these before trying again"
 
@@ -115902,10 +115846,6 @@ msgstr "Unable to overwrite preset: {:s}"
 
 msgid "Unable to remove preset: {!r}"
 msgstr "Unable to remove preset: {!r}"
-
-
-msgid "Failed to execute the preset: "
-msgstr "Failed to execute the preset: "
 
 
 msgid "No other objects selected"
@@ -116350,10 +116290,6 @@ msgid "Python evaluation failed: "
 msgstr "Python evaluation failed: "
 
 
-msgid "Failed to assign value: "
-msgstr "Failed to assign value: "
-
-
 msgid "Strip(s)"
 msgstr "Strip(s)"
 
@@ -116386,10 +116322,6 @@ msgid "Rename {:d} {:s}"
 msgstr "Rename {:d} {:s}"
 
 
-msgid "Invalid regular expression (find): "
-msgstr "Invalid regular expression (find): "
-
-
 msgid "Version: {:s}"
 msgstr "Version: {:s}"
 
@@ -116412,10 +116344,6 @@ msgstr "Type \"{:s}\" cannot be found"
 
 msgid "Material(s)"
 msgstr "Material(s)"
-
-
-msgid "Invalid regular expression (replace): "
-msgstr "Invalid regular expression (replace): "
 
 
 msgctxt "Operator"
@@ -118207,6 +118135,10 @@ msgstr "Velocity Linear"
 
 msgid "This object is part of a compound shape"
 msgstr "This object is part of a compound shape"
+
+
+msgid "Second"
+msgstr "Second"
 
 
 msgid "X Stiffness"
@@ -128740,22 +128672,6 @@ msgid "Add IK"
 msgstr "Add IK"
 
 
-msgid "To Active Bone"
-msgstr "To Active Bone"
-
-
-msgid "To Active Object"
-msgstr "To Active Object"
-
-
-msgid "To New Empty Object"
-msgstr "To New Empty Object"
-
-
-msgid "Without Targets"
-msgstr "Without Targets"
-
-
 msgid "Could not find constraint data for Child-Of Set Inverse"
 msgstr "Could not find constraint data for Child-Of Set Inverse"
 
@@ -128878,10 +128794,6 @@ msgstr "Unexpected error, collection not found"
 
 msgid "Cannot add objects to a library override or linked collection"
 msgstr "Cannot add objects to a library override or linked collection"
-
-
-msgid "No objects selected"
-msgstr "No objects selected"
 
 
 msgid "%u object(s) hidden"
@@ -132020,10 +131932,6 @@ msgstr "Disconnect nodes connected to the input"
 
 msgid "Dependency Loop"
 msgstr "Dependency Loop"
-
-
-msgid "Unsupported Menu Socket"
-msgstr "Unsupported Menu Socket"
 
 
 msgid "Closed by Default"
@@ -135281,6 +135189,10 @@ msgid "Unable to copy item"
 msgstr "Unable to copy item"
 
 
+msgid "Anisotropic"
+msgstr "Anisotropic"
+
+
 msgctxt "NodeTree"
 msgid "Functions"
 msgstr "Functions"
@@ -137274,10 +137186,6 @@ msgid "Core Matte"
 msgstr "Core Matte"
 
 
-msgid "Anisotropic"
-msgstr "Anisotropic"
-
-
 msgid "Uniformity"
 msgstr "Uniformity"
 
@@ -138382,6 +138290,10 @@ msgstr "Select the layers to convert"
 
 msgid "Create a separate curve instance for every layer"
 msgstr "Create a separate curve instance for every layer"
+
+
+msgid "Revert"
+msgstr "Revert"
 
 
 msgid "Values larger than the threshold are inside the generated mesh"
@@ -141039,10 +140951,6 @@ msgstr "Warning: There are unsaved external image(s)."
 
 msgid "Revert to the Saved File"
 msgstr "Revert to the Saved File"
-
-
-msgid "Revert"
-msgstr "Revert"
 
 
 msgid "Clear Recent Files List"

@@ -1,11 +1,11 @@
 
 msgid ""
 msgstr ""
-"Project-Id-Version: Blender 5.0.0 Beta (b'702691150287')\n"
+"Project-Id-Version: Blender 5.0.0 Beta (b'd29f9f6118e5')\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-13 16:12+0000\n"
-"PO-Revision-Date: 2025-07-23 15:14+0000\n"
-"Last-Translator: Jan Vavřínek <janvavrinek1@gmail.com>\n"
+"POT-Creation-Date: 2025-11-10 09:45+0000\n"
+"PO-Revision-Date: 2025-11-07 07:59+0000\n"
+"Last-Translator: Matt Mitacek <mattmitacek@gmail.com>\n"
 "Language-Team: Czech <https://translate.blender.org/projects/blender-ui/ui/cs/>\n"
 "Language: cs\n"
 "MIME-Version: 1.0\n"
@@ -2177,7 +2177,7 @@ msgstr "Data bloky štětců"
 
 
 msgid "Cache Files"
-msgstr "Soubory mezipaměti"
+msgstr "Dočasné soubory"
 
 
 msgid "Cache Files data-blocks"
@@ -8561,10 +8561,6 @@ msgid "Constant"
 msgstr "Konstantní"
 
 
-msgid "Direction"
-msgstr "Směr"
-
-
 msgid "Add effect of brush"
 msgstr "Přidat efekt štětce"
 
@@ -12575,6 +12571,10 @@ msgid "Control key pressed"
 msgstr "Stisknutá klávesa Ctrl"
 
 
+msgid "Direction"
+msgstr "Směr"
+
+
 msgid "North"
 msgstr "Sever"
 
@@ -13834,26 +13834,6 @@ msgid "Material slot name"
 msgstr "Název okénka materiálu"
 
 
-msgid "Metaball"
-msgstr "Meta objekt"
-
-
-msgid "Light"
-msgstr "Světlo"
-
-
-msgid "Relations"
-msgstr "Vztahy"
-
-
-msgid "Rigid Body"
-msgstr "Tuhé Těleso"
-
-
-msgid "Apply"
-msgstr "Použít"
-
-
 msgid "Track"
 msgstr "Sledování"
 
@@ -13878,10 +13858,6 @@ msgid "Hooks"
 msgstr "Háky"
 
 
-msgid "Layout"
-msgstr "Rozložení"
-
-
 msgid "Clear Transform"
 msgstr "Vyčistit transformaci"
 
@@ -13894,12 +13870,28 @@ msgid "Names"
 msgstr "Názvy"
 
 
-msgid "Keying"
-msgstr "Klíčovací sestava"
+msgid "Apply"
+msgstr "Použít"
+
+
+msgid "Layout"
+msgstr "Rozložení"
 
 
 msgid "Mesh Select Mode"
 msgstr "Síťový mód výběru"
+
+
+msgid "Face Data"
+msgstr "Data Ploch"
+
+
+msgid "Merge"
+msgstr "Sloučit"
+
+
+msgid "Keying"
+msgstr "Klíčovací sestava"
 
 
 msgid "Tracking"
@@ -13910,16 +13902,8 @@ msgid "Utilities"
 msgstr "Nástroje"
 
 
-msgid "Face Data"
-msgstr "Data Ploch"
-
-
 msgid "Math"
 msgstr "Matematika"
-
-
-msgid "Merge"
-msgstr "Sloučit"
 
 
 msgid "Special Characters"
@@ -13928,6 +13912,10 @@ msgstr "Speciální Znaky"
 
 msgid "Text"
 msgstr "Text"
+
+
+msgid "Metaball"
+msgstr "Meta objekt"
 
 
 msgid "Bone Roll"
@@ -13946,16 +13934,8 @@ msgid "Proportional Editing Falloff"
 msgstr "Způsob útlumu"
 
 
-msgid "Instances"
-msgstr "Instance"
-
-
 msgid "Mirror"
 msgstr "Zrcadlit"
-
-
-msgid "Import"
-msgstr "Importovat"
 
 
 msgid "UV Mapping"
@@ -13974,16 +13954,36 @@ msgid "Align View"
 msgstr "Zarovnat pohled"
 
 
+msgid "Instances"
+msgstr "Instance"
+
+
 msgid "Select Linked"
 msgstr "Vybrat Propojené"
 
 
-msgid "Basic"
-msgstr "Základní"
+msgid "Import"
+msgstr "Importovat"
 
 
 msgid "Assign Material"
 msgstr "Přiřadit Materiál"
+
+
+msgid "Light"
+msgstr "Světlo"
+
+
+msgid "Relations"
+msgstr "Vztahy"
+
+
+msgid "Rigid Body"
+msgstr "Tuhé Těleso"
+
+
+msgid "Basic"
+msgstr "Základní"
 
 
 msgctxt "MovieClip"
@@ -14086,7 +14086,7 @@ msgstr "Proužek"
 
 
 msgid "Node"
-msgstr "Uzel"
+msgstr "Blok"
 
 
 msgid "Node Color Specials"
@@ -26838,10 +26838,6 @@ msgid "Add IK to Bone"
 msgstr "Přidání IK ke kosti"
 
 
-msgid "Add IK Constraint to the active Bone"
-msgstr "Přidat vazbu aktivní kosti"
-
-
 msgctxt "Operator"
 msgid "Remove IK"
 msgstr "Odebrání IK"
@@ -30494,10 +30490,6 @@ msgid "Restrict"
 msgstr "Omezit"
 
 
-msgid "Auto-Masking"
-msgstr "Auto-Maska"
-
-
 msgid "Active Tool"
 msgstr "Aktivní nástroj"
 
@@ -30552,6 +30544,10 @@ msgstr "Orientace transformací"
 
 msgid "Stereoscopy"
 msgstr "Stereoskopie"
+
+
+msgid "Auto-Masking"
+msgstr "Auto-Maska"
 
 
 msgid "Chain Scaling"
@@ -37377,6 +37373,10 @@ msgid "3D View"
 msgstr "3D pohled"
 
 
+msgid "No objects selected"
+msgstr "Žádné vybrané objekty"
+
+
 msgid "Active object is not a mesh"
 msgstr "Nastavit aktivní objekt jako kameru"
 
@@ -41661,22 +41661,6 @@ msgid "Problem baking object \"%s\""
 msgstr "Problém s vypečením objektu \"%s\""
 
 
-msgid "To Active Bone"
-msgstr "Na aktivní kost"
-
-
-msgid "To Active Object"
-msgstr "Na aktivní objekt"
-
-
-msgid "To New Empty Object"
-msgstr "Na nový prázdný objekt"
-
-
-msgid "Without Targets"
-msgstr "Bez cílů"
-
-
 msgid "Follow Path constraint not found"
 msgstr "Vazba k ceste"
 
@@ -41695,10 +41679,6 @@ msgstr "Žádná vybraná kolekce"
 
 msgid "Unexpected error, collection not found"
 msgstr "Neočekávaná chyba, kolekce nebyla nalezena"
-
-
-msgid "No objects selected"
-msgstr "Žádné vybrané objekty"
 
 
 msgid "%s already in %s"

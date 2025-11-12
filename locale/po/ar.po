@@ -1,9 +1,9 @@
 
 msgid ""
 msgstr ""
-"Project-Id-Version: Blender 5.0.0 Beta (b'702691150287')\n"
+"Project-Id-Version: Blender 5.0.0 Beta (b'd29f9f6118e5')\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-13 16:12+0000\n"
+"POT-Creation-Date: 2025-11-10 09:45+0000\n"
 "PO-Revision-Date: 2025-07-23 14:53+0000\n"
 "Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: Arabic <https://translate.blender.org/projects/blender-ui/ui/ar/>\n"
@@ -8672,10 +8672,6 @@ msgid "Constant"
 msgstr "ﺖﺑﺎﺛ"
 
 
-msgid "Direction"
-msgstr "ﻩﺎﺠﺗﺇ"
-
-
 msgid "Add effect of brush"
 msgstr "ﺓﺎﺷﺮﻔﻟﺍ ﺮﺛﺆﻣ ﻒﺿﺍ"
 
@@ -14330,6 +14326,10 @@ msgid "Control key pressed"
 msgstr "ﻁﻮﻐﻀﻣ ﻢﻜﺤﺘﻟﺍ ﺭﺯ"
 
 
+msgid "Direction"
+msgstr "ﻩﺎﺠﺗﺇ"
+
+
 msgid "South-West"
 msgstr "ﺏﺮﻏ-ﺏﻮﻨﺟ"
 
@@ -15667,26 +15667,6 @@ msgid "Material slot name"
 msgstr "ﺔﻣﺎﺨﻟﺍ ﺔﺤﺘﻓ ﻢﺳﺇ"
 
 
-msgid "Metaball"
-msgstr "ﺔﻠﻋﺎﻔﺘﻣ ﺓﺮﻛ"
-
-
-msgid "Light"
-msgstr "ءﻮﺿ"
-
-
-msgid "Relations"
-msgstr "ﺕﺎﻗﻼ﻿ﻌﻟﺍ"
-
-
-msgid "Rigid Body"
-msgstr "ﻞﻋﺎﻔﺘﻣ ﻢﺴﺟ"
-
-
-msgid "Apply"
-msgstr "ﻖﺒﻃ"
-
-
 msgid "Track"
 msgstr "ﺐﻘّﻌﺗ"
 
@@ -15703,10 +15683,6 @@ msgid "Hooks"
 msgstr "ﺕﺎﻓﺎﻄﺧ"
 
 
-msgid "Layout"
-msgstr "ﻖﻴﺴﻨﺗ"
-
-
 msgid "In-Betweens"
 msgstr "ﻦﻴﺑ ﺎﻣ"
 
@@ -15719,6 +15695,22 @@ msgid "Names"
 msgstr "ءﺎﻤﺳﺃ"
 
 
+msgid "Apply"
+msgstr "ﻖﺒﻃ"
+
+
+msgid "Layout"
+msgstr "ﻖﻴﺴﻨﺗ"
+
+
+msgid "Face Data"
+msgstr "ﻪﺟﻮﻟﺍ ﺕﺎﻧﺎﻴﺑ"
+
+
+msgid "Merge"
+msgstr "ﺞﻣﺩﺇ"
+
+
 msgid "Keying"
 msgstr "ﺺﺤﻔﻟﺍ"
 
@@ -15727,16 +15719,8 @@ msgid "Tracking"
 msgstr "ﺔﻘﺣﻼ﻿ﻤﻟﺍ"
 
 
-msgid "Face Data"
-msgstr "ﻪﺟﻮﻟﺍ ﺕﺎﻧﺎﻴﺑ"
-
-
 msgid "Math"
 msgstr "ﺏﺎﺴﺣ"
-
-
-msgid "Merge"
-msgstr "ﺞﻣﺩﺇ"
 
 
 msgid "Special Characters"
@@ -15745,6 +15729,10 @@ msgstr "ﺔﺻﺎﺧ ﻑﺮﺣﺃ"
 
 msgid "Text"
 msgstr "ﺺﻧ"
+
+
+msgid "Metaball"
+msgstr "ﺔﻠﻋﺎﻔﺘﻣ ﺓﺮﻛ"
 
 
 msgid "Bone Roll"
@@ -15761,10 +15749,6 @@ msgstr "ﻲﺒﺴﻨﻟﺍ ﺮﻳﺮﺤﺘﻟﺍ ﻲﺷﻼ﻿ﺗ"
 
 msgid "Mirror"
 msgstr "ﻞﺛﺎﻣ"
-
-
-msgid "Import"
-msgstr "ﺩﺭﻮﺘﺳﺇ"
 
 
 msgid "UV Mapping"
@@ -15795,12 +15779,28 @@ msgid "Select All by Trait"
 msgstr "ﺔﻤﺴﻟﺍ ﺐﺴﺣ ﻞﻛ ﺭﺎﻴﺘﺧﺍ"
 
 
+msgid "Select Linked"
+msgstr "ﺔﻄﺒﺗﺮﻤﻟﺍ ﺭﺎﺘﺧﺇ"
+
+
+msgid "Import"
+msgstr "ﺩﺭﻮﺘﺳﺇ"
+
+
 msgid "UV"
 msgstr "ﺭﻭﺎﺤﻣ"
 
 
-msgid "Select Linked"
-msgstr "ﺔﻄﺒﺗﺮﻤﻟﺍ ﺭﺎﺘﺧﺇ"
+msgid "Light"
+msgstr "ءﻮﺿ"
+
+
+msgid "Relations"
+msgstr "ﺕﺎﻗﻼ﻿ﻌﻟﺍ"
+
+
+msgid "Rigid Body"
+msgstr "ﻞﻋﺎﻔﺘﻣ ﻢﺴﺟ"
 
 
 msgctxt "MovieClip"
@@ -31604,10 +31604,6 @@ msgid "Sequence strip in the sequence editor"
 msgstr "ﻂﺋﺍﺮﺸﻟﺍ ﺭﺮﺤﻣ ﻲﻓ ﻞﺴﻠﺴﺘﻟﺍ ﻂﻳﺮﺷ"
 
 
-msgid "Cross"
-msgstr "ﻊﻃﺎﻘﺗ"
-
-
 msgid "Modifiers affecting this strip"
 msgstr "ﻂﻳﺮﺸﻟﺍ ﺍﺬﻬﺑ ﺓﺮﺛﺆﻤﻟﺍ ﺕﺍﺮﻴﻐﻤﻟﺍ"
 
@@ -35856,14 +35852,6 @@ msgid "No active mesh object"
 msgstr "ﻝﺎﻌﻔﻟﺍ ﻦﺋﺎﻜﻟﺍ ﻞﻴﻟﺩ"
 
 
-msgid "To Active Bone"
-msgstr "ﺔﻟﺎﻌّﻔﻟﺍ ﺔﻤﻈﻌﻠﻟ"
-
-
-msgid "To Active Object"
-msgstr "ﻝﺎﻌّﻔﻟﺍ ﻦﺋﺎﻜﻠﻟ"
-
-
 msgid "Child Of constraint not found"
 msgstr "ـﻟ ﻉﺮﻓ ﺪﻴﻗ"
 
@@ -36642,6 +36630,10 @@ msgid "Unable to create socket"
 msgstr "ﺔﺤﺘﻓ ءﺎﺸﻧﺇ ﻰﻠﻋ ﺭﺩﺎﻗ ﺮﻴﻏ"
 
 
+msgid "Anisotropic"
+msgstr "ﺱﺎﻜﻌﻧﻹ﻿ﺍ ﻞﻜﺸﺗ"
+
+
 msgid "Unable to locate link in node tree"
 msgstr "ﺪﻘﻋ ﺓﺮﺠﺷ ﻲﻓ ﺪﻘﻋ ﻦﻴﺑ ﻂﺑﺍﺭ"
 
@@ -36744,10 +36736,6 @@ msgstr "ﻥﻮﻠﻟﺍ ﻞﻳﺪﻌﺗ"
 
 msgid "Fac"
 msgstr "ﻞﻣﺎﻌﻤﻟﺍ"
-
-
-msgid "Anisotropic"
-msgstr "ﺱﺎﻜﻌﻧﻹ﻿ﺍ ﻞﻜﺸﺗ"
 
 
 msgid "Eccentricity"

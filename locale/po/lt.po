@@ -1,9 +1,9 @@
 
 msgid ""
 msgstr ""
-"Project-Id-Version: Blender 5.0.0 Beta (b'702691150287')\n"
+"Project-Id-Version: Blender 5.0.0 Beta (b'd29f9f6118e5')\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-13 16:12+0000\n"
+"POT-Creation-Date: 2025-11-10 09:45+0000\n"
 "PO-Revision-Date: 2025-07-23 15:18+0000\n"
 "Last-Translator: Aras Pranckevičius <aras@nesnausk.org>\n"
 "Language-Team: Lithuanian <https://translate.blender.org/projects/blender-ui/ui/lt/>\n"
@@ -2364,10 +2364,6 @@ msgid "Add"
 msgstr "Pridėti"
 
 
-msgid "Direction"
-msgstr "Kryptis"
-
-
 msgid "Has unsaved changes"
 msgstr "Turi neišsaugotų pakeitimų"
 
@@ -2869,6 +2865,10 @@ msgid "Owner"
 msgstr "Savininkas/-ė"
 
 
+msgid "Direction"
+msgstr "Kryptis"
+
+
 msgid "North"
 msgstr "Šiaurė"
 
@@ -3089,16 +3089,16 @@ msgid "Dots"
 msgstr "Taškai"
 
 
-msgid "Apply"
-msgstr "Pritaikyti"
-
-
 msgid "Track"
 msgstr "Sekti"
 
 
 msgid "Show/Hide"
 msgstr "Rodyti/Slėpti"
+
+
+msgid "Apply"
+msgstr "Pritaikyti"
 
 
 msgid "Layout"

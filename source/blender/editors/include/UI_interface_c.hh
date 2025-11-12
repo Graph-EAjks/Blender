@@ -13,10 +13,10 @@
 #include <string>
 
 #include "BLI_compiler_attrs.h"
+#include "BLI_enum_flags.hh"
 #include "BLI_string_ref.hh"
 #include "BLI_string_utf8_symbols.h"
 #include "BLI_sys_types.h" /* size_t */
-#include "BLI_utildefines.h"
 
 #include "DNA_userdef_types.h"
 
@@ -395,7 +395,7 @@ enum class ButPointerType : uint8_t {
   // ButPointerType::Function = 192, /* UNUSED */
   Bit = 1 << 7, /* OR'd with a bit index. */
 };
-ENUM_OPERATORS(ButPointerType, ButPointerType::Bit);
+ENUM_OPERATORS(ButPointerType);
 /** \note requires `uiBut::poin != nullptr`. */
 #define UI_BUT_POIN_TYPES (ButPointerType::Float | ButPointerType::Short | ButPointerType::Char)
 
@@ -725,6 +725,13 @@ bool UI_block_can_add_separator(const uiBlock *block);
  * Use this for popups to detect when pressing "Return" will run an action.
  */
 bool UI_block_has_active_default_button(const uiBlock *block);
+
+/**
+ * Find a button under the mouse cursor, ignoring non-interactive ones (like labels). Holding Ctrl
+ * over a label button that can be Ctrl-Clicked to turn into an edit button will return that.
+ * Labels that are only interactive for the sake of displaying a tooltip are ignored too.
+ */
+uiBut *UI_but_find_mouse_over(const ARegion *region, const wmEvent *event) ATTR_WARN_UNUSED_RESULT;
 
 uiList *UI_list_find_mouse_over(const ARegion *region, const wmEvent *event);
 
@@ -1113,7 +1120,6 @@ bool UI_but_is_userdef(const uiBut *but);
 
 uiBut *uiDefBut(uiBlock *block,
                 uiButTypeWithPointerType but_and_ptr_type,
-                int retval,
                 blender::StringRef str,
                 int x,
                 int y,
@@ -1125,7 +1131,6 @@ uiBut *uiDefBut(uiBlock *block,
                 std::optional<blender::StringRef> tip);
 uiBut *uiDefButF(uiBlock *block,
                  ButType type,
-                 int retval,
                  blender::StringRef str,
                  int x,
                  int y,
@@ -1137,7 +1142,6 @@ uiBut *uiDefButF(uiBlock *block,
                  std::optional<blender::StringRef> tip);
 uiBut *uiDefButI(uiBlock *block,
                  ButType type,
-                 int retval,
                  blender::StringRef str,
                  int x,
                  int y,
@@ -1150,7 +1154,6 @@ uiBut *uiDefButI(uiBlock *block,
 uiBut *uiDefButBitI(uiBlock *block,
                     ButType type,
                     int bit,
-                    int retval,
                     blender::StringRef str,
                     int x,
                     int y,
@@ -1162,7 +1165,6 @@ uiBut *uiDefButBitI(uiBlock *block,
                     std::optional<blender::StringRef> tip);
 uiBut *uiDefButS(uiBlock *block,
                  ButType type,
-                 int retval,
                  blender::StringRef str,
                  int x,
                  int y,
@@ -1175,7 +1177,6 @@ uiBut *uiDefButS(uiBlock *block,
 uiBut *uiDefButBitS(uiBlock *block,
                     ButType type,
                     int bit,
-                    int retval,
                     blender::StringRef str,
                     int x,
                     int y,
@@ -1187,7 +1188,6 @@ uiBut *uiDefButBitS(uiBlock *block,
                     std::optional<blender::StringRef> tip);
 uiBut *uiDefButC(uiBlock *block,
                  ButType type,
-                 int retval,
                  blender::StringRef str,
                  int x,
                  int y,
@@ -1200,7 +1200,6 @@ uiBut *uiDefButC(uiBlock *block,
 uiBut *uiDefButBitC(uiBlock *block,
                     ButType type,
                     int bit,
-                    int retval,
                     blender::StringRef str,
                     int x,
                     int y,
@@ -1212,7 +1211,6 @@ uiBut *uiDefButBitC(uiBlock *block,
                     std::optional<blender::StringRef> tip);
 uiBut *uiDefButR(uiBlock *block,
                  ButType type,
-                 int retval,
                  std::optional<blender::StringRef> str,
                  int x,
                  int y,
@@ -1226,7 +1224,6 @@ uiBut *uiDefButR(uiBlock *block,
                  std::optional<blender::StringRef> tip);
 uiBut *uiDefButR_prop(uiBlock *block,
                       ButType type,
-                      int retval,
                       std::optional<blender::StringRef> str,
                       int x,
                       int y,
@@ -1261,7 +1258,6 @@ uiBut *uiDefButO_ptr(uiBlock *block,
 
 uiBut *uiDefIconBut(uiBlock *block,
                     uiButTypeWithPointerType but_and_ptr_type,
-                    int retval,
                     int icon,
                     int x,
                     int y,
@@ -1273,7 +1269,6 @@ uiBut *uiDefIconBut(uiBlock *block,
                     std::optional<blender::StringRef> tip);
 uiBut *uiDefIconButI(uiBlock *block,
                      ButType type,
-                     int retval,
                      int icon,
                      int x,
                      int y,
@@ -1286,7 +1281,6 @@ uiBut *uiDefIconButI(uiBlock *block,
 uiBut *uiDefIconButBitI(uiBlock *block,
                         ButType type,
                         int bit,
-                        int retval,
                         int icon,
                         int x,
                         int y,
@@ -1298,7 +1292,6 @@ uiBut *uiDefIconButBitI(uiBlock *block,
                         std::optional<blender::StringRef> tip);
 uiBut *uiDefIconButS(uiBlock *block,
                      ButType type,
-                     int retval,
                      int icon,
                      int x,
                      int y,
@@ -1311,7 +1304,6 @@ uiBut *uiDefIconButS(uiBlock *block,
 uiBut *uiDefIconButBitS(uiBlock *block,
                         ButType type,
                         int bit,
-                        int retval,
                         int icon,
                         int x,
                         int y,
@@ -1324,7 +1316,6 @@ uiBut *uiDefIconButBitS(uiBlock *block,
 uiBut *uiDefIconButBitC(uiBlock *block,
                         ButType type,
                         int bit,
-                        int retval,
                         int icon,
                         int x,
                         int y,
@@ -1336,7 +1327,6 @@ uiBut *uiDefIconButBitC(uiBlock *block,
                         std::optional<blender::StringRef> tip);
 uiBut *uiDefIconButR(uiBlock *block,
                      ButType type,
-                     int retval,
                      int icon,
                      int x,
                      int y,
@@ -1350,7 +1340,6 @@ uiBut *uiDefIconButR(uiBlock *block,
                      std::optional<blender::StringRef> tip);
 uiBut *uiDefIconButR_prop(uiBlock *block,
                           ButType type,
-                          int retval,
                           int icon,
                           int x,
                           int y,
@@ -1384,7 +1373,6 @@ uiBut *uiDefIconButO_ptr(uiBlock *block,
                          std::optional<blender::StringRef> tip);
 uiBut *uiDefIconPreviewBut(uiBlock *block,
                            ButType type,
-                           int retval,
                            int icon,
                            int x,
                            int y,
@@ -1400,7 +1388,6 @@ uiBut *uiDefButAlert(uiBlock *block, int icon, int x, int y, short width, short 
 /** Button containing both string label and icon. */
 uiBut *uiDefIconTextBut(uiBlock *block,
                         uiButTypeWithPointerType but_and_ptr_type,
-                        int retval,
                         int icon,
                         blender::StringRef str,
                         int x,
@@ -1411,7 +1398,6 @@ uiBut *uiDefIconTextBut(uiBlock *block,
                         std::optional<blender::StringRef> tip);
 uiBut *uiDefIconTextButI(uiBlock *block,
                          ButType type,
-                         int retval,
                          int icon,
                          blender::StringRef str,
                          int x,
@@ -1422,7 +1408,6 @@ uiBut *uiDefIconTextButI(uiBlock *block,
                          std::optional<blender::StringRef> tip);
 uiBut *uiDefIconTextButS(uiBlock *block,
                          ButType type,
-                         int retval,
                          int icon,
                          blender::StringRef str,
                          int x,
@@ -1433,7 +1418,6 @@ uiBut *uiDefIconTextButS(uiBlock *block,
                          std::optional<blender::StringRef> tip);
 uiBut *uiDefIconTextButR(uiBlock *block,
                          ButType type,
-                         int retval,
                          int icon,
                          std::optional<blender::StringRefNull> str,
                          int x,
@@ -1446,7 +1430,6 @@ uiBut *uiDefIconTextButR(uiBlock *block,
                          std::optional<blender::StringRef> tip);
 uiBut *uiDefIconTextButR_prop(uiBlock *block,
                               ButType type,
-                              int retval,
                               int icon,
                               std::optional<blender::StringRef> str,
                               int x,
@@ -1481,6 +1464,8 @@ uiBut *uiDefIconTextButO_ptr(uiBlock *block,
                              short width,
                              short height,
                              std::optional<blender::StringRef> tip);
+
+void UI_but_retval_set(uiBut *but, int retval);
 
 void UI_but_operator_set(uiBut *but,
                          wmOperatorType *optype,
@@ -1643,7 +1628,6 @@ uiBut *uiDefBlockButN(uiBlock *block,
 uiBut *uiDefIconBlockBut(uiBlock *block,
                          uiBlockCreateFunc func,
                          void *arg,
-                         int retval,
                          int icon,
                          int x,
                          int y,
@@ -1656,7 +1640,6 @@ uiBut *uiDefIconBlockBut(uiBlock *block,
  */
 uiBut *uiDefSearchBut(uiBlock *block,
                       void *arg,
-                      int retval,
                       int icon,
                       int maxncpy,
                       int x,
@@ -1672,7 +1655,6 @@ uiBut *uiDefSearchButO_ptr(uiBlock *block,
                            wmOperatorType *ot,
                            IDProperty *properties,
                            void *arg,
-                           int retval,
                            int icon,
                            int maxncpy,
                            int x,
@@ -1699,7 +1681,7 @@ enum eAutoPropButsReturn {
   UI_PROP_BUTS_ANY_FAILED_CHECK = 1 << 1,
 };
 
-ENUM_OPERATORS(eAutoPropButsReturn, UI_PROP_BUTS_ANY_FAILED_CHECK);
+ENUM_OPERATORS(eAutoPropButsReturn);
 
 uiBut *uiDefAutoButR(uiBlock *block,
                      PointerRNA *ptr,
@@ -2579,10 +2561,8 @@ enum uiTemplateListFlags {
   UI_TEMPLATE_LIST_NO_FILTER_OPTIONS = (1 << 3),
   /** For #UILST_LAYOUT_BIG_PREVIEW_GRID, don't reserve space for the name label. */
   UI_TEMPLATE_LIST_NO_NAMES = (1 << 4),
-
-  UI_TEMPLATE_LIST_FLAGS_LAST
 };
-ENUM_OPERATORS(uiTemplateListFlags, UI_TEMPLATE_LIST_FLAGS_LAST);
+ENUM_OPERATORS(uiTemplateListFlags);
 
 void uiTemplateList(uiLayout *layout,
                     const bContext *C,

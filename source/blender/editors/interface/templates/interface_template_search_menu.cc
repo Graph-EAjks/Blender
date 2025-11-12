@@ -707,7 +707,7 @@ static MenuSearch_Data *menu_items_from_ui_create(bContext *C,
         }
         else if ((mt_from_but = UI_but_menutype_get(but.get()))) {
           const bool uses_context = but->context &&
-                                    bool(mt_from_but->flag & MenuTypeFlag::ContextDependent);
+                                    flag_is_set(mt_from_but->flag, MenuTypeFlag::ContextDependent);
           const bool tagged_first_time = menu_tagged.add(mt_from_but);
           const bool scan_submenu = tagged_first_time || uses_context;
 
@@ -1152,7 +1152,7 @@ void uiTemplateMenuSearch(uiLayout *layout)
   blender::ui::block_layout_set_current(block, layout);
 
   but = uiDefSearchBut(
-      block, search, 0, ICON_VIEWZOOM, sizeof(search), 0, 0, UI_UNIT_X * 6, UI_UNIT_Y, "");
+      block, search, ICON_VIEWZOOM, sizeof(search), 0, 0, UI_UNIT_X * 6, UI_UNIT_Y, "");
   UI_but_func_menu_search(but);
 }
 

@@ -468,7 +468,7 @@ bool EDBM_uvselect_clear(BMEditMesh *em)
 /** \name UV Vertex Map API
  * \{ */
 
-UvVertMap *BM_uv_vert_map_create(BMesh *bm, const bool use_select)
+UvVertMap *BM_uv_vert_map_create(BMesh *bm, const bool use_select, const bool respect_hide)
 {
   /* NOTE: delimiting on alternate face-winding was once supported and could be useful
    * in some cases. If this is need see: D17137 to restore support. */
@@ -486,9 +486,13 @@ UvVertMap *BM_uv_vert_map_create(BMesh *bm, const bool use_select)
 
   /* generate UvMapVert array */
   BM_ITER_MESH (efa, &iter, bm, BM_FACES_OF_MESH) {
-    if ((use_select == false) || BM_elem_flag_test(efa, BM_ELEM_SELECT)) {
-      totuv += efa->len;
+    if (use_select && !BM_elem_flag_test(efa, BM_ELEM_SELECT)) {
+      continue;
     }
+    if (respect_hide && BM_elem_flag_test(efa, BM_ELEM_HIDDEN)) {
+      continue;
+    }
+    totuv += efa->len;
   }
 
   if (totuv == 0) {
@@ -508,17 +512,21 @@ UvVertMap *BM_uv_vert_map_create(BMesh *bm, const bool use_select)
   }
 
   BM_ITER_MESH_INDEX (efa, &iter, bm, BM_FACES_OF_MESH, a) {
-    if ((use_select == false) || BM_elem_flag_test(efa, BM_ELEM_SELECT)) {
-      int i;
-      BM_ITER_ELEM_INDEX (l, &liter, efa, BM_LOOPS_OF_FACE, i) {
-        buf->loop_of_face_index = i;
-        buf->face_index = a;
-        buf->separate = false;
+    if (use_select && !BM_elem_flag_test(efa, BM_ELEM_SELECT)) {
+      continue;
+    }
+    if (respect_hide && BM_elem_flag_test(efa, BM_ELEM_HIDDEN)) {
+      continue;
+    }
+    int i;
+    BM_ITER_ELEM_INDEX (l, &liter, efa, BM_LOOPS_OF_FACE, i) {
+      buf->loop_of_face_index = i;
+      buf->face_index = a;
+      buf->separate = false;
 
-        buf->next = vmap->vert[BM_elem_index_get(l->v)];
-        vmap->vert[BM_elem_index_get(l->v)] = buf;
-        buf++;
-      }
+      buf->next = vmap->vert[BM_elem_index_get(l->v)];
+      vmap->vert[BM_elem_index_get(l->v)] = buf;
+      buf++;
     }
   }
 
@@ -909,7 +917,7 @@ static bool seam_connected_recursive(BMEdge *edge,
                                      const float luv_anchor[2],
                                      const float luv_fan[2],
                                      const BMLoop *needle,
-                                     GSet *visited,
+                                     blender::Set<const BMEdge *> &visited,
                                      const int cd_loop_uv_offset)
 {
   BMVert *anchor = needle->v;
@@ -919,7 +927,7 @@ static bool seam_connected_recursive(BMEdge *edge,
     return false; /* Edge is a seam, don't traverse. */
   }
 
-  if (!BLI_gset_add(visited, edge)) {
+  if (!visited.add(edge)) {
     return false; /* Already visited. */
   }
 
@@ -970,13 +978,16 @@ static bool seam_connected_recursive(BMEdge *edge,
  * \return true if there are edges that fan between them that are seam-free.
  * return false otherwise.
  */
-static bool seam_connected(BMLoop *loop_a, BMLoop *loop_b, GSet *visited, int cd_loop_uv_offset)
+static bool seam_connected(BMLoop *loop_a,
+                           BMLoop *loop_b,
+                           blender::Set<const BMEdge *> &visited,
+                           int cd_loop_uv_offset)
 {
   BLI_assert(loop_a && loop_b);
   BLI_assert(loop_a != loop_b);
   BLI_assert(loop_a->v == loop_b->v);
 
-  BLI_gset_clear(visited, nullptr);
+  visited.clear();
 
   const float *luv_anchor = BM_ELEM_CD_GET_FLOAT_P(loop_a, cd_loop_uv_offset);
   const float *luv_next_fan = BM_ELEM_CD_GET_FLOAT_P(loop_a->next, cd_loop_uv_offset);
@@ -1086,7 +1097,7 @@ UvElementMap *BM_uv_element_map_create(BMesh *bm,
     }
   }
 
-  GSet *seam_visited_gset = use_seams ? BLI_gset_ptr_new(__func__) : nullptr;
+  blender::Set<const BMEdge *> seam_visited_set;
 
   /* For each BMVert, sort associated linked list into unique uvs. */
   int ev_index;
@@ -1132,7 +1143,7 @@ UvElementMap *BM_uv_element_map_create(BMesh *bm,
         }
 
         if (connected && use_seams) {
-          connected = seam_connected(iterv->l, v->l, seam_visited_gset, offsets.uv);
+          connected = seam_connected(iterv->l, v->l, seam_visited_set, offsets.uv);
         }
 
         if (connected) {
@@ -1160,9 +1171,8 @@ UvElementMap *BM_uv_element_map_create(BMesh *bm,
     element_map->vertex[ev_index] = newvlist;
   }
 
-  if (seam_visited_gset) {
-    BLI_gset_free(seam_visited_gset, nullptr);
-    seam_visited_gset = nullptr;
+  if (!use_seams) {
+    BLI_assert(seam_visited_set.is_empty());
   }
   MEM_SAFE_FREE(winding);
 

@@ -207,7 +207,7 @@ UvMapVert *BM_uv_vert_map_at_index(UvVertMap *vmap, unsigned int v);
 /**
  * Return a new #UvVertMap from the edit-mesh.
  */
-UvVertMap *BM_uv_vert_map_create(BMesh *bm, bool use_select);
+UvVertMap *BM_uv_vert_map_create(BMesh *bm, bool use_select, bool respect_hide);
 
 void EDBM_flag_enable_all(BMEditMesh *em, char hflag);
 void EDBM_flag_disable_all(BMEditMesh *em, char hflag);
@@ -246,6 +246,7 @@ void ED_mesh_undosys_type(UndoType *ut);
 void EDBM_select_mirrored(
     BMEditMesh *em, const Mesh *mesh, int axis, bool extend, int *r_totmirr, int *r_totfail);
 
+#if 0 /* Unused but seems useful to keep. */
 /**
  * Select mirrored elements on all enabled axis.
  * Does nothing if selection symmetry isn't enabled.
@@ -253,6 +254,7 @@ void EDBM_select_mirrored(
  * \return true if the selection changed.
  */
 bool EDBM_select_mirrored_extend_all(Object *obedit, BMEditMesh *em);
+#endif
 
 /**
  * Nearest vertex under the cursor.
@@ -529,7 +531,7 @@ int ED_mesh_uv_add(
 
 void ED_mesh_uv_loop_reset(bContext *C, Mesh *mesh);
 bool ED_mesh_color_ensure(Mesh *mesh, const char *name);
-int ED_mesh_color_add(
+std::string ED_mesh_color_add(
     Mesh *mesh, const char *name, bool active_set, bool do_init, ReportList *reports);
 
 void ED_mesh_report_mirror(ReportList &reports, int totmirr, int totfail);

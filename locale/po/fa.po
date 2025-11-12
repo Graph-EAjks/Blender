@@ -1,9 +1,9 @@
 
 msgid ""
 msgstr ""
-"Project-Id-Version: Blender 5.0.0 Beta (b'702691150287')\n"
+"Project-Id-Version: Blender 5.0.0 Beta (b'd29f9f6118e5')\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-13 16:12+0000\n"
+"POT-Creation-Date: 2025-11-10 09:45+0000\n"
 "PO-Revision-Date: 2025-07-23 15:03+0000\n"
 "Last-Translator: Nooby Noober <iamanoobynoober@gmail.com>\n"
 "Language-Team: Persian <https://translate.blender.org/projects/blender-ui/ui/fa/>\n"
@@ -2364,10 +2364,6 @@ msgid "Slide"
 msgstr "ﺪﯾﻼ﻿ﺳﺍ"
 
 
-msgid "Direction"
-msgstr "ﺎﺘﺳﺍﺭ"
-
-
 msgctxt "Brush"
 msgid "Scale"
 msgstr "ﺱﺎﯿﻘﻣ"
@@ -2850,6 +2846,10 @@ msgid "Ctrl"
 msgstr "Ctrl"
 
 
+msgid "Direction"
+msgstr "ﺎﺘﺳﺍﺭ"
+
+
 msgid "Cmd"
 msgstr "Cmd"
 
@@ -2933,20 +2933,12 @@ msgid "Mix"
 msgstr "ﻁﻮﻠﺨﻣ"
 
 
-msgid "Add Image"
-msgstr "ﺮﯾﻮﺼﺗ ﻥﺩﺮﮐ‌ﻪﻓﺎﺿﺍ"
-
-
-msgid "Relations"
-msgstr "ﻂﺑﺍﻭﺭ"
+msgid "Convert"
+msgstr "ﻞﯾﺪﺒﺗ"
 
 
 msgid "Apply"
 msgstr "ﻝﺎﻤﻋﺍ"
-
-
-msgid "Convert"
-msgstr "ﻞﯾﺪﺒﺗ"
 
 
 msgid "Layout"
@@ -2979,6 +2971,14 @@ msgstr "ﻥﺩﺮﮐ ﺩﺭﺍﻭ"
 
 msgid "UV"
 msgstr "UV"
+
+
+msgid "Add Image"
+msgstr "ﺮﯾﻮﺼﺗ ﻥﺩﺮﮐ‌ﻪﻓﺎﺿﺍ"
+
+
+msgid "Relations"
+msgstr "ﻂﺑﺍﻭﺭ"
 
 
 msgid "Key"

@@ -10,8 +10,8 @@
 
 #include "BKE_nla.hh"
 
+#include "BLI_enum_flags.hh"
 #include "BLI_sys_types.h"
-#include "BLI_utildefines.h"
 
 #include "DNA_screen_types.h"
 #include "DNA_space_types.h"
@@ -107,6 +107,16 @@ struct bAnimContext {
   /** Editor mode, which depends on `spacetype` (below). */
   eAnimEdit_Context dopesheet_mode;
   eGraphEdit_Mode grapheditor_mode;
+
+  /**
+   * Filters from the dopesheet/graph editor settings. These may reflect the corresponding bits in
+   * ads->filterflag and ads->filterflag2, but can also be overriden by the dopesheet mode to force
+   * certain filters (without having to write to ads->filterflag/flag2).
+   */
+  struct {
+    eDopeSheet_FilterFlag flag;
+    eDopeSheet_FilterFlag2 flag2;
+  } filters;
 
   /** area->spacetype */
   eSpace_Type spacetype;
@@ -259,7 +269,7 @@ enum eAnim_Update_Flags {
   /** Recalculate handles. */
   ANIM_UPDATE_HANDLES = (1 << 2),
 };
-ENUM_OPERATORS(eAnim_Update_Flags, ANIM_UPDATE_HANDLES);
+ENUM_OPERATORS(eAnim_Update_Flags);
 
 /* used for most tools which change keyframes (flushed by ANIM_animdata_update) */
 #define ANIM_UPDATE_DEFAULT (ANIM_UPDATE_DEPS | ANIM_UPDATE_ORDER | ANIM_UPDATE_HANDLES)
@@ -411,7 +421,7 @@ enum eAnimFilter_Flags {
   ANIMFILTER_TMP_IGNORE_ONLYSEL = (1u << 31),
 
 };
-ENUM_OPERATORS(eAnimFilter_Flags, ANIMFILTER_TMP_IGNORE_ONLYSEL);
+ENUM_OPERATORS(eAnimFilter_Flags);
 
 /** \} */
 

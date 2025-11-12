@@ -1,9 +1,9 @@
 
 msgid ""
 msgstr ""
-"Project-Id-Version: Blender 5.0.0 Beta (b'702691150287')\n"
+"Project-Id-Version: Blender 5.0.0 Beta (b'd29f9f6118e5')\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-13 16:12+0000\n"
+"POT-Creation-Date: 2025-11-10 09:45+0000\n"
 "PO-Revision-Date: 2025-07-23 15:32+0000\n"
 "Last-Translator: Leevi Oksanen <laavi.oksanen@gmail.com>\n"
 "Language-Team: Finnish <https://translate.blender.org/projects/blender-ui/ui/fi/>\n"
@@ -6058,10 +6058,6 @@ msgid "Slide"
 msgstr "Sivu"
 
 
-msgid "Direction"
-msgstr "Suunta"
-
-
 msgctxt "Brush"
 msgid "Draw"
 msgstr "Piirrä"
@@ -6978,10 +6974,6 @@ msgid "Cycles render settings"
 msgstr "Cycles-renderöintiasetukset"
 
 
-msgid "Second"
-msgstr "Sekuntti"
-
-
 msgid "Play Audio"
 msgstr "Soita audio"
 
@@ -7236,28 +7228,16 @@ msgid "Workspace"
 msgstr "Työtila"
 
 
+msgid "Direction"
+msgstr "Suunta"
+
+
 msgid "ID Type"
 msgstr "ID-tyyppi"
 
 
 msgid "Mask"
 msgstr "Maski"
-
-
-msgid "Metaball"
-msgstr "Metapallo"
-
-
-msgid "Light"
-msgstr "Valo"
-
-
-msgid "Light Probe"
-msgstr "Valoluotain"
-
-
-msgid "Add Image"
-msgstr "Lisää kuva"
 
 
 msgid "Track"
@@ -7296,20 +7276,16 @@ msgid "Text"
 msgstr "Teksti"
 
 
+msgid "Metaball"
+msgstr "Metapallo"
+
+
 msgid "Read"
 msgstr "Lue"
 
 
 msgid "Write"
 msgstr "Kirjoita"
-
-
-msgid "Instances"
-msgstr "Instanssit"
-
-
-msgid "Import"
-msgstr "Tuo"
 
 
 msgid "UV Mapping"
@@ -7320,6 +7296,10 @@ msgid "Select More/Less"
 msgstr "Valitse enemmän/vähemmän"
 
 
+msgid "Instances"
+msgstr "Instanssit"
+
+
 msgid "Select Similar"
 msgstr "Valitse samankaltainen"
 
@@ -7328,12 +7308,28 @@ msgid "Select All by Trait"
 msgstr "Valitse kaikki piirteen mukaan"
 
 
+msgid "Select Loops"
+msgstr "Valitse silmukat"
+
+
+msgid "Import"
+msgstr "Tuo"
+
+
 msgid "UV"
 msgstr "UV"
 
 
-msgid "Select Loops"
-msgstr "Valitse silmukat"
+msgid "Light"
+msgstr "Valo"
+
+
+msgid "Light Probe"
+msgstr "Valoluotain"
+
+
+msgid "Add Image"
+msgstr "Lisää kuva"
 
 
 msgid "Basic"
@@ -12397,6 +12393,10 @@ msgid "Torus"
 msgstr "Torus"
 
 
+msgid "No objects selected"
+msgstr "Yhtäkään objektia ei ole valittu"
+
+
 msgid "The Scene needs a camera"
 msgstr "Kohtaus tarvitsee kameran"
 
@@ -12833,6 +12833,10 @@ msgstr "Tyhjä tila"
 
 msgid "Bake Selected"
 msgstr "Paista Valittu"
+
+
+msgid "Second"
+msgstr "Sekuntti"
 
 
 msgid "Paths:"
@@ -14322,22 +14326,6 @@ msgid "Suzanne"
 msgstr "Suzanne"
 
 
-msgid "To Active Bone"
-msgstr "Aktiiviseen luuhun"
-
-
-msgid "To Active Object"
-msgstr "Aktiiviseen objektiin"
-
-
-msgid "To New Empty Object"
-msgstr "Uuteen tyhjään objektiin"
-
-
-msgid "Without Targets"
-msgstr "Ilman kohteita"
-
-
 msgid "Path is already animated"
 msgstr "Polku on jo animoitu"
 
@@ -14348,10 +14336,6 @@ msgstr "Yhtäkään kokoelmaa ei ole valittu"
 
 msgid "Unexpected error, collection not found"
 msgstr "Yllättävä virhe, kokoelmaa ei löydy"
-
-
-msgid "No objects selected"
-msgstr "Yhtäkään objektia ei ole valittu"
 
 
 msgid "Could not find hook modifier"
@@ -14888,10 +14872,6 @@ msgstr "Katkaise yhteys"
 
 msgid "Add node to input"
 msgstr "Lisää noodi syötteeseen"
-
-
-msgid "Unsupported Menu Socket"
-msgstr "Menupistoketta ei tueta"
 
 
 msgid "Copy to bone"

@@ -42,6 +42,7 @@
 #include "DNA_windowmanager_types.h"
 #include "DNA_world_types.h"
 
+#include "BLI_function_ref.hh"
 #include "BLI_listbase.h"
 #include "BLI_math_base.h"
 #include "BLI_math_rotation.h"
@@ -85,7 +86,7 @@
 #include "BKE_scene.hh"
 #include "BKE_scene_runtime.hh"
 #include "BKE_screen.hh"
-#include "BKE_sound.h"
+#include "BKE_sound.hh"
 #include "BKE_unit.hh"
 #include "BKE_workspace.hh"
 
@@ -231,8 +232,6 @@ static void scene_init_data(ID *id)
   srv = static_cast<SceneRenderView *>(scene->r.views.last);
   STRNCPY(srv->suffix, STEREO_RIGHT_SUFFIX);
 
-  BKE_sound_reset_scene_runtime(scene);
-
   /* color management */
   colorspace_name = IMB_colormanagement_role_colorspace_name_get(COLOR_ROLE_DEFAULT_SEQUENCER);
 
@@ -331,8 +330,6 @@ static void scene_copy_data(Main *bmain,
     scene_dst->display.shading.prop = IDP_CopyProperty(scene_src->display.shading.prop);
   }
 
-  BKE_sound_reset_scene_runtime(scene_dst);
-
   /* Copy sequencer, this is local data! */
   if (scene_src->ed) {
     scene_dst->ed = MEM_callocN<Editing>(__func__);
@@ -340,13 +337,16 @@ static void scene_copy_data(Main *bmain,
     scene_dst->ed->show_missing_media_flag = scene_src->ed->show_missing_media_flag;
     scene_dst->ed->proxy_storage = scene_src->ed->proxy_storage;
     STRNCPY(scene_dst->ed->proxy_dir, scene_src->ed->proxy_dir);
-    blender::seq::seqbase_duplicate_recursive(bmain,
-                                              scene_src,
-                                              scene_dst,
-                                              &scene_dst->ed->seqbase,
-                                              &scene_src->ed->seqbase,
-                                              blender::seq::StripDuplicate::All,
-                                              flag_subdata);
+    blender::seq::seqbase_duplicate_recursive(
+        bmain,
+        scene_src,
+        scene_dst,
+        &scene_dst->ed->seqbase,
+        &scene_src->ed->seqbase,
+        /* NOTE: Never use #StripDuplicate::Data here (would generate recursive ID duplication not,
+         * supported at all here). */
+        blender::seq::StripDuplicate::All,
+        flag_subdata);
     BLI_duplicatelist(&scene_dst->ed->channels, &scene_src->ed->channels);
   }
 
@@ -1259,8 +1259,6 @@ static void scene_blend_read_data(BlendDataReader *reader, ID *id)
   sce->customdata_mask = CustomData_MeshMasks{};
   sce->customdata_mask_modal = CustomData_MeshMasks{};
 
-  BKE_sound_reset_scene_runtime(sce);
-
   /* set users to one by default, not in lib-link, this will increase it for compo nodes */
   id_us_ensure_real(&sce->id);
 
@@ -1792,7 +1790,11 @@ void BKE_scene_copy_data_eevee(Scene *sce_dst, const Scene *sce_src)
   sce_dst->eevee = sce_src->eevee;
 }
 
-Scene *BKE_scene_duplicate(Main *bmain, Scene *sce, eSceneCopyMethod type)
+Scene *BKE_scene_duplicate(Main *bmain,
+                           Scene *sce,
+                           eSceneCopyMethod type,
+                           eDupli_ID_Flags duplicate_flags,
+                           /*eLibIDDuplicateFlags*/ uint duplicate_options)
 {
   Scene *sce_copy;
 
@@ -1839,8 +1841,6 @@ Scene *BKE_scene_duplicate(Main *bmain, Scene *sce, eSceneCopyMethod type)
     BKE_toolsettings_free(sce_copy->toolsettings);
     sce_copy->toolsettings = BKE_toolsettings_copy(sce->toolsettings, 0);
 
-    BKE_sound_reset_scene_runtime(sce_copy);
-
     /* grease pencil */
     sce_copy->gpd = nullptr;
 
@@ -1849,37 +1849,59 @@ Scene *BKE_scene_duplicate(Main *bmain, Scene *sce, eSceneCopyMethod type)
     return sce_copy;
   }
 
-  eDupli_ID_Flags duplicate_flags = (eDupli_ID_Flags)(U.dupflag | USER_DUP_OBJECT);
+  /* Scene duplication is always root of duplication currently, and so `is_root_id` is always true.
+   *
+   * Keep `is_root_id` around though, as this allows the rest of the duplication code to stay in
+   * sync with the layout and behavior as the other duplicate functions (see e.g.
+   * #BKE_collection_duplicate or #BKE_object_duplicate).
+   *
+   * TODO: At some point it would be nice to deduplicate this logic and move common behavior into
+   * generic ID management code, with IDType callbacks for specific duplication behavior only. */
+  const bool is_subprocess = (duplicate_options & LIB_ID_DUPLICATE_IS_SUBPROCESS) != 0;
+  const bool is_root_id = (duplicate_options & LIB_ID_DUPLICATE_IS_ROOT_ID) != 0;
+  const int copy_flags = LIB_ID_COPY_DEFAULT;
 
-  sce_copy = (Scene *)BKE_id_copy(bmain, (ID *)sce);
-  id_us_min(&sce_copy->id);
-  id_us_ensure_real(&sce_copy->id);
+  if (!is_subprocess) {
+    BKE_main_id_newptr_and_tag_clear(bmain);
+  }
 
-  BKE_animdata_duplicate_id_action(bmain, &sce_copy->id, duplicate_flags);
-
-  /* Extra actions, most notably SCE_FULL_COPY also duplicates several 'children' datablocks. */
-
-  if (type == SCE_COPY_FULL) {
-    /* Scene duplication is always root of duplication currently. */
-    const bool is_subprocess = false;
-    const bool is_root_id = true;
-    const int copy_flags = LIB_ID_COPY_DEFAULT;
-
-    if (!is_subprocess) {
-      BKE_main_id_newptr_and_tag_clear(bmain);
+  if (is_root_id) {
+    /* In case root duplicated ID is linked, assume we want to get a local copy of it and
+     * duplicate all expected linked data. */
+    if (ID_IS_LINKED(sce)) {
+      duplicate_flags = (duplicate_flags | USER_DUP_LINKED_ID);
     }
+  }
 
+  if (is_subprocess) {
+    if (sce->id.newid != nullptr) {
+      return blender::id_cast<Scene *>(sce->id.newid);
+    }
+    sce_copy = blender::id_cast<Scene *>(
+        BKE_id_copy_for_duplicate(bmain, (ID *)sce, duplicate_flags, copy_flags));
+  }
+  else {
+    BLI_assert(sce->id.newid == nullptr);
+    sce_copy = blender::id_cast<Scene *>(BKE_id_copy(bmain, (ID *)sce));
+    id_us_min(&sce_copy->id);
     /* Usages of the duplicated scene also need to be remapped in new duplicated IDs. */
     ID_NEW_SET(sce, sce_copy);
 
-    if (is_root_id) {
-      /* In case root duplicated ID is linked, assume we want to get a local copy of it and
-       * duplicate all expected linked data. */
-      if (ID_IS_LINKED(sce)) {
-        duplicate_flags = (duplicate_flags | USER_DUP_LINKED_ID);
-      }
-    }
+    /* In subprocesses, action data is duplicated in `BKE_id_copy_for_duplicate`, match that: */
+    BKE_animdata_duplicate_id_action(bmain, &sce_copy->id, duplicate_flags);
+  }
+  id_us_ensure_real(&sce_copy->id);
 
+  /* Extra actions, most notably SCE_FULL_COPY also duplicates several 'children' datablocks. */
+
+  /* Exception for the compositor; Before 5.0, creating a linked copy of the scene created a new
+   * compositing node tree with a Render Layers node that referred to the new scene.
+   * To preserve this behavior, we make a full copy when creating a linked copy as well as a full
+   * copy of the scene.*/
+  BKE_id_copy_for_duplicate(
+      bmain, reinterpret_cast<ID *>(sce->compositing_node_group), duplicate_flags, copy_flags);
+
+  if (type == SCE_COPY_FULL) {
     /* Copy Freestyle LineStyle datablocks. */
     LISTBASE_FOREACH (ViewLayer *, view_layer_dst, &sce_copy->view_layers) {
       LISTBASE_FOREACH (FreestyleLineSet *, lineset, &view_layer_dst->freestyle_config.linesets) {
@@ -1892,10 +1914,6 @@ Scene *BKE_scene_duplicate(Main *bmain, Scene *sce, eSceneCopyMethod type)
 
     /* Full copy of GreasePencil. */
     BKE_id_copy_for_duplicate(bmain, (ID *)sce->gpd, duplicate_flags, copy_flags);
-
-    /* Full copy of the compositing node tree. */
-    BKE_id_copy_for_duplicate(
-        bmain, reinterpret_cast<ID *>(sce->compositing_node_group), duplicate_flags, copy_flags);
 
     /* Deep-duplicate collections and objects (using preferences' settings for which sub-data to
      * duplicate along the object itself). */
@@ -1926,39 +1944,41 @@ Scene *BKE_scene_duplicate(Main *bmain, Scene *sce, eSceneCopyMethod type)
                                  LIB_ID_DUPLICATE_IS_SUBPROCESS);
       }
     }
-
-    if (!is_subprocess) {
-      /* This code will follow into all ID links using an ID tagged with ID_TAG_NEW. */
-      /* Unfortunate, but with some types (e.g. meshes), an object is considered in Edit mode if
-       * its obdata contains edit mode runtime data. This can be the case of all newly duplicated
-       * objects, as even though duplicate code move the object back in Object mode, they are still
-       * using the original obdata ID, leading to them being falsely detected as being in Edit
-       * mode, and therefore not remapping their obdata to the newly duplicated one. See #139715.
-       */
-      BKE_libblock_relink_to_newid(
-          bmain, &sce_copy->id, ID_REMAP_FORCE_OBDATA_IN_EDITMODE | ID_REMAP_SKIP_USER_CLEAR);
-
-#ifndef NDEBUG
-      /* Call to `BKE_libblock_relink_to_newid` above is supposed to have cleared all those
-       * flags. */
-      ID *id_iter;
-      FOREACH_MAIN_ID_BEGIN (bmain, id_iter) {
-        BLI_assert((id_iter->tag & ID_TAG_NEW) == 0);
-      }
-      FOREACH_MAIN_ID_END;
-#endif
-
-      /* Cleanup. */
-      BKE_main_id_newptr_and_tag_clear(bmain);
-
-      BKE_main_collection_sync(bmain);
-    }
   }
   else {
     /* Remove sequencer if not full copy */
     /* XXX Why in Hell? :/ */
     remove_sequencer_fcurves(sce_copy);
     blender::seq::editing_free(sce_copy, true);
+  }
+
+  /* The final step is to ensure that all of the newly duplicated IDs are used by other newly
+   * duplicated IDs, and some standard cleanup & updates. */
+  if (!is_subprocess) {
+    /* This code will follow into all ID links using an ID tagged with ID_TAG_NEW. */
+    /* Unfortunate, but with some types (e.g. meshes), an object is considered in Edit mode if
+     * its obdata contains edit mode runtime data. This can be the case of all newly duplicated
+     * objects, as even though duplicate code move the object back in Object mode, they are still
+     * using the original obdata ID, leading to them being falsely detected as being in Edit
+     * mode, and therefore not remapping their obdata to the newly duplicated one. See #139715.
+     */
+    BKE_libblock_relink_to_newid(
+        bmain, &sce_copy->id, ID_REMAP_FORCE_OBDATA_IN_EDITMODE | ID_REMAP_SKIP_USER_CLEAR);
+
+#ifndef NDEBUG
+    /* Call to `BKE_libblock_relink_to_newid` above is supposed to have cleared all those
+     * flags. */
+    ID *id_iter;
+    FOREACH_MAIN_ID_BEGIN (bmain, id_iter) {
+      BLI_assert((id_iter->tag & ID_TAG_NEW) == 0);
+    }
+    FOREACH_MAIN_ID_END;
+#endif
+
+    /* Cleanup. */
+    BKE_main_id_newptr_and_tag_clear(bmain);
+
+    BKE_main_collection_sync(bmain);
   }
 
   return sce_copy;
@@ -1979,11 +1999,46 @@ bool BKE_scene_can_be_removed(const Main *bmain, const Scene *scene)
   }
   /* Local scenes can only be removed, when there is at least one local scene left. */
   LISTBASE_FOREACH (Scene *, other_scene, &bmain->scenes) {
-    if (other_scene != scene && !ID_IS_LINKED(other_scene)) {
+    if (ID_IS_LINKED(other_scene)) {
+      /* Once the first linked scene is reached, there is no more local ones to check, so at this
+       * point there is no other local scene and the given one cannot be deleted. */
+      break;
+    }
+    if (other_scene != scene) {
       return true;
     }
   }
   return false;
+}
+
+Scene *BKE_scene_find_replacement(const Main &bmain,
+                                  const Scene &scene,
+                                  blender::FunctionRef<bool(const Scene &scene)> scene_validate_cb)
+{
+  UNUSED_VARS_NDEBUG(bmain);
+  BLI_assert(BLI_findindex(&bmain.scenes, &scene) >= 0);
+
+  /* Simply return a closest neighbor scene, unless a validate callback is provided and it rejects
+   * the iterated scene. */
+  for (Scene *scene_iter = static_cast<Scene *>(scene.id.prev); scene_iter != nullptr;
+       scene_iter = static_cast<Scene *>(scene_iter->id.prev))
+  {
+    if (scene_validate_cb && !scene_validate_cb(*scene_iter)) {
+      continue;
+    }
+    return scene_iter;
+  }
+
+  for (Scene *scene_iter = static_cast<Scene *>(scene.id.next); scene_iter != nullptr;
+       scene_iter = static_cast<Scene *>(scene_iter->id.next))
+  {
+    if (scene_validate_cb && !scene_validate_cb(*scene_iter)) {
+      continue;
+    }
+    return scene_iter;
+  }
+
+  return nullptr;
 }
 
 Scene *BKE_scene_add(Main *bmain, const char *name)

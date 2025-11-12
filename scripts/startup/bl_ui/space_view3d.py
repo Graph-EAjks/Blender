@@ -1493,6 +1493,13 @@ class VIEW3D_MT_view(Menu):
             text="Render Playblast",
             icon='RENDER_ANIMATION',
         ).animation = True
+        props = layout.operator(
+            "render.opengl",
+            text="Render Playblast on Keyframes",
+            icon='RENDER_ANIMATION',
+        )
+        props.animation = True
+        props.render_keyed_only = True
 
         layout.separator()
 
@@ -6640,11 +6647,9 @@ class VIEW3D_PT_shading_lighting(Panel):
                 split = layout.split(factor=0.95)
                 col = split.column()
 
-                engine = context.scene.render.engine
-                row = col.row()
-                if engine == 'BLENDER_WORKBENCH':
-                    row.prop(shading, "use_studiolight_view_rotation", text="", icon='WORLD', toggle=True)
-                    row = row.row()
+                row = col.row(align=True)
+                row.prop(shading, "use_studiolight_view_rotation", text="", icon='WORLD', toggle=True)
+                row = row.row(align=True)
                 row.prop(shading, "studiolight_rotate_z", text="Rotation")
 
                 col.prop(shading, "studiolight_intensity")
@@ -8379,7 +8384,7 @@ class VIEW3D_MT_greasepencil_edit_context_menu(Menu):
 
             col.separator()
             col.operator_menu_enum("grease_pencil.convert_curve_type", text="Convert Type", property="type")
-            layout.operator("grease_pencil.set_curve_resolution", text="Convert Type")
+            col.operator("grease_pencil.set_curve_resolution", text="Set Curve Resolution")
         else:
             col = row.column(align=True)
             col.label(text="Point", icon='GP_SELECT_POINTS')

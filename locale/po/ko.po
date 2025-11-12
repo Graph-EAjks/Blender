@@ -1,9 +1,9 @@
 
 msgid ""
 msgstr ""
-"Project-Id-Version: Blender 5.0.0 Beta (b'702691150287')\n"
+"Project-Id-Version: Blender 5.0.0 Beta (b'd29f9f6118e5')\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-13 16:12+0000\n"
+"POT-Creation-Date: 2025-11-10 09:45+0000\n"
 "PO-Revision-Date: 2025-07-23 15:30+0000\n"
 "Last-Translator: Lee YeonJoo <yzoo2@naver.com>\n"
 "Language-Team: Korean <https://translate.blender.org/projects/blender-ui/ui/ko/>\n"
@@ -13182,10 +13182,6 @@ msgid "Length of a dash cycle measured in stroke samples"
 msgstr "스트로크 샘플에서 측정된 대시 사이클의 길이"
 
 
-msgid "Direction"
-msgstr "방향"
-
-
 msgid "Add effect of brush"
 msgstr "브러시의 이팩트를 추가"
 
@@ -18738,10 +18734,6 @@ msgid "Sync to audio playback, dropping frames"
 msgstr "오디오 동기화 재생, 드롭핑 프레임"
 
 
-msgid "Second"
-msgstr "초"
-
-
 msgid "Timeline Markers"
 msgstr "타임라인 마커"
 
@@ -20750,6 +20742,10 @@ msgstr "Ctrl"
 
 msgid "Control key pressed"
 msgstr "Ctrl 키 눌러진"
+
+
+msgid "Direction"
+msgstr "방향"
 
 
 msgid "North"
@@ -23644,34 +23640,6 @@ msgid "Material slot name"
 msgstr "매테리얼 슬롯 이름"
 
 
-msgid "Metaball"
-msgstr "메타볼"
-
-
-msgid "Light"
-msgstr "라이트"
-
-
-msgid "Light Probe"
-msgstr "라이트 프로브"
-
-
-msgid "Add Image"
-msgstr "이미지를 추가"
-
-
-msgid "Relations"
-msgstr "관계"
-
-
-msgid "Rigid Body"
-msgstr "리지드 바디"
-
-
-msgid "Apply"
-msgstr "적용"
-
-
 msgid "Track"
 msgstr "트랙"
 
@@ -23704,10 +23672,6 @@ msgid "Sculpt Set Pivot"
 msgstr "스컬프트 설정 피벗"
 
 
-msgid "Layout"
-msgstr "레이아웃"
-
-
 msgid "Clear Transform"
 msgstr "변환을 지우기"
 
@@ -23724,6 +23688,10 @@ msgid "Names"
 msgstr "이름"
 
 
+msgid "Apply"
+msgstr "적용"
+
+
 msgid "Toggle Bone Options"
 msgstr "본 옵션을 토글"
 
@@ -23736,24 +23704,16 @@ msgid "Disable Bone Options"
 msgstr "본 옵션을 사용 중지"
 
 
-msgid "Keying"
-msgstr "키잉"
+msgid "Layout"
+msgstr "레이아웃"
 
 
 msgid "Mesh Select Mode"
 msgstr "메쉬 선택 모드"
 
 
-msgid "Tracking"
-msgstr "트래킹"
-
-
 msgid "Face Data"
 msgstr "페이스 데이터"
-
-
-msgid "Math"
-msgstr "수학"
 
 
 msgid "Select by Face Strength"
@@ -23768,6 +23728,18 @@ msgid "Merge"
 msgstr "병합"
 
 
+msgid "Keying"
+msgstr "키잉"
+
+
+msgid "Tracking"
+msgstr "트래킹"
+
+
+msgid "Math"
+msgstr "수학"
+
+
 msgid "Special Characters"
 msgstr "특수 문자"
 
@@ -23778,6 +23750,10 @@ msgstr "자간"
 
 msgid "Text"
 msgstr "텍스트"
+
+
+msgid "Metaball"
+msgstr "메타볼"
 
 
 msgid "Bone Roll"
@@ -23810,10 +23786,6 @@ msgstr "프리미티브"
 
 msgid "Mirror"
 msgstr "미러"
-
-
-msgid "Import"
-msgstr "가져오기"
 
 
 msgid "UV Mapping"
@@ -23856,10 +23828,6 @@ msgid "Select All by Trait"
 msgstr "형질로 모두 선택"
 
 
-msgid "UV"
-msgstr "UV"
-
-
 msgid "Select Linked"
 msgstr "연결된 선택"
 
@@ -23868,12 +23836,40 @@ msgid "Select Loops"
 msgstr "루프를 선택"
 
 
-msgid "Basic"
-msgstr "기본"
+msgid "Import"
+msgstr "가져오기"
 
 
 msgid "Assign Material"
 msgstr "매테리얼을 할당"
+
+
+msgid "UV"
+msgstr "UV"
+
+
+msgid "Light"
+msgstr "라이트"
+
+
+msgid "Light Probe"
+msgstr "라이트 프로브"
+
+
+msgid "Add Image"
+msgstr "이미지를 추가"
+
+
+msgid "Relations"
+msgstr "관계"
+
+
+msgid "Rigid Body"
+msgstr "리지드 바디"
+
+
+msgid "Basic"
+msgstr "기본"
 
 
 msgctxt "MovieClip"
@@ -46942,10 +46938,6 @@ msgid "Add IK to Bone"
 msgstr "IK를 본에 추가"
 
 
-msgid "Add IK Constraint to the active Bone"
-msgstr "활성 본에 IK 제약을 추가"
-
-
 msgid "With Targets"
 msgstr "대상와 함께"
 
@@ -62613,18 +62605,6 @@ msgid "Method for controlling how the strip combines with other strips"
 msgstr "스트립이 다른 스트립과 결합하는 방법을 제어하는 메서드"
 
 
-msgid "Cross"
-msgstr "교차"
-
-
-msgid "Alpha Under"
-msgstr "알파 언더"
-
-
-msgid "Gamma Cross"
-msgstr "감마 교차"
-
-
 msgid "Y position of the sequence strip"
 msgstr "시퀀스 스트립의 Y 위치"
 
@@ -66986,10 +66966,6 @@ msgid "External shader script must have .osl or .oso extension, or be a module n
 msgstr "외부 쉐이더 스크립트는 .osl 또는 .oso 확장자를 가져야하며, 또는 모듈 이름이어야 합니다"
 
 
-msgid "Failed to write .oso file next to external .osl file at "
-msgstr "외부 .osl 파일 옆에 .oso 파일을 쓰지 못했습니다 "
-
-
 msgid "Dicing Rate Render"
 msgstr "다이싱 레이트 렌더"
 
@@ -67237,6 +67213,10 @@ msgstr "API 정의"
 
 msgid "3D View"
 msgstr "3D 뷰"
+
+
+msgid "No objects selected"
+msgstr "선택된 오브젝트가 없습니다"
 
 
 msgid "Active object is not a mesh"
@@ -68421,6 +68401,10 @@ msgstr "감폭 옮기기"
 
 msgid "Velocity Linear"
 msgstr "속도 선형"
+
+
+msgid "Second"
+msgstr "초"
 
 
 msgid "X Stiffness"
@@ -73520,22 +73504,6 @@ msgid "Add IK"
 msgstr "IK를 추가"
 
 
-msgid "To Active Bone"
-msgstr "활성 본으로"
-
-
-msgid "To Active Object"
-msgstr "활성 오브젝트로"
-
-
-msgid "To New Empty Object"
-msgstr "새로운 엠프티 오브젝트로"
-
-
-msgid "Without Targets"
-msgstr "대상 없이"
-
-
 msgid "Could not find constraint data for Child-Of Set Inverse"
 msgstr "대상의 자식 설정 반전에 대한 제약 조건 데이터를 찾을 수 없습니다"
 
@@ -73590,10 +73558,6 @@ msgstr "선택된 컬렉션이 없음"
 
 msgid "Unexpected error, collection not found"
 msgstr "예기치 않은 오류, 컬렉션을 찾을 수 없습니다"
-
-
-msgid "No objects selected"
-msgstr "선택된 오브젝트가 없습니다"
 
 
 msgid "%s already in %s"
@@ -76380,6 +76344,10 @@ msgid "Unable to create socket"
 msgstr "소켓을 만들 수 없음"
 
 
+msgid "Anisotropic"
+msgstr "비등방성"
+
+
 msgid "Same input/output direction of sockets"
 msgstr "소켓의 동일한 입력/출력 방향"
 
@@ -76754,10 +76722,6 @@ msgstr "연속 페이드 아웃 팩터"
 
 msgid "Fac"
 msgstr "팩터"
-
-
-msgid "Anisotropic"
-msgstr "비등방성"
 
 
 msgid "Eccentricity"

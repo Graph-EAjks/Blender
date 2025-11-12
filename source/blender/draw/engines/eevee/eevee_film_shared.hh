@@ -35,7 +35,7 @@ enum PassCategory : uint32_t {
   PASS_CATEGORY_AOV = 1u << 4,
   PASS_CATEGORY_CRYPTOMATTE = 1u << 5,
 };
-ENUM_OPERATORS(PassCategory, PASS_CATEGORY_CRYPTOMATTE)
+ENUM_OPERATORS(PassCategory)
 
 struct FilmSample {
   int2 texel;
@@ -130,8 +130,8 @@ static inline float film_filter_weight(float filter_radius, float sample_distanc
 #if 1 /* Faster */
   /* Gaussian fitted to Blackman-Harris. */
   float r = sample_distance_sqr / (filter_radius * filter_radius);
-  const float sigma = 0.284;
-  const float fac = -0.5 / (sigma * sigma);
+  const float sigma = 0.284f;
+  const float fac = -0.5f / (sigma * sigma);
   float weight = expf(fac * r);
 #else
   /* Blackman-Harris filter. */

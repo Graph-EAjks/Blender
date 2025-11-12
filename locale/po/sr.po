@@ -1,9 +1,9 @@
 
 msgid ""
 msgstr ""
-"Project-Id-Version: Blender 5.0.0 Beta (b'702691150287')\n"
+"Project-Id-Version: Blender 5.0.0 Beta (b'd29f9f6118e5')\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-13 16:12+0000\n"
+"POT-Creation-Date: 2025-11-10 09:45+0000\n"
 "PO-Revision-Date: 2025-07-23 15:10+0000\n"
 "Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: Serbian <https://translate.blender.org/projects/blender-ui/ui/sr/>\n"
@@ -5006,10 +5006,6 @@ msgid "Constant"
 msgstr "Константно"
 
 
-msgid "Direction"
-msgstr "Смер"
-
-
 msgid "Add effect of brush"
 msgstr "Додај ефекат четкице"
 
@@ -7968,6 +7964,10 @@ msgid "Control key pressed"
 msgstr "Тастер контрол је притиснут"
 
 
+msgid "Direction"
+msgstr "Смер"
+
+
 msgid "North"
 msgstr "Север"
 
@@ -8497,26 +8497,6 @@ msgid "Material slot name"
 msgstr "Назив слота материјала"
 
 
-msgid "Metaball"
-msgstr "Мета лопта"
-
-
-msgid "Light"
-msgstr "Светлост"
-
-
-msgid "Relations"
-msgstr "Односи"
-
-
-msgid "Rigid Body"
-msgstr "Круто тело"
-
-
-msgid "Apply"
-msgstr "Примени"
-
-
 msgid "Track"
 msgstr "Стаза"
 
@@ -8549,6 +8529,10 @@ msgid "Names"
 msgstr "Имена"
 
 
+msgid "Apply"
+msgstr "Примени"
+
+
 msgid "Toggle Bone Options"
 msgstr "Мање/више информација"
 
@@ -8561,12 +8545,16 @@ msgid "Disable Bone Options"
 msgstr "Онемогући опције костију"
 
 
-msgid "Keying"
-msgstr "Збирка тастера"
-
-
 msgid "Mesh Select Mode"
 msgstr "Мод избора мреже"
+
+
+msgid "Merge"
+msgstr "Сједини"
+
+
+msgid "Keying"
+msgstr "Збирка тастера"
 
 
 msgid "Tracking"
@@ -8577,12 +8565,12 @@ msgid "Math"
 msgstr "Математика"
 
 
-msgid "Merge"
-msgstr "Сједини"
-
-
 msgid "Special Characters"
 msgstr "Специјални знаци"
+
+
+msgid "Metaball"
+msgstr "Мета лопта"
 
 
 msgid "Bone Roll"
@@ -8595,10 +8583,6 @@ msgstr "Лепљење"
 
 msgid "Mirror"
 msgstr "Огледало"
-
-
-msgid "Import"
-msgstr "Увоз"
 
 
 msgid "UV Mapping"
@@ -8617,12 +8601,28 @@ msgid "Align View"
 msgstr "Поравнај поглед"
 
 
+msgid "Select Linked"
+msgstr "Изабери повезано"
+
+
+msgid "Import"
+msgstr "Увоз"
+
+
 msgid "UV"
 msgstr "UV"
 
 
-msgid "Select Linked"
-msgstr "Изабери повезано"
+msgid "Light"
+msgstr "Светлост"
+
+
+msgid "Relations"
+msgstr "Односи"
+
+
+msgid "Rigid Body"
+msgstr "Круто тело"
 
 
 msgid "Basic"
@@ -16850,10 +16850,6 @@ msgid "Add IK to Bone"
 msgstr "Додај IK на кост"
 
 
-msgid "Add IK Constraint to the active Bone"
-msgstr "Додаје IK ограничења активној кости"
-
-
 msgctxt "Operator"
 msgid "Remove IK"
 msgstr "Уклони IK"
@@ -21439,18 +21435,6 @@ msgid "Blend Opacity"
 msgstr "Провидност прелаза"
 
 
-msgid "Cross"
-msgstr "Укрштење"
-
-
-msgid "Alpha Under"
-msgstr "Провидност испод"
-
-
-msgid "Gamma Cross"
-msgstr "Укрштање гаме"
-
-
 msgctxt "Sequence"
 msgid "Image"
 msgstr "Слика"
@@ -24550,22 +24534,6 @@ msgstr "Објекат није пронађен"
 
 msgid "No active mesh object"
 msgstr "Без активног меш објекта"
-
-
-msgid "To Active Bone"
-msgstr "На активну кост"
-
-
-msgid "To Active Object"
-msgstr "На активни објекат"
-
-
-msgid "To New Empty Object"
-msgstr "На нови празан објекат"
-
-
-msgid "Without Targets"
-msgstr "Без циља"
 
 
 msgid "Object (Keep Transform)"

@@ -231,6 +231,11 @@ static wmOperatorStatus node_group_enter_exit_invoke(bContext *C,
   SpaceNode &snode = *CTX_wm_space_node(C);
   ARegion &region = *CTX_wm_region(C);
 
+  /* Don't interfer when the mouse is interacting with some button. See #147282. */
+  if (ISMOUSE_BUTTON(event->type) && UI_but_find_mouse_over(&region, event)) {
+    return OPERATOR_PASS_THROUGH | OPERATOR_CANCELLED;
+  }
+
   float2 cursor;
   UI_view2d_region_to_view(&region.v2d, event->mval[0], event->mval[1], &cursor.x, &cursor.y);
   bNode *node = node_under_mouse_get(snode, cursor);
@@ -1511,8 +1516,11 @@ static bNode *node_group_make_from_node_declaration(bContext &C,
     }
   }
 
-  /* Remove the old node because it has been replaced. */
-  bke::node_remove_node(&bmain, ntree, src_node, true);
+  /* Remove the old node because it has been replaced. Use the name of the removed node for the new
+   * group node. This also keeps animation data working. */
+  std::string old_node_name = src_node.name;
+  bke::node_remove_node(&bmain, ntree, src_node, true, false);
+  STRNCPY(gnode->name, old_node_name.c_str());
 
   BKE_ntree_update_tag_node_property(&ntree, gnode);
   BKE_main_ensure_invariants(bmain);

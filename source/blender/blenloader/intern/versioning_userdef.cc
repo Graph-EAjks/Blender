@@ -390,6 +390,28 @@ static void do_versions_theme(const UserDef *userdef, bTheme *btheme)
     FROM_DEFAULT_V4_UCHAR(common.anim.scene_strip_range);
   }
 
+  /* Reset the theme due to compatibility breaking changes in 5.0. */
+  if (!USER_VERSION_ATLEAST(500, 111)) {
+    MEMCPY_STRUCT_AFTER(btheme, &U_theme_default, name);
+    /* Update text styles to match. */
+    LISTBASE_FOREACH (uiStyle *, style, &userdef->uistyles) {
+      style->paneltitle.points = 11.0f;
+      style->paneltitle.shadow = 3;
+      style->paneltitle.shadowalpha = 0.5f;
+      style->paneltitle.shadowcolor = 0.0f;
+      style->widget.points = 11.0f;
+      style->widget.shadow = 1;
+      style->widget.shadowalpha = 0.5f;
+      style->widget.shadowcolor = 0.0f;
+      style->tooltip.shadow = 1;
+      style->tooltip.points = 11.0f;
+      style->tooltip.shadowalpha = 0.5f;
+      style->tooltip.shadowcolor = 0.0f;
+    }
+
+    FROM_DEFAULT_V4_UCHAR(space_node.node_outline);
+  }
+
   if (!USER_VERSION_ATLEAST(501, 3)) {
     FROM_DEFAULT_V4_UCHAR(space_action.anim_interpolation_other);
     FROM_DEFAULT_V4_UCHAR(space_action.anim_interpolation_constant);
@@ -1708,6 +1730,15 @@ void blo_do_versions_userdef(UserDef *userdef)
     /* The Copy Global Transform add-on was moved into Blender itself, and thus
      * is no longer an add-on. */
     BKE_addon_remove_safe(&userdef->addons, "copy_global_transform");
+  }
+
+  if (!USER_VERSION_ATLEAST(500, 116)) {
+    BKE_preferences_asset_shelf_settings_ensure_catalog_path_enabled(
+        userdef, "NODE_AST_compositor", "Camera & Lens Effects");
+    BKE_preferences_asset_shelf_settings_ensure_catalog_path_enabled(
+        userdef, "NODE_AST_compositor", "Creative");
+    BKE_preferences_asset_shelf_settings_ensure_catalog_path_enabled(
+        userdef, "NODE_AST_compositor", "Utilities");
   }
 
   /**

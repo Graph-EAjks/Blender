@@ -66,7 +66,6 @@ static void rotation_mode_menu_callback(bContext *, uiLayout *layout, void *)
     const int width = 9 * UI_UNIT_X;
     uiBut *but = uiDefButI(layout->block(),
                            ButType::Row,
-                           0,
                            IFACE_(mode_info.name),
                            0,
                            yco,
@@ -187,7 +186,7 @@ static void draw_matrix_template(uiLayout &layout, PointerRNA &ptr, PropertyRNA 
   uiBut *but = uiDefMenuBut(block,
                             rotation_mode_menu_callback,
                             nullptr,
-                            mode_info.name,
+                            IFACE_(mode_info.name),
                             0,
                             0,
                             UI_UNIT_X * 10,

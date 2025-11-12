@@ -1,9 +1,9 @@
 
 msgid ""
 msgstr ""
-"Project-Id-Version: Blender 5.0.0 Beta (b'702691150287')\n"
+"Project-Id-Version: Blender 5.0.0 Beta (b'd29f9f6118e5')\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-13 16:12+0000\n"
+"POT-Creation-Date: 2025-11-10 09:45+0000\n"
 "PO-Revision-Date: 2025-07-23 15:08+0000\n"
 "Last-Translator: Bartosz <gang65@poczta.onet.pl>\n"
 "Language-Team: Ukrainian <https://translate.blender.org/projects/blender-ui/ui/uk/>\n"
@@ -14884,10 +14884,6 @@ msgid "Amount of random elements that are going to be affected by the brush"
 msgstr "Кількість випадкових елементів, на які буде впливати пензель"
 
 
-msgid "Direction"
-msgstr "Напрям"
-
-
 msgid "Add effect of brush"
 msgstr "Додати ефект пензля"
 
@@ -21208,10 +21204,6 @@ msgid "Sync to audio playback, dropping frames"
 msgstr "Синхронізація з відтворенням звуку пропуском кадрів"
 
 
-msgid "Second"
-msgstr "Секунда"
-
-
 msgid "Timeline Markers"
 msgstr "Мітки шкали часу"
 
@@ -23388,6 +23380,10 @@ msgstr "Ctrl"
 
 msgid "Control key pressed"
 msgstr "Натиснуто Control"
+
+
+msgid "Direction"
+msgstr "Напрям"
 
 
 msgid "North"
@@ -26382,34 +26378,6 @@ msgid "Material slot name"
 msgstr "Назва гнізда матеріалу"
 
 
-msgid "Metaball"
-msgstr "Метакуля"
-
-
-msgid "Light"
-msgstr "Слабко"
-
-
-msgid "Light Probe"
-msgstr "Проба Освітлення"
-
-
-msgid "Add Image"
-msgstr "Додати Зображення"
-
-
-msgid "Relations"
-msgstr "Зв'язки"
-
-
-msgid "Rigid Body"
-msgstr "Тверде тіло"
-
-
-msgid "Apply"
-msgstr "Застосувати"
-
-
 msgid "Track"
 msgstr "Стеження"
 
@@ -26458,10 +26426,6 @@ msgid "Face Sets Init"
 msgstr "Ініціація Наборів Граней"
 
 
-msgid "Layout"
-msgstr "Розстановка"
-
-
 msgid "Clear Transform"
 msgstr "Зчистити трансформації"
 
@@ -26478,6 +26442,10 @@ msgid "Names"
 msgstr "Назви"
 
 
+msgid "Apply"
+msgstr "Застосувати"
+
+
 msgid "Toggle Bone Options"
 msgstr "Перемкнути параметри кісток"
 
@@ -26490,28 +26458,16 @@ msgid "Disable Bone Options"
 msgstr "Відключити параметри кісток"
 
 
-msgid "Keying"
-msgstr "Ключування"
+msgid "Layout"
+msgstr "Розстановка"
 
 
 msgid "Mesh Select Mode"
 msgstr "Режим Вибору Сіті"
 
 
-msgid "Tracking"
-msgstr "Стеження"
-
-
-msgid "Utilities"
-msgstr "Утиліти"
-
-
 msgid "Face Data"
 msgstr "Дані граней"
-
-
-msgid "Math"
-msgstr "Математика"
 
 
 msgid "Select by Face Strength"
@@ -26526,6 +26482,22 @@ msgid "Merge"
 msgstr "Об'єднання"
 
 
+msgid "Keying"
+msgstr "Ключування"
+
+
+msgid "Tracking"
+msgstr "Стеження"
+
+
+msgid "Utilities"
+msgstr "Утиліти"
+
+
+msgid "Math"
+msgstr "Математика"
+
+
 msgid "Special Characters"
 msgstr "Спеціальні символи"
 
@@ -26536,6 +26508,10 @@ msgstr "Кернінг"
 
 msgid "Text"
 msgstr "Текст"
+
+
+msgid "Metaball"
+msgstr "Метакуля"
 
 
 msgid "Bone Roll"
@@ -26578,10 +26554,6 @@ msgid "Mirror"
 msgstr "Дзеркалення"
 
 
-msgid "Import"
-msgstr "Імпортувати"
-
-
 msgid "UV Mapping"
 msgstr "Розкладання UV"
 
@@ -26622,10 +26594,6 @@ msgid "Select All by Trait"
 msgstr "Вибрати все за рисою"
 
 
-msgid "UV"
-msgstr "UV"
-
-
 msgid "Select Linked"
 msgstr "Виділити пов'язане"
 
@@ -26634,12 +26602,40 @@ msgid "Select Loops"
 msgstr "Виділити петлі"
 
 
-msgid "Basic"
-msgstr "Основний"
+msgid "Import"
+msgstr "Імпортувати"
 
 
 msgid "Assign Material"
 msgstr "Призначити Матеріал"
+
+
+msgid "UV"
+msgstr "UV"
+
+
+msgid "Light"
+msgstr "Слабко"
+
+
+msgid "Light Probe"
+msgstr "Проба Освітлення"
+
+
+msgid "Add Image"
+msgstr "Додати Зображення"
+
+
+msgid "Relations"
+msgstr "Зв'язки"
+
+
+msgid "Rigid Body"
+msgstr "Тверде тіло"
+
+
+msgid "Basic"
+msgstr "Основний"
 
 
 msgid "Assets"
@@ -53379,10 +53375,6 @@ msgid "Add IK to Bone"
 msgstr "Додати ІК до кістки"
 
 
-msgid "Add IK Constraint to the active Bone"
-msgstr "Додати для активної кістки примус ІК"
-
-
 msgid "With Targets"
 msgstr "З цілями"
 
@@ -61092,10 +61084,6 @@ msgid "Panel containing UI elements"
 msgstr "Панель, що містить елементи Інтерфейсу Користувача"
 
 
-msgid "Auto-Masking"
-msgstr "Авто-Маскування"
-
-
 msgid "VR"
 msgstr "ВР"
 
@@ -61178,6 +61166,10 @@ msgstr "Стереоскопія"
 
 msgid "Multi Frame"
 msgstr "Багато Кадр"
+
+
+msgid "Auto-Masking"
+msgstr "Авто-Маскування"
 
 
 msgid "Chain Scaling"
@@ -71347,18 +71339,6 @@ msgid "Method for controlling how the strip combines with other strips"
 msgstr "Метод керування поєднанням смужки з іншими смужками"
 
 
-msgid "Cross"
-msgstr "Перетин"
-
-
-msgid "Alpha Under"
-msgstr "Альфа під"
-
-
-msgid "Gamma Cross"
-msgstr "Гамма перетин"
-
-
 msgid "Y position of the sequence strip"
 msgstr "Позиція Y у смужки послідовності"
 
@@ -76630,10 +76610,6 @@ msgid "External shader script must have .osl or .oso extension, or be a module n
 msgstr "Зовнішній скрипт шейдера повинен мати розширення .osl чи .oso, або бути іменем модуля"
 
 
-msgid "Failed to write .oso file next to external .osl file at "
-msgstr "Збій запису файлу .oso поряд із зовнішнім файлом .osl у"
-
-
 msgid "Noise Threshold"
 msgstr "Поріг Шуму"
 
@@ -76965,6 +76941,10 @@ msgstr "Тор"
 
 msgid "Nothing to bake"
 msgstr "Нічого запікати"
+
+
+msgid "No objects selected"
+msgstr "Жоден з об'єктів не вибрано"
 
 
 msgid "Selection pair not found"
@@ -78576,6 +78556,10 @@ msgstr "Скорість Лінеарно"
 
 msgid "This object is part of a compound shape"
 msgstr "Цей об'єкт є частиною складеної форми"
+
+
+msgid "Second"
+msgstr "Секунда"
 
 
 msgid "X Stiffness"
@@ -84708,22 +84692,6 @@ msgid "Add IK"
 msgstr "Додати ІК"
 
 
-msgid "To Active Bone"
-msgstr "До активної кістки"
-
-
-msgid "To Active Object"
-msgstr "До активного об'єкта"
-
-
-msgid "To New Empty Object"
-msgstr "До нового об'єкта порожняка"
-
-
-msgid "Without Targets"
-msgstr "Без цілей"
-
-
 msgid "Could not find constraint data for Child-Of Set Inverse"
 msgstr "Не знайдено даних примусу для задання інверсії примусу нащадок"
 
@@ -84790,10 +84758,6 @@ msgstr "Жодну колекцію не вибрано"
 
 msgid "Unexpected error, collection not found"
 msgstr "Неочікувана помилка, колекцію не знайдено"
-
-
-msgid "No objects selected"
-msgstr "Жоден з об'єктів не вибрано"
 
 
 msgid "%s already in %s"
@@ -87964,6 +87928,10 @@ msgid "Unable to create socket"
 msgstr "Неможливо створити роз'єм"
 
 
+msgid "Anisotropic"
+msgstr "Анізотропія"
+
+
 msgid "Same input/output direction of sockets"
 msgstr "Однаковий напрям вводу/виводу роз'ємів"
 
@@ -88584,10 +88552,6 @@ msgstr "Коефіцієнт зникання стрічок"
 
 msgid "Fac"
 msgstr "Коеф."
-
-
-msgid "Anisotropic"
-msgstr "Анізотропія"
 
 
 msgid "Eccentricity"

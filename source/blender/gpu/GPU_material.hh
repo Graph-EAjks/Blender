@@ -10,6 +10,7 @@
 
 #include <string>
 
+#include "BLI_enum_flags.hh"
 #include "BLI_math_base.h"
 #include "BLI_set.hh"
 
@@ -88,10 +89,13 @@ enum eGPUMaterialFlag {
   GPU_MATFLAG_REFLECTION_MAYBE_COLORED = (1 << 21),
   GPU_MATFLAG_REFRACTION_MAYBE_COLORED = (1 << 22),
 
+  /* Set if the material uses the "Is Diffuse / Glossy Ray" output of the light path node. */
+  GPU_MATFLAG_IS_DIFFUSE_OR_GLOSSY_RAY_FLAG = (1 << 21),
+
   /* Tells the render engine the material was just compiled or updated. */
   GPU_MATFLAG_UPDATED = (1 << 29),
 };
-ENUM_OPERATORS(eGPUMaterialFlag, GPU_MATFLAG_UPDATED);
+ENUM_OPERATORS(eGPUMaterialFlag);
 
 using GPUCodegenCallbackFn = void (*)(void *thunk,
                                       GPUMaterial *mat,

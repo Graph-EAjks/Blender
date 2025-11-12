@@ -11,8 +11,8 @@
 
 #include "../gpu/GPU_texture.hh"
 
+#include "BLI_enum_flags.hh"
 #include "BLI_math_matrix_types.hh"
-#include "BLI_utildefines.h"
 
 #include "IMB_imbuf_types.hh"
 
@@ -20,7 +20,6 @@ struct ImBuf;
 struct rctf;
 struct rcti;
 
-struct GSet;
 struct ImageFormatData;
 struct Stereo3dFormat;
 
@@ -71,7 +70,7 @@ enum class IMBThumbLoadFlags {
    */
   LoadLargeFiles = (1 << 0),
 };
-ENUM_OPERATORS(IMBThumbLoadFlags, IMBThumbLoadFlags::LoadLargeFiles);
+ENUM_OPERATORS(IMBThumbLoadFlags);
 
 ImBuf *IMB_thumb_load_image(const char *filepath,
                             const size_t max_thumb_size,
@@ -568,6 +567,9 @@ blender::gpu::Texture *IMB_create_gpu_texture(const char *name,
 blender::gpu::TextureFormat IMB_gpu_get_texture_format(const ImBuf *ibuf,
                                                        bool high_bitdepth,
                                                        bool use_grayscale);
+
+bool IMB_gpu_get_compressed_format(const ImBuf *ibuf,
+                                   blender::gpu::TextureFormat *r_texture_format);
 
 /**
  * Ensures that values stored in the float rect can safely loaded into half float gpu textures.

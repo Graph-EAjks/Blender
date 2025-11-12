@@ -1,9 +1,9 @@
 
 msgid ""
 msgstr ""
-"Project-Id-Version: Blender 5.0.0 Beta (b'702691150287')\n"
+"Project-Id-Version: Blender 5.0.0 Beta (b'd29f9f6118e5')\n"
 "Report-Msgid-Bugs-To: Leandro Paganelli <leandrobp@fastmail.com>\n"
-"POT-Creation-Date: 2025-10-13 16:12+0000\n"
+"POT-Creation-Date: 2025-11-10 09:45+0000\n"
 "PO-Revision-Date: 2025-07-23 15:03+0000\n"
 "Last-Translator: Amy Lily <lillya.assist@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://translate.blender.org/projects/blender-ui/ui/pt_BR/>\n"
@@ -11778,10 +11778,6 @@ msgid "Constant"
 msgstr "Constante"
 
 
-msgid "Direction"
-msgstr "Direção"
-
-
 msgid "Add effect of brush"
 msgstr "Adiciona o efeito do pincel"
 
@@ -18294,6 +18290,10 @@ msgid "Control key pressed"
 msgstr "Tecla Ctrl pressionada"
 
 
+msgid "Direction"
+msgstr "Direção"
+
+
 msgid "North"
 msgstr "Norte"
 
@@ -21243,34 +21243,6 @@ msgid "Material slot name"
 msgstr "Nome do compartimento do material."
 
 
-msgid "Metaball"
-msgstr "Meta-esfera"
-
-
-msgid "Light"
-msgstr "Luz"
-
-
-msgid "Light Probe"
-msgstr "Sonda de Luz"
-
-
-msgid "Add Image"
-msgstr "Adicionar Imagem"
-
-
-msgid "Relations"
-msgstr "Relações"
-
-
-msgid "Rigid Body"
-msgstr "Corpo rígido"
-
-
-msgid "Apply"
-msgstr "Aplicar"
-
-
 msgid "Track"
 msgstr "Rastrear"
 
@@ -21303,10 +21275,6 @@ msgid "Random Mask"
 msgstr "Máscara Aleatória"
 
 
-msgid "Layout"
-msgstr "Organizar"
-
-
 msgid "Clear Transform"
 msgstr "Limpar transformações"
 
@@ -21323,6 +21291,10 @@ msgid "Names"
 msgstr "Nomes"
 
 
+msgid "Apply"
+msgstr "Aplicar"
+
+
 msgid "Toggle Bone Options"
 msgstr "Alternar opções de ossos"
 
@@ -21335,28 +21307,32 @@ msgid "Disable Bone Options"
 msgstr "Desabilitar as opções de ossos"
 
 
-msgid "Keying"
-msgstr "Inserção de chaves"
+msgid "Layout"
+msgstr "Organizar"
 
 
 msgid "Mesh Select Mode"
 msgstr "Modo de seleção de malhas"
 
 
-msgid "Tracking"
-msgstr "Rastreamento"
-
-
 msgid "Face Data"
 msgstr "Dados das faces"
 
 
-msgid "Math"
-msgstr "Matemática"
-
-
 msgid "Merge"
 msgstr "Fundir"
+
+
+msgid "Keying"
+msgstr "Inserção de chaves"
+
+
+msgid "Tracking"
+msgstr "Rastreamento"
+
+
+msgid "Math"
+msgstr "Matemática"
 
 
 msgid "Special Characters"
@@ -21365,6 +21341,10 @@ msgstr "Caracteres especiais"
 
 msgid "Text"
 msgstr "Texto"
+
+
+msgid "Metaball"
+msgstr "Meta-esfera"
 
 
 msgid "Bone Roll"
@@ -21383,16 +21363,8 @@ msgid "Proportional Editing Falloff"
 msgstr "Tipo de decaimento para edição proporcional"
 
 
-msgid "Instances"
-msgstr "Instâncias"
-
-
 msgid "Mirror"
 msgstr "Espelhar"
-
-
-msgid "Import"
-msgstr "Importar"
 
 
 msgid "UV Mapping"
@@ -21427,6 +21399,10 @@ msgid "Select More/Less"
 msgstr "Selecionar mais ou menos"
 
 
+msgid "Instances"
+msgstr "Instâncias"
+
+
 msgid "Select Similar"
 msgstr "Selecionar por similaridades"
 
@@ -21435,16 +21411,40 @@ msgid "Select All by Trait"
 msgstr "Selecionar todos por características..."
 
 
-msgid "UV"
-msgstr "UV"
-
-
 msgid "Select Linked"
 msgstr "Selecionar vinculados(as)"
 
 
 msgid "Select Loops"
 msgstr "Selecionar anéis"
+
+
+msgid "Import"
+msgstr "Importar"
+
+
+msgid "UV"
+msgstr "UV"
+
+
+msgid "Light"
+msgstr "Luz"
+
+
+msgid "Light Probe"
+msgstr "Sonda de Luz"
+
+
+msgid "Add Image"
+msgstr "Adicionar Imagem"
+
+
+msgid "Relations"
+msgstr "Relações"
+
+
+msgid "Rigid Body"
+msgstr "Corpo rígido"
 
 
 msgid "Basic"
@@ -42596,10 +42596,6 @@ msgid "Add IK to Bone"
 msgstr "Adicionar cinemática inversa para o osso"
 
 
-msgid "Add IK Constraint to the active Bone"
-msgstr "Adiciona uma restrição de cinemática inversa para o osso ativo."
-
-
 msgid "With Targets"
 msgstr "Com alvos"
 
@@ -55988,18 +55984,6 @@ msgid "Method for controlling how the strip combines with other strips"
 msgstr "O método para controlar como as faixas serão combinadas com outras faixas."
 
 
-msgid "Cross"
-msgstr "Cruzar"
-
-
-msgid "Alpha Under"
-msgstr "Alfa por baixo"
-
-
-msgid "Gamma Cross"
-msgstr "Cruzar por gama"
-
-
 msgid "Y position of the sequence strip"
 msgstr "Posição Y da faixa de sequência "
 
@@ -59390,10 +59374,6 @@ msgstr "Sem texto ou arquivo especificado no nó, nada para compilar."
 
 msgid "External shader script must have .osl or .oso extension, or be a module name"
 msgstr "Script de sombreador externo deve possuir extensão .osl ou .oso, ou ser um nome de módulo."
-
-
-msgid "Failed to write .oso file next to external .osl file at "
-msgstr "Falha ao escrever arquivo .oso próximo ao local externo onde o .osl está."
 
 
 msgid "No compatible GPUs found for Cycles"
@@ -64646,22 +64626,6 @@ msgid "Add IK"
 msgstr "Adicionar cinemática inversa"
 
 
-msgid "To Active Bone"
-msgstr "Para o osso ativo"
-
-
-msgid "To Active Object"
-msgstr "Para o objeto ativo"
-
-
-msgid "To New Empty Object"
-msgstr "Para um novo objeto vazio"
-
-
-msgid "Without Targets"
-msgstr "Sem alvos"
-
-
 msgid "Could not find constraint data for Child-Of Set Inverse"
 msgstr "Não é possível encontrar dados de restrições para configuração inversa de \"Filho-De\"."
 
@@ -67146,6 +67110,10 @@ msgid "Unable to create socket"
 msgstr "Não é possível de criar conector"
 
 
+msgid "Anisotropic"
+msgstr "Anisotrópico"
+
+
 msgid "Same input/output direction of sockets"
 msgstr "Mesma direção de entrada ou saída de conectores."
 
@@ -67493,10 +67461,6 @@ msgstr "Fator de saída para o esmaecimento das listras."
 
 msgid "Fac"
 msgstr "Fator"
-
-
-msgid "Anisotropic"
-msgstr "Anisotrópico"
 
 
 msgid "Eccentricity"
