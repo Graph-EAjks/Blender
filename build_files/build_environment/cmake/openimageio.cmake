@@ -51,7 +51,7 @@ endif()
 set(OPENIMAGEIO_EXTRA_ARGS
   -DBUILD_SHARED_LIBS=ON
   ${OPENIMAGEIO_LINKSTATIC}
-  -DOpenImageIO_REQUIRED_DEPS=WebP$<SEMICOLON>JPEGTurbo$<SEMICOLON>TIFF$<SEMICOLON>OpenEXR$<SEMICOLON>PNG$<SEMICOLON>OpenJPEG$<SEMICOLON>fmt$<SEMICOLON>Robinmap$<SEMICOLON>ZLIB$<SEMICOLON>pugixml$<SEMICOLON>Python
+  -DOpenImageIO_REQUIRED_DEPS=WebP$<SEMICOLON>libjpeg-turbo$<SEMICOLON>TIFF$<SEMICOLON>OpenEXR$<SEMICOLON>PNG$<SEMICOLON>OpenJPEG$<SEMICOLON>fmt$<SEMICOLON>Robinmap$<SEMICOLON>ZLIB$<SEMICOLON>pugixml$<SEMICOLON>Python$<SEMICOLON>openjph$<SEMICOLON>TBB
   -DUSE_NUKE=OFF
   -DUSE_OPENVDB=OFF
   -DUSE_FREETYPE=OFF
@@ -132,10 +132,7 @@ ExternalProject_Add(external_openimageio
   PATCH_COMMAND
     ${PATCH_CMD} -p 1 -N -d
       ${BUILD_DIR}/openimageio/src/external_openimageio/ <
-      ${PATCH_DIR}/openimageio.diff &&
-    ${PATCH_CMD} -p 1 -N -d
-      ${BUILD_DIR}/openimageio/src/external_openimageio/ <
-      ${PATCH_DIR}/openimageio_png_cicp_4746.diff
+      ${PATCH_DIR}/openimageio.diff
   CMAKE_ARGS
     -DCMAKE_INSTALL_PREFIX=${LIBDIR}/openimageio
     ${DEFAULT_CMAKE_FLAGS}
