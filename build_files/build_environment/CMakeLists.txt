@@ -123,6 +123,7 @@ include(cmake/pystring.cmake)
 include(cmake/yamlcpp.cmake)
 include(cmake/minizipng.cmake)
 include(cmake/opencolorio.cmake)
+include(cmake/openjph.cmake)
 
 if(BLENDER_PLATFORM_ARM)
   include(cmake/sse2neon.cmake)

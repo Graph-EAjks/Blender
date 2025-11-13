@@ -620,6 +620,20 @@ Copyright (c) 2011-2012, Centre National d'Etudes Spatiales (CNES), France.
 Copyright (c) 2012, CS Systemes d'Information, France.
 ]=])
 
+set(OPENJPH_VERSION 0.25.2)
+set(OPENJPH_URI https://github.com/aous72/OpenJPH/archive/refs/tags/${OPENJPH_VERSION}.tar.gz)
+set(OPENJPH_HASH ae5f09562cb811cb2fb881c5eb74583e18db941848cfa3c35787e2580f3defc6)
+set(OPENJPH_HASH_TYPE SHA256)
+set(OPENJPH_NAME OpenJPH)
+set(OPENJPH_HOMEPAGE https://github.com/aous72/OpenJPH)
+set(OPENJPH_FILE openjph-v${OPENJPH_VERSION}.tar.gz)
+set(OPENJPH_LICENSE SPDX:BSD-2-Clause)
+set(OPENJPH_COPYRIGHT [=[
+Copyright (c) 2019, Aous Naman 
+Copyright (c) 2019, Kakadu Software Pty Ltd, Australia
+Copyright (c) 2019, The University of New South Wales, Australia
+]=])
+
 set(FFMPEG_VERSION 7.1.1)
 set(FFMPEG_URI http://ffmpeg.org/releases/ffmpeg-${FFMPEG_VERSION}.tar.bz2)
 set(FFMPEG_HASH 0c8da2f11579a01e014fc007cbacf5bb4da1d06afd0b43c7f8097ec7c0f143ba)

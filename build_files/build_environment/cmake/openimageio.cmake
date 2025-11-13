@@ -104,6 +104,7 @@ set(OPENIMAGEIO_EXTRA_ARGS
   -DTBB_ROOT=${LIBDIR}/tbb
   -Dlibdeflate_ROOT=${LIBDIR}/deflate
   -Dfmt_ROOT=${LIBDIR}/fmt
+  -Dopenjph_DIR=${LIBDIR}/openjph/lib/cmake/openjph
 )
 
 if(WIN32)
