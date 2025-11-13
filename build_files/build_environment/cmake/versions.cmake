@@ -227,9 +227,9 @@ registered trademarks or service marks of Lucasfilm Ltd.
 © 2009-2015 Sony Pictures Imageworks Inc.  All rights reserved.
 ]=])
 
-set(OPENSUBDIV_VERSION v3_6_0)
+set(OPENSUBDIV_VERSION v3_7_0)
 set(OPENSUBDIV_URI https://github.com/PixarAnimationStudios/OpenSubdiv/archive/${OPENSUBDIV_VERSION}.tar.gz)
-set(OPENSUBDIV_HASH cd03aaf8890bc0b8550eef62029cabe7)
+set(OPENSUBDIV_HASH 470d53c4d4335a601c33a052ce7c33b4)
 set(OPENSUBDIV_HASH_TYPE MD5)
 set(OPENSUBDIV_FILE opensubdiv-${OPENSUBDIV_VERSION}.tar.gz)
 set(OPENSUBDIV_NAME OpenSubdiv)
