@@ -50,10 +50,7 @@ set(OPENVDB_EXTRA_ARGS
 set(OPENVDB_PATCH
   ${PATCH_CMD} -p 1 -d
     ${BUILD_DIR}/openvdb/src/openvdb <
-    ${PATCH_DIR}/openvdb.diff &&
-  ${PATCH_CMD} -p 1 -d
-    ${BUILD_DIR}/openvdb/src/openvdb <
-    ${PATCH_DIR}/openvdb_1977.diff
+    ${PATCH_DIR}/openvdb.diff
 )
 
 ExternalProject_Add(openvdb
