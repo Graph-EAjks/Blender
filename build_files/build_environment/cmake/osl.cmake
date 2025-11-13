@@ -62,12 +62,6 @@ if(NOT (APPLE OR BLENDER_PLATFORM_WINDOWS_ARM))
     -DCUDA_TOOLKIT_ROOT_DIR=${CUDAToolkit_ROOT}
   )
 endif()
-if(WIN32)
-  # Needed to make Clang compile CUDA code with VS2019
-  list(APPEND OSL_EXTRA_ARGS
-    -DLLVM_COMPILE_FLAGS=-D__CUDACC_VER_MAJOR__=${CUDAToolkit_VERSION_MAJOR}
-  )
-endif()
 
 ExternalProject_Add(external_osl
   URL file://${PACKAGE_DIR}/${OSL_FILE}

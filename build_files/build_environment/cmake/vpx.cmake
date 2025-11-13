@@ -15,10 +15,10 @@ if(WIN32)
       ${PATCH_DIR}/vpx_windows.diff
   )
 
-  if(MSVC_VERSION GREATER_EQUAL 1920) # 2019
+  if(MSVC_VERSION GREATER_EQUAL 1930) # 2022
+    set(VPX_COMPILER_STRING vs17)
+  else() # 2019
     set(VPX_COMPILER_STRING vs16)
-  else() # 2017
-    set(VPX_COMPILER_STRING vs15)
   endif()
 
   if(BLENDER_PLATFORM_ARM)
