@@ -124,6 +124,7 @@ include(cmake/yamlcpp.cmake)
 include(cmake/minizipng.cmake)
 include(cmake/opencolorio.cmake)
 include(cmake/openjph.cmake)
+include(cmake/thorvg.cmake)
 
 if(BLENDER_PLATFORM_ARM)
   include(cmake/sse2neon.cmake)
