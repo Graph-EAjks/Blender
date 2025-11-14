@@ -1506,3 +1506,15 @@ set(THORVG_FILE thorvg-${THORVG_VERSION}.tar.gz)
 set(THORVG_HOMEPAGE https://www.thorvg.org/)
 set(THORVG_LICENSE SPDX:MIT)
 set(THORVG_COPYRIGHT "Copyright (c) 2020 - 2025 ThorVG Project")
+
+set(LIBHEIF_VERSION 1.20.2)
+set(LIBHEIF_URI https://github.com/strukturag/libheif/releases/download/v${LIBHEIF_VERSION}/libheif-${LIBHEIF_VERSION}.tar.gz)
+set(LIBHEIF_HASH 68ac9084243004e0ef3633f184eeae85d615fe7e4444373a0a21cebccae9d12a)
+set(LIBHEIF_HASH_TYPE SHA256)
+set(LIBHEIF_FILE libheif-${LIBHEIF_VERSION}.tar.gz)
+set(LIBHEIF_HOMEPAGE https://github.com/strukturag/libheif)
+set(LIBHEIF_LICENSE SPDX:LGPL-3.0-or-later)
+set(LIBHEIF_COPYRIGHT [=[
+Copyright (c) 2017-2020 Struktur AG
+Copyright (c) 2017-2025 Dirk Farin
+]=])
