@@ -3,9 +3,26 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
 set(LIBHEIF_EXTRA_ARGS
-  -DAOM_DECODER=ON
-  -DAOM_DECODER=OFF
-  -DAOM_ROOT=${LIBDIR}/aom/
+  -DWITH_AOM_ENCODER=ON
+  -DWITH_AOM_DECODER=ON
+  -DWITH_DAV1D=OFF
+  -DWITH_FFMPEG_DECODER=OFF
+  -DWITH_JPEG_ENCODER=OFF
+  -DWITH_KVAZAAR=OFF
+  -DWITH_LIBDE265=OFF
+  -DWITH_LIBSHARPYUV=OFF
+  -DWITH_OPENJPH_ENCODER=OFF
+  -DWITH_OpenH264_DECODER=OFF
+  -DWITH_OpenJPEG_DECODER=OFF
+  -DWITH_OpenJPEG_ENCODER=OFF
+  -DWITH_RAV1E=OFF
+  -DWITH_SvtEnc=OFF
+  -DWITH_UVG266=OFF
+  -DWITH_VVDEC=OFF
+  -DWITH_VVENC=OFF
+  -DWITH_X265=OFF 
+  -DAOM_INCLUDE_DIR=${LIBDIR}/aom/include/
+  -DAOM_LIBRARY=${LIBDIR}/aom/lib/aom${LIBEXT}
   -DBUILD_SHARED_LIBS=OFF
   -DWITH_EXAMPLES=OFF
   -DWITH_EXAMPLE_HEIF_VIEW=OFF
@@ -26,16 +43,7 @@ ExternalProject_Add(external_libheif
 
   INSTALL_DIR ${LIBDIR}/libheif
 )
-
-
-if(WIN32)
-    ExternalProject_Add_Step(external_libheif after_install
-      COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${LIBDIR}/libheif
-        ${HARVEST_TARGET}/libheif
-
-      DEPENDEES install
-    )
-else()
-  # TODO 
-endif()
+add_dependencies(
+  external_libheif
+  external_aom
+)
