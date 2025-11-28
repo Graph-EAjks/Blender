@@ -2035,9 +2035,9 @@ endif()
 if(WIN32)
   if(WITH_CYCLES_DEVICE_HIPRT)
     if(EXISTS ${LIBDIR}/hiprt/bin/hiprt64.dll)
-      install(
+      windows_install_shared_manifest(
         FILES ${LIBDIR}/hiprt/bin/hiprt64.dll
-        DESTINATION "./"
+        ALL
       )
     endif()
   endif()
