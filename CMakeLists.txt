@@ -330,17 +330,7 @@ Use the systems bullet library (currently unsupported due to missing features in
 mark_as_advanced(WITH_SYSTEM_BULLET)
 option(WITH_OPENCOLORIO "Enable OpenColorIO color management" ON)
 
-set(_option_default ON)
-if(APPLE)
-  # There's no OpenXR runtime in sight for macOS, neither is code well
-  # tested there -> disable it by default.
-  set(_option_default OFF)
-endif()
-option(WITH_XR_OPENXR "Enable VR features through the OpenXR specification" ${_option_default})
-if(APPLE)
-  mark_as_advanced(WITH_XR_OPENXR)
-endif()
-unset(_option_default)
+option(WITH_XR_OPENXR "Enable VR features through the OpenXR specification" ON)
 
 option(WITH_GMP "Enable features depending on GMP (Exact Boolean)" ON)
 option(WITH_MANIFOLD "Enable features depending on Manifold (Fast Robust Boolean)" ON)

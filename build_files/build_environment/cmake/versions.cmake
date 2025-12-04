@@ -920,16 +920,16 @@ set(NASM_FILE nasm-${NASM_VERSION}.tar.gz)
 set(NASM_PCE "cpe:2.3:a:nasm:nasm:${NASM_VERSION}:*:*:*:*:*:*:*")
 set(NASM_DEPSBUILDTIMEONLY "Blender ships the produced artifact, but doesn't ship/link with any binary")
 
-set(XR_OPENXR_SDK_VERSION 1.0.22)
+set(XR_OPENXR_SDK_VERSION 1.1.53)
 set(XR_OPENXR_SDK_URI https://github.com/KhronosGroup/OpenXR-SDK/archive/release-${XR_OPENXR_SDK_VERSION}.tar.gz)
-set(XR_OPENXR_SDK_HASH a2623ebab3d0b340bc16311b14f02075)
+set(XR_OPENXR_SDK_HASH e2e1b25fd480947ddc2f2c68423d47e5)
 set(XR_OPENXR_SDK_HASH_TYPE MD5)
 set(XR_OPENXR_SDK_FILE OpenXR-SDK-${XR_OPENXR_SDK_VERSION}.tar.gz)
 set(XR_OPENXR_SDK_NAME OpenXR)
 set(XR_OPENXR_SDK_HOMEPAGE https://khronos.org/openxr/)
 set(XR_OPENXR_SDK_LICENSE SPDX:Apache-2.0)
 set(XR_OPENXR_SDK_COPYRIGHT [=[
-Copyright (c) 2017-2020 The Khronos Group Inc.
+Copyright (c) 2017-2025 The Khronos Group Inc.
 Copyright (c) 2017-2019 Valve Corporation.
 Copyright (c) 2017-2019 LunarG, Inc.
 Copyright (c) 2019 Collabora, Ltd.
