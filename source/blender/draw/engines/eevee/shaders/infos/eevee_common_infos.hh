@@ -14,20 +14,14 @@
 #  include "eevee_shadow_shared.hh"
 #  include "eevee_uniform_infos.hh"
 #  include "eevee_uniform_shared.hh"
+#endif
 
+#ifdef GLSL_CPP_STUBS
 #  define EEVEE_SAMPLING_DATA
 #  define MAT_CLIP_PLANE
 #  define PLANAR_PROBES
 #  define MAT_RENDER_PASS_SUPPORT
 #  define SHADOW_READ_ATOMIC
-
-/* Stub for C++ compilation. */
-struct NodeTree {
-  float crypto_hash;
-  float _pad0;
-  float _pad1;
-  float _pad2;
-};
 #endif
 
 #include "eevee_defines.hh"
@@ -37,15 +31,18 @@ struct NodeTree {
 /** \name Common
  * \{ */
 
-/* Stub for C++ compilation. */
-/* TODO(fclem): Use it for actual interface. */
-GPU_SHADER_CREATE_INFO(eevee_node_tree)
-UNIFORM_BUF(0 /*GPU_NODE_TREE_UBO_SLOT*/, NodeTree, node_tree)
-GPU_SHADER_CREATE_END()
-
 GPU_SHADER_CREATE_INFO(eevee_hiz_data)
 SAMPLER(HIZ_TEX_SLOT, sampler2D, hiz_tx)
 ADDITIONAL_INFO(eevee_global_ubo)
+GPU_SHADER_CREATE_END()
+
+GPU_SHADER_CREATE_INFO(eevee_hiz_prev_data)
+SAMPLER(HIZ_PREVIOUS_LAYER_TEX_SLOT, sampler2D, hiz_prev_tx)
+ADDITIONAL_INFO(eevee_global_ubo)
+GPU_SHADER_CREATE_END()
+
+GPU_SHADER_CREATE_INFO(eevee_previous_layer_radiance)
+SAMPLER(RADIANCE_PREVIOUS_LAYER_TEX_SLOT, sampler2D, previous_layer_radiance_tx)
 GPU_SHADER_CREATE_END()
 
 GPU_SHADER_CREATE_INFO(eevee_utility_texture)
@@ -63,9 +60,9 @@ GPU_SHADER_CREATE_END()
 
 GPU_SHADER_CREATE_INFO(eevee_gbuffer_data)
 DEFINE("GBUFFER_LOAD")
-SAMPLER(12, usampler2DArray, gbuf_header_tx)
-SAMPLER(13, sampler2DArray, gbuf_closure_tx)
-SAMPLER(14, sampler2DArray, gbuf_normal_tx)
+SAMPLER(11, usampler2DArray, gbuf_header_tx)
+SAMPLER(14, sampler2DArray, gbuf_closure_tx)
+SAMPLER(15, sampler2DArray, gbuf_normal_tx)
 GPU_SHADER_CREATE_END()
 
 GPU_SHADER_CREATE_INFO(eevee_render_pass_out)

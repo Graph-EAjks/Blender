@@ -867,7 +867,7 @@ static wmOperatorStatus bake_simulation_invoke(bContext *C,
   }
 
   if (has_path_conflict) {
-    UI_popup_menu_reports(C, op->reports);
+    ui::popup_menu_reports(C, op->reports);
     return OPERATOR_CANCELLED;
   }
   if (has_existing_bake_data) {
@@ -1103,20 +1103,17 @@ static wmOperatorStatus unpack_single_bake_invoke(bContext *C,
                                                   wmOperator *op,
                                                   const wmEvent * /*event*/)
 {
-  uiPopupMenu *pup;
-  uiLayout *layout;
+  ui::PopupMenu *pup = ui::popup_menu_begin(C, IFACE_("Unpack"), ICON_NONE);
+  ui::Layout &layout = *popup_menu_layout(pup);
 
-  pup = UI_popup_menu_begin(C, IFACE_("Unpack"), ICON_NONE);
-  layout = UI_popup_menu_layout(pup);
+  layout.operator_context_set(wm::OpCallContext::ExecDefault);
+  layout.op_enum(op->type->idname,
+                 "method",
+                 static_cast<IDProperty *>(op->ptr->data),
+                 wm::OpCallContext::ExecRegionWin,
+                 UI_ITEM_NONE);
 
-  layout->operator_context_set(wm::OpCallContext::ExecDefault);
-  layout->op_enum(op->type->idname,
-                  "method",
-                  static_cast<IDProperty *>(op->ptr->data),
-                  wm::OpCallContext::ExecRegionWin,
-                  UI_ITEM_NONE);
-
-  UI_popup_menu_end(C, pup);
+  popup_menu_end(C, pup);
 
   return OPERATOR_INTERFACE;
 }

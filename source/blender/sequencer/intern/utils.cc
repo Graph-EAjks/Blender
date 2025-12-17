@@ -37,7 +37,6 @@
 #include "SEQ_render.hh"
 #include "SEQ_select.hh"
 #include "SEQ_sequencer.hh"
-#include "SEQ_time.hh"
 #include "SEQ_utils.hh"
 
 #include "IMB_imbuf_types.hh"
@@ -123,7 +122,7 @@ const char *get_default_stripname_by_type(int type)
       return CTX_DATA_(BLT_I18NCONTEXT_ID_SEQUENCE, "Clip");
     case STRIP_TYPE_MASK:
       return CTX_DATA_(BLT_I18NCONTEXT_ID_SEQUENCE, "Mask");
-    case STRIP_TYPE_SOUND_RAM:
+    case STRIP_TYPE_SOUND:
       return CTX_DATA_(BLT_I18NCONTEXT_ID_SEQUENCE, "Audio");
     case STRIP_TYPE_CROSS:
       return CTX_DATA_(BLT_I18NCONTEXT_ID_SEQUENCE, "Crossfade");
@@ -184,7 +183,7 @@ ListBase *get_seqbase_from_strip(Strip *strip, ListBase **r_channels, int *r_off
     case STRIP_TYPE_META: {
       seqbase = &strip->seqbase;
       *r_channels = &strip->channels;
-      *r_offset = time_start_frame_get(strip);
+      *r_offset = strip->content_start();
       break;
     }
     case STRIP_TYPE_SCENE: {
@@ -203,25 +202,22 @@ ListBase *get_seqbase_from_strip(Strip *strip, ListBase **r_channels, int *r_off
   return seqbase;
 }
 
-static void open_anim_filepath(Strip *strip, StripAnim *sanim, const char *filepath, bool openfile)
+static MovieReader *open_anim_filepath(Strip *strip, const char *filepath, bool openfile)
 {
   /* Sequencer takes care of colorspace conversion of the result. The input is the best to be
    * kept unchanged for the performance reasons. */
   if (openfile) {
-    sanim->anim = openanim(filepath,
-                           IB_byte_data | ((strip->flag & SEQ_FILTERY) ? IB_animdeinterlace : 0),
-                           strip->streamindex,
-                           true,
-                           strip->data->colorspace_settings.name);
+    return openanim(filepath,
+                    IB_byte_data | ((strip->flag & SEQ_DEINTERLACE) ? IB_animdeinterlace : 0),
+                    strip->streamindex,
+                    true,
+                    strip->data->colorspace_settings.name);
   }
-  else {
-    sanim->anim = openanim_noload(filepath,
-                                  IB_byte_data |
-                                      ((strip->flag & SEQ_FILTERY) ? IB_animdeinterlace : 0),
-                                  strip->streamindex,
-                                  true,
-                                  strip->data->colorspace_settings.name);
-  }
+  return openanim_noload(filepath,
+                         IB_byte_data | ((strip->flag & SEQ_DEINTERLACE) ? IB_animdeinterlace : 0),
+                         strip->streamindex,
+                         true,
+                         strip->data->colorspace_settings.name);
 }
 
 static bool use_proxy(Editing *ed, Strip *strip)
@@ -249,15 +245,15 @@ static void proxy_dir_get(Editing *ed, Strip *strip, char r_proxy_dirpath[FILE_M
   }
 }
 
-static void index_dir_set(Editing *ed, Strip *strip, StripAnim *sanim)
+static void index_dir_set(Editing *ed, Strip *strip, MovieReader *reader)
 {
-  if (sanim->anim == nullptr || !use_proxy(ed, strip)) {
+  if (reader == nullptr || !use_proxy(ed, strip)) {
     return;
   }
 
   char proxy_dirpath[FILE_MAX];
   proxy_dir_get(ed, strip, proxy_dirpath);
-  seq_proxy_index_dir_set(sanim->anim, proxy_dirpath);
+  seq_proxy_index_dir_set(reader, proxy_dirpath);
 }
 
 static bool open_anim_file_multiview(Scene *scene, Strip *strip, const char *filepath)
@@ -279,18 +275,17 @@ static bool open_anim_file_multiview(Scene *scene, Strip *strip, const char *fil
     char filepath_view[FILE_MAX];
     SNPRINTF(filepath_view, "%s%s%s", prefix, suffix, ext);
 
-    StripAnim *sanim = MEM_mallocN<StripAnim>("Strip Anim");
     /* Multiview files must be loaded, otherwise it is not possible to detect failure. */
-    open_anim_filepath(strip, sanim, filepath_view, true);
+    MovieReader *reader = open_anim_filepath(strip, filepath_view, true);
 
-    if (sanim->anim == nullptr) {
-      relations_strip_free_anim(strip);
+    if (reader == nullptr) {
+      strip_free_movie_readers(strip);
       return false; /* Multiview render failed. */
     }
 
-    index_dir_set(ed, strip, sanim);
-    BLI_addtail(&strip->anims, sanim);
-    MOV_set_multiview_suffix(sanim->anim, suffix);
+    index_dir_set(ed, strip, reader);
+    strip->runtime->movie_readers.append(reader);
+    MOV_set_multiview_suffix(reader, suffix);
     is_multiview_loaded = true;
   }
 
@@ -299,14 +294,12 @@ static bool open_anim_file_multiview(Scene *scene, Strip *strip, const char *fil
 
 void strip_open_anim_file(Scene *scene, Strip *strip, bool openfile)
 {
-  if ((strip->anims.first != nullptr) && (((StripAnim *)strip->anims.first)->anim != nullptr) &&
-      !openfile)
-  {
+  if (!openfile && strip->runtime->movie_reader_get() != nullptr) {
     return;
   }
 
   /* Reset all the previously created anims. */
-  relations_strip_free_anim(strip);
+  strip_free_movie_readers(strip);
 
   Editing *ed = scene->ed;
   char filepath[FILE_MAX];
@@ -322,10 +315,9 @@ void strip_open_anim_file(Scene *scene, Strip *strip, bool openfile)
   }
 
   if (!is_multiview || !multiview_is_loaded) {
-    StripAnim *sanim = MEM_mallocN<StripAnim>("Strip Anim");
-    BLI_addtail(&strip->anims, sanim);
-    open_anim_filepath(strip, sanim, filepath, openfile);
-    index_dir_set(ed, strip, sanim);
+    MovieReader *reader = open_anim_filepath(strip, filepath, openfile);
+    strip->runtime->movie_readers.append(reader);
+    index_dir_set(ed, strip, reader);
   }
 }
 
@@ -342,7 +334,7 @@ const Strip *strip_topmost_get(const Scene *scene, int frame)
   int best_channel = -1;
 
   LISTBASE_FOREACH (const Strip *, strip, ed->current_strips()) {
-    if (render_is_muted(channels, strip) || !time_strip_intersects_frame(scene, strip, frame)) {
+    if (render_is_muted(channels, strip) || !strip->intersects_frame(scene, frame)) {
       continue;
     }
     /* Only use strips that generate an image, not ones that combine
@@ -444,7 +436,7 @@ bool strip_has_valid_data(const Strip *strip)
       return (strip->clip != nullptr);
     case STRIP_TYPE_SCENE:
       return (strip->scene != nullptr);
-    case STRIP_TYPE_SOUND_RAM:
+    case STRIP_TYPE_SOUND:
       return (strip->sound != nullptr);
   }
 

@@ -211,6 +211,10 @@ static void mesh_copy_data(Main *bmain,
       MEM_dupallocN(mesh_src->active_uv_map_attribute));
   mesh_dst->default_uv_map_attribute = static_cast<char *>(
       MEM_dupallocN(mesh_src->default_uv_map_attribute));
+  mesh_dst->stencil_uv_map_attribute = static_cast<char *>(
+      MEM_dupallocN(mesh_src->stencil_uv_map_attribute));
+  mesh_dst->clone_uv_map_attribute = static_cast<char *>(
+      MEM_dupallocN(mesh_src->clone_uv_map_attribute));
 
   CustomData_init_from(
       &mesh_src->vert_data, &mesh_dst->vert_data, mask.vmask, mesh_dst->verts_num);
@@ -260,6 +264,8 @@ static void mesh_free_data(ID *id)
   MEM_SAFE_FREE(mesh->default_color_attribute);
   MEM_SAFE_FREE(mesh->active_uv_map_attribute);
   MEM_SAFE_FREE(mesh->default_uv_map_attribute);
+  MEM_SAFE_FREE(mesh->stencil_uv_map_attribute);
+  MEM_SAFE_FREE(mesh->clone_uv_map_attribute);
   mesh->attribute_storage.wrap().~AttributeStorage();
   if (mesh->face_offset_indices) {
     blender::implicit_sharing::free_shared_data(&mesh->face_offset_indices,
@@ -336,23 +342,6 @@ static void mesh_blend_write(BlendWriter *writer, ID *id, const void *id_address
   mesh->totface_legacy = 0;
   mesh->fdata_legacy = CustomData{};
 
-  /* Convert from the format still used at runtime (flags on #CustomDataLayer) to the format
-   * reserved for future runtime use (names stored on #Mesh). */
-  if (const char *name = CustomData_get_active_layer_name(&mesh->corner_data, CD_PROP_FLOAT2)) {
-    mesh->active_uv_map_attribute = const_cast<char *>(
-        scope.allocator().copy_string(name).c_str());
-  }
-  else {
-    mesh->active_uv_map_attribute = nullptr;
-  }
-  if (const char *name = CustomData_get_render_layer_name(&mesh->corner_data, CD_PROP_FLOAT2)) {
-    mesh->default_uv_map_attribute = const_cast<char *>(
-        scope.allocator().copy_string(name).c_str());
-  }
-  else {
-    mesh->default_uv_map_attribute = nullptr;
-  }
-
   /* Do not store actual geometry data in case this is a library override ID. */
   if (ID_IS_OVERRIDE_LIBRARY(mesh) && !is_undo) {
     mesh->verts_num = 0;
@@ -405,6 +394,8 @@ static void mesh_blend_write(BlendWriter *writer, ID *id, const void *id_address
   BLO_write_string(writer, mesh->default_color_attribute);
   BLO_write_string(writer, mesh->active_uv_map_attribute);
   BLO_write_string(writer, mesh->default_uv_map_attribute);
+  BLO_write_string(writer, mesh->stencil_uv_map_attribute);
+  BLO_write_string(writer, mesh->clone_uv_map_attribute);
 
   BLO_write_pointer_array(writer, mesh->totcol, mesh->mat);
   BLO_write_struct_array(writer, MSelect, mesh->totselect, mesh->mselect);
@@ -471,6 +462,8 @@ static void mesh_blend_read_data(BlendDataReader *reader, ID *id)
   BLO_read_string(reader, &mesh->default_color_attribute);
   BLO_read_string(reader, &mesh->active_uv_map_attribute);
   BLO_read_string(reader, &mesh->default_uv_map_attribute);
+  BLO_read_string(reader, &mesh->stencil_uv_map_attribute);
+  BLO_read_string(reader, &mesh->clone_uv_map_attribute);
 
   /* Forward compatibility. To be removed when runtime format changes. */
   blender::bke::mesh_convert_storage_to_customdata(*mesh);
@@ -594,6 +587,23 @@ void mesh_ensure_default_color_attribute_on_add(Mesh &mesh,
   mesh.default_color_attribute = BLI_strdupn(id.data(), id.size());
 }
 
+void mesh_ensure_default_uv_attribute_on_add(Mesh &mesh,
+                                             const StringRef id,
+                                             AttrDomain domain,
+                                             bke::AttrType data_type)
+{
+  if (bke::attribute_name_is_anonymous(id)) {
+    return;
+  }
+  if (!mesh::is_uv_map({domain, data_type})) {
+    return;
+  }
+  if (!mesh.default_uv_map_name().is_empty()) {
+    return;
+  }
+  mesh.uv_maps_default_set(id);
+}
+
 void mesh_ensure_required_data_layers(Mesh &mesh)
 {
   MutableAttributeAccessor attributes = mesh.attributes_for_write();
@@ -614,6 +624,18 @@ void mesh_remove_invalid_attribute_strings(Mesh &mesh)
   }
   if (!mesh::is_color_attribute(attributes.lookup_meta_data(mesh.default_color_attribute))) {
     MEM_SAFE_FREE(mesh.default_color_attribute);
+  }
+  if (!mesh::is_uv_map(attributes.lookup_meta_data(mesh.active_uv_map_name()))) {
+    MEM_SAFE_FREE(mesh.active_uv_map_attribute);
+  }
+  if (!mesh::is_uv_map(attributes.lookup_meta_data(mesh.default_uv_map_name()))) {
+    MEM_SAFE_FREE(mesh.default_uv_map_attribute);
+  }
+  if (!mesh::is_uv_map(attributes.lookup_meta_data(mesh.stencil_uv_map_attribute))) {
+    MEM_SAFE_FREE(mesh.stencil_uv_map_attribute);
+  }
+  if (!mesh::is_uv_map(attributes.lookup_meta_data(mesh.clone_uv_map_attribute))) {
+    MEM_SAFE_FREE(mesh.clone_uv_map_attribute);
   }
 }
 
@@ -1024,6 +1046,10 @@ static void clear_attribute_names(Mesh &mesh)
   BLI_freelistN(&mesh.vertex_group_names);
   MEM_SAFE_FREE(mesh.active_color_attribute);
   MEM_SAFE_FREE(mesh.default_color_attribute);
+  MEM_SAFE_FREE(mesh.active_uv_map_attribute);
+  MEM_SAFE_FREE(mesh.default_uv_map_attribute);
+  MEM_SAFE_FREE(mesh.stencil_uv_map_attribute);
+  MEM_SAFE_FREE(mesh.clone_uv_map_attribute);
 }
 
 void BKE_mesh_clear_geometry(Mesh *mesh)
@@ -1204,30 +1230,50 @@ blender::VectorSet<blender::StringRefNull> Mesh::uv_map_names() const
 
 blender::StringRefNull Mesh::active_uv_map_name() const
 {
-  /* Currently this information is stored in CustomData. Once it switches to using
-   * #Mesh::active_uv_map_attribute, this logic can be removed. This function's only purpose is to
-   * ease that transition. */
-  if (this->runtime->edit_mesh) {
-    const char *name = CustomData_get_active_layer_name(&this->runtime->edit_mesh->bm->ldata,
-                                                        CD_PROP_FLOAT2);
+  if (BMEditMesh *em = this->runtime->edit_mesh.get()) {
+    const char *name = CustomData_get_active_layer_name(&em->bm->ldata, CD_PROP_FLOAT2);
     return name ? name : "";
   }
-  const char *name = CustomData_get_active_layer_name(&this->corner_data, CD_PROP_FLOAT2);
-  return name ? name : "";
+  return this->active_uv_map_attribute ? this->active_uv_map_attribute : "";
 }
 
 blender::StringRefNull Mesh::default_uv_map_name() const
 {
-  /* Currently this information is stored in CustomData. Once it switches to using
-   * #Mesh::default_uv_map_attribute, this logic can be removed. This function's only purpose is to
-   * ease that transition. */
-  if (this->runtime->edit_mesh) {
-    const char *name = CustomData_get_render_layer_name(&this->runtime->edit_mesh->bm->ldata,
-                                                        CD_PROP_FLOAT2);
+  if (BMEditMesh *em = this->runtime->edit_mesh.get()) {
+    const char *name = CustomData_get_render_layer_name(&em->bm->ldata, CD_PROP_FLOAT2);
     return name ? name : "";
   }
-  const char *name = CustomData_get_render_layer_name(&this->corner_data, CD_PROP_FLOAT2);
-  return name ? name : "";
+  return this->default_uv_map_attribute ? this->default_uv_map_attribute : "";
+}
+
+void Mesh::uv_maps_active_set(const StringRef name)
+{
+  MEM_SAFE_FREE(this->active_uv_map_attribute);
+  if (!name.is_empty()) {
+    this->active_uv_map_attribute = BLI_strdupn(name.data(), name.size());
+  }
+  if (BMEditMesh *em = this->runtime->edit_mesh.get()) {
+    int index = CustomData_get_named_layer_index(&em->bm->ldata, CD_PROP_FLOAT2, name);
+    if (index == -1) {
+      index = CustomData_get_layer_index(&em->bm->ldata, CD_PROP_FLOAT2);
+    }
+    CustomData_set_layer_active_index(&em->bm->ldata, CD_PROP_FLOAT2, index);
+  }
+}
+
+void Mesh::uv_maps_default_set(const StringRef name)
+{
+  MEM_SAFE_FREE(this->default_uv_map_attribute);
+  if (!name.is_empty()) {
+    this->default_uv_map_attribute = BLI_strdupn(name.data(), name.size());
+  }
+  if (BMEditMesh *em = this->runtime->edit_mesh.get()) {
+    int index = CustomData_get_named_layer_index(&em->bm->ldata, CD_PROP_FLOAT2, name);
+    if (index == -1) {
+      index = CustomData_get_layer_index(&em->bm->ldata, CD_PROP_FLOAT2);
+    }
+    CustomData_set_layer_render_index(&em->bm->ldata, CD_PROP_FLOAT2, index);
+  }
 }
 
 Mesh *BKE_mesh_new_nomain(const int verts_num,
@@ -1308,6 +1354,22 @@ static void copy_attribute_names(const Mesh &mesh_src, Mesh &mesh_dst)
   if (mesh_src.default_color_attribute) {
     MEM_SAFE_FREE(mesh_dst.default_color_attribute);
     mesh_dst.default_color_attribute = BLI_strdup(mesh_src.default_color_attribute);
+  }
+  if (mesh_src.active_uv_map_attribute) {
+    MEM_SAFE_FREE(mesh_dst.active_uv_map_attribute);
+    mesh_dst.active_uv_map_attribute = BLI_strdup(mesh_src.active_uv_map_attribute);
+  }
+  if (mesh_src.default_uv_map_attribute) {
+    MEM_SAFE_FREE(mesh_dst.default_uv_map_attribute);
+    mesh_dst.default_uv_map_attribute = BLI_strdup(mesh_src.default_uv_map_attribute);
+  }
+  if (mesh_src.stencil_uv_map_attribute) {
+    MEM_SAFE_FREE(mesh_dst.stencil_uv_map_attribute);
+    mesh_dst.stencil_uv_map_attribute = BLI_strdup(mesh_src.stencil_uv_map_attribute);
+  }
+  if (mesh_src.clone_uv_map_attribute) {
+    MEM_SAFE_FREE(mesh_dst.clone_uv_map_attribute);
+    mesh_dst.clone_uv_map_attribute = BLI_strdup(mesh_src.clone_uv_map_attribute);
   }
 }
 

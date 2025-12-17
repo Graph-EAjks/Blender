@@ -32,9 +32,9 @@ static void node_declare(NodeDeclarationBuilder &b)
   b.add_output<decl::Vector>("Normal");
 }
 
-static void node_shader_buts_normal_map(uiLayout *layout, bContext *C, PointerRNA *ptr)
+static void node_shader_buts_normal_map(ui::Layout &layout, bContext *C, PointerRNA *ptr)
 {
-  layout->prop(ptr, "space", UI_ITEM_R_SPLIT_EMPTY_NAME, "", ICON_NONE);
+  layout.prop(ptr, "space", ui::ITEM_R_SPLIT_EMPTY_NAME, "", ICON_NONE);
 
   if (RNA_enum_get(ptr, "space") == SHD_SPACE_TANGENT) {
     PointerRNA obptr = CTX_data_pointer_get(C, "active_object");
@@ -46,12 +46,12 @@ static void node_shader_buts_normal_map(uiLayout *layout, bContext *C, PointerRN
       if (depsgraph) {
         Object *object_eval = DEG_get_evaluated(depsgraph, object);
         PointerRNA dataptr = RNA_id_pointer_create(static_cast<ID *>(object_eval->data));
-        layout->prop_search(ptr, "uv_map", &dataptr, "uv_layers", "", ICON_GROUP_UVS);
+        layout.prop_search(ptr, "uv_map", &dataptr, "uv_layers", "", ICON_GROUP_UVS);
         return;
       }
     }
 
-    layout->prop(ptr, "uv_map", UI_ITEM_R_SPLIT_EMPTY_NAME, "", ICON_NONE);
+    layout.prop(ptr, "uv_map", ui::ITEM_R_SPLIT_EMPTY_NAME, "", ICON_NONE);
   }
 }
 
@@ -73,29 +73,16 @@ static int gpu_shader_normal_map(GPUMaterial *mat,
   if (in[0].link) {
     strength = in[0].link;
   }
-  else if (node->runtime->original) {
-    bNodeSocket *socket = static_cast<bNodeSocket *>(
-        BLI_findlink(&node->runtime->original->inputs, 0));
-    bNodeSocketValueFloat *socket_data = static_cast<bNodeSocketValueFloat *>(
-        socket->default_value);
-    strength = GPU_uniform(&socket_data->value);
-  }
   else {
-    strength = GPU_constant(in[0].vec);
+    strength = GPU_uniform(in[0].vec);
   }
 
   GPUNodeLink *newnormal;
   if (in[1].link) {
     newnormal = in[1].link;
   }
-  else if (node->runtime->original) {
-    bNodeSocket *socket = static_cast<bNodeSocket *>(
-        BLI_findlink(&node->runtime->original->inputs, 1));
-    bNodeSocketValueRGBA *socket_data = static_cast<bNodeSocketValueRGBA *>(socket->default_value);
-    newnormal = GPU_uniform(socket_data->value);
-  }
   else {
-    newnormal = GPU_constant(in[1].vec);
+    newnormal = GPU_uniform(in[1].vec);
   }
 
   const char *color_to_normal_fnc_name = "color_to_normal_new_shading";

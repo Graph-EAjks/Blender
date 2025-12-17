@@ -7,6 +7,7 @@
  */
 
 #include <cmath>
+#include <fmt/format.h>
 
 #include "BLI_listbase.h"
 #include "BLI_math_color.h"
@@ -18,6 +19,7 @@
 #include "BLI_string_utf8.h"
 #include "BLI_string_utils.hh"
 #include "BLI_threads.h"
+#include "BLI_time.h"
 
 #include "BKE_armature.hh"
 #include "BKE_camera.h"
@@ -60,6 +62,7 @@
 
 #include "ANIM_bone_collections.hh"
 
+#include "DEG_depsgraph_debug.hh"
 #include "DEG_depsgraph_query.hh"
 
 #include "GPU_framebuffer.hh"
@@ -90,7 +93,7 @@ using blender::float4;
 
 #define M_GOLDEN_RATIO_CONJUGATE 0.618033988749895f
 
-#define VIEW3D_OVERLAY_LINEHEIGHT (UI_style_get()->widget.points * UI_SCALE_FAC * 1.6f)
+#define VIEW3D_OVERLAY_LINEHEIGHT (blender::ui::style_get()->widget.points * UI_SCALE_FAC * 1.6f)
 
 /* -------------------------------------------------------------------- */
 /** \name General Functions
@@ -728,7 +731,7 @@ static void drawviewborder(Scene *scene, Depsgraph *depsgraph, ARegion *region, 
       /* draw */
       immUniformThemeColorAlpha(TH_VIEW_OVERLAY, 0.75f);
 
-      UI_draw_safe_areas(
+      blender::ui::draw_safe_areas(
           shdr_pos, &margins_rect, scene->safe_areas.title, scene->safe_areas.action);
 
       if (ca->flag & CAM_SHOW_SAFE_CENTER) {
@@ -737,10 +740,10 @@ static void drawviewborder(Scene *scene, Depsgraph *depsgraph, ARegion *region, 
         center_rect.xmax = x2;
         center_rect.ymin = y1;
         center_rect.ymax = y2;
-        UI_draw_safe_areas(shdr_pos,
-                           &center_rect,
-                           scene->safe_areas.title_center,
-                           scene->safe_areas.action_center);
+        blender::ui::draw_safe_areas(shdr_pos,
+                                     &center_rect,
+                                     scene->safe_areas.title_center,
+                                     scene->safe_areas.action_center);
       }
     }
 
@@ -779,7 +782,7 @@ static void drawviewborder(Scene *scene, Depsgraph *depsgraph, ARegion *region, 
       immUniformThemeColorShadeAlpha(TH_VIEW_OVERLAY, 100, 255);
 
       /* TODO: Was using:
-       * `UI_draw_roundbox_4fv(false, rect.xmin, rect.ymin, rect.xmax, rect.ymax, 2.0f, color);`
+       * `draw_roundbox_4fv(false, rect.xmin, rect.ymin, rect.xmax, rect.ymax, 2.0f, color);`
        * We'll probably need a new imm_draw_line_roundbox_dashed or that - though in practice the
        * 2.0f round corner effect was nearly not visible anyway. */
       imm_draw_box_wire_2d(shdr_pos, rect.xmin, rect.ymin, rect.xmax, rect.ymax);
@@ -793,7 +796,7 @@ static void drawviewborder(Scene *scene, Depsgraph *depsgraph, ARegion *region, 
 
   /* camera name - draw in highlighted text color */
   if (ca && ((v3d->overlay.flag & V3D_OVERLAY_HIDE_TEXT) == 0) && (ca->flag & CAM_SHOWNAME)) {
-    UI_FontThemeColor(BLF_default(), TH_TEXT_HI);
+    blender::ui::theme::font_theme_color_set(BLF_default(), TH_TEXT_HI);
     BLF_draw_default(x1i,
                      y1i - (0.7f * U.widget_unit),
                      0.0f,
@@ -991,8 +994,8 @@ static void draw_view_axis(RegionView3D *rv3d, const rcti *rect)
     axis_pos[i][1] = starty + vec[1] * k;
 
     /* get color of each axis */
-    UI_GetThemeColorShade3fv(TH_AXIS_X + i, bright, axis_col[i]); /* rgb */
-    axis_col[i][3] = hypotf(vec[0], vec[1]);                      /* alpha */
+    blender::ui::theme::get_color_shade_3fv(TH_AXIS_X + i, bright, axis_col[i]); /* rgb */
+    axis_col[i][3] = hypotf(vec[0], vec[1]);                                     /* alpha */
   }
 
   /* draw axis lines */
@@ -1460,13 +1463,13 @@ static void draw_selected_name(
 
     /* color depends on whether there is a keyframe */
     if (is_grease_pencil_with_layer_keyframe(*ob)) {
-      UI_FontThemeColor(font_id, TH_TIME_GP_KEYFRAME);
+      blender::ui::theme::font_theme_color_set(font_id, TH_TIME_GP_KEYFRAME);
     }
 
     if (blender::animrig::id_frame_has_keyframe((ID *)ob,
                                                 /* BKE_scene_ctime_get(scene) */ float(cfra)))
     {
-      UI_FontThemeColor(font_id, TH_KEYTYPE_KEYFRAME_SELECT);
+      blender::ui::theme::font_theme_color_set(font_id, TH_KEYTYPE_KEYFRAME_SELECT);
     }
   }
 
@@ -1516,6 +1519,74 @@ static void draw_grid_unit_name(
   }
 }
 
+static float4 get_low_fps_color()
+{
+  float alert_rgb[4];
+  float alert_hsv[4];
+  blender::ui::theme::get_color_4fv(TH_REDALERT, alert_rgb);
+  /* Brighten since we favor dark shadows to increase contrast.
+   * This gives similar results to the old hardcoded 225, 36, 36. */
+  rgb_to_hsv_v(alert_rgb, alert_hsv);
+  alert_hsv[2] = 1.0;
+  hsv_to_rgb_v(alert_hsv, alert_rgb);
+  return alert_rgb;
+}
+
+static void draw_performance_stats(Depsgraph *depsgraph,
+                                   Scene *scene,
+                                   View3D *v3d,
+                                   const float text_color[4],
+                                   const int xoffset,
+                                   int *yoffset,
+                                   const int line_height)
+{
+  using namespace blender;
+  const float fps_target = float(scene->frames_per_second());
+  const float target_time = 1.0f / fps_target;
+
+  std::optional<double> last_eval_time = DEG_get_last_evaluation_time(depsgraph);
+  const float sync_time = v3d->runtime.last_sync_time;
+  const float submission_time = v3d->runtime.last_submission_time;
+  const float total_time = (last_eval_time ? *last_eval_time : 0.0f) + sync_time + submission_time;
+
+  /* Translated labels for each stat row. */
+  enum { EVAL_TIME, SYNC_TIME, TOTAL, MAX_LABELS_COUNT };
+  std::string labels[MAX_LABELS_COUNT];
+  labels[EVAL_TIME] = IFACE_("Evaluation");
+  labels[SYNC_TIME] = IFACE_("Synchronization");
+  labels[TOTAL] = IFACE_("Total");
+
+  const int font_id = BLF_default();
+  float longest_label = 0;
+  for (int i = 0; i < MAX_LABELS_COUNT; ++i) {
+    longest_label = std::max(longest_label,
+                             BLF_width(font_id, labels[i].c_str(), labels[i].size()));
+  }
+
+  const int xoffset2 = xoffset + int(longest_label) + (0.5f * U.widget_unit);
+
+  const auto draw_time_stat = [&](const StringRef label, const std::optional<float> time_value) {
+    *yoffset -= line_height;
+    BLF_draw_default(xoffset, *yoffset, 0.0f, label.data(), label.size());
+    if (time_value) {
+      /* Draw time in red when its over the target time per frame. */
+      if (*time_value > target_time) {
+        float4 alert_rgb = get_low_fps_color();
+        BLF_color4fv(font_id, alert_rgb);
+      }
+      std::string value_string = fmt::format("{:.2f} ms", *time_value * 1000.0f);
+      BLF_draw_default(xoffset2, *yoffset, 0.0f, value_string.c_str(), value_string.size());
+      /* Reset the color. */
+      BLF_color4fv(font_id, text_color);
+    }
+  };
+
+  *yoffset -= line_height;
+  draw_time_stat(labels[EVAL_TIME], last_eval_time);
+  draw_time_stat(labels[SYNC_TIME], sync_time);
+  draw_time_stat(labels[TOTAL], total_time);
+}
+
 void view3d_draw_region_info(const bContext *C, ARegion *region)
 {
   RegionView3D *rv3d = static_cast<RegionView3D *>(region->regiondata);
@@ -1524,6 +1595,7 @@ void view3d_draw_region_info(const bContext *C, ARegion *region)
   wmWindowManager *wm = CTX_wm_manager(C);
   Main *bmain = CTX_data_main(C);
   ViewLayer *view_layer = CTX_data_view_layer(C);
+  Depsgraph *depsgraph = CTX_data_depsgraph_pointer(C);
 
 #ifdef WITH_INPUT_NDOF
   if (U.ndof_flag & NDOF_SHOW_GUIDE_ORBIT_AXIS) {
@@ -1583,7 +1655,7 @@ void view3d_draw_region_info(const bContext *C, ARegion *region)
     int yoffset = rect->ymax - (0.1f * U.widget_unit);
 
     const uiFontStyle *fstyle = UI_FSTYLE_WIDGET;
-    UI_fontstyle_set(fstyle);
+    blender::ui::fontstyle_set(fstyle);
     BLF_default_size(fstyle->points);
     BLF_set_default();
 
@@ -1617,6 +1689,11 @@ void view3d_draw_region_info(const bContext *C, ARegion *region)
       }
 
       DRW_draw_region_engine_info(xoffset, &yoffset, VIEW3D_OVERLAY_LINEHEIGHT);
+    }
+
+    if (v3d->overlay.flag & V3D_OVERLAY_PERFORMANCE) {
+      draw_performance_stats(
+          depsgraph, scene, v3d, text_color, xoffset, &yoffset, VIEW3D_OVERLAY_LINEHEIGHT);
     }
 
     if (v3d->overlay.flag & V3D_OVERLAY_STATS) {
@@ -1755,7 +1832,7 @@ void ED_view3d_draw_offscreen(Depsgraph *depsgraph,
 
   /* Store `orig` variables. */
   struct {
-    bThemeState theme_state;
+    blender::ui::theme::bThemeState theme_state;
 
     /* #View3D */
     eDrawType v3d_shading_type;
@@ -1783,8 +1860,8 @@ void ED_view3d_draw_offscreen(Depsgraph *depsgraph,
   orig.rv3d_persp = rv3d->persp;
   orig.rv3d_mats = ED_view3d_mats_rv3d_backup(static_cast<RegionView3D *>(region->regiondata));
 
-  UI_Theme_Store(&orig.theme_state);
-  UI_SetTheme(SPACE_VIEW3D, RGN_TYPE_WINDOW);
+  blender::ui::theme::theme_store(&orig.theme_state);
+  blender::ui::theme::theme_set(SPACE_VIEW3D, RGN_TYPE_WINDOW);
 
   /* Set temporary new size. */
   region->winx = winx;
@@ -1862,7 +1939,7 @@ void ED_view3d_draw_offscreen(Depsgraph *depsgraph,
   MEM_freeN(orig.rv3d_mats);
   rv3d->persp = orig.rv3d_persp;
 
-  UI_Theme_Restore(&orig.theme_state);
+  blender::ui::theme::theme_restore(&orig.theme_state);
 
   v3d->shading.type = orig.v3d_shading_type;
   v3d->camera = orig.v3d_camera;
@@ -2512,7 +2589,7 @@ void ED_view3d_depth_override(Depsgraph *depsgraph,
       return;
     }
   }
-  bThemeState theme_state;
+  blender::ui::theme::bThemeState theme_state;
   Scene *scene = DEG_get_evaluated_scene(depsgraph);
   RegionView3D *rv3d = static_cast<RegionView3D *>(region->regiondata);
 
@@ -2530,8 +2607,8 @@ void ED_view3d_depth_override(Depsgraph *depsgraph,
   }
 
   /* Tools may request depth outside of regular drawing code. */
-  UI_Theme_Store(&theme_state);
-  UI_SetTheme(SPACE_VIEW3D, RGN_TYPE_WINDOW);
+  blender::ui::theme::theme_store(&theme_state);
+  blender::ui::theme::theme_set(SPACE_VIEW3D, RGN_TYPE_WINDOW);
 
   ED_view3d_draw_setup_view(static_cast<wmWindowManager *>(G_MAIN->wm.first),
                             nullptr,
@@ -2589,7 +2666,7 @@ void ED_view3d_depth_override(Depsgraph *depsgraph,
   v3d->flag2 = flag2;
   v3d->runtime.flag |= V3D_RUNTIME_DEPTHBUF_OVERRIDDEN;
 
-  UI_Theme_Restore(&theme_state);
+  blender::ui::theme::theme_restore(&theme_state);
 }
 
 void ED_view3d_depths_free(ViewDepths *depths)
@@ -2776,14 +2853,7 @@ void ED_scene_draw_fps(const Scene *scene, int xoffset, int *yoffset)
   if (state.fps_average + 0.5f < state.fps_target) {
     /* Always show fractional when under performing. */
     show_fractional = true;
-    float alert_rgb[4];
-    float alert_hsv[4];
-    UI_GetThemeColor4fv(TH_REDALERT, alert_rgb);
-    /* Brighten since we favor dark shadows to increase contrast.
-     * This gives similar results to the old hardcoded 225, 36, 36. */
-    rgb_to_hsv_v(alert_rgb, alert_hsv);
-    alert_hsv[2] = 1.0;
-    hsv_to_rgb_v(alert_hsv, alert_rgb);
+    float4 alert_rgb = get_low_fps_color();
     BLF_color4fv(font_id, alert_rgb);
   }
 

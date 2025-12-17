@@ -802,8 +802,6 @@ static bool select_grouped_collection(bContext *C, Object *ob)
   bool changed = false;
   Collection *collection, *ob_collections[COLLECTION_MENU_MAX];
   int collection_count = 0, i;
-  uiPopupMenu *pup;
-  uiLayout *layout;
 
   for (collection = static_cast<Collection *>(bmain->collections.first);
        collection && (collection_count < COLLECTION_MENU_MAX);
@@ -833,17 +831,17 @@ static bool select_grouped_collection(bContext *C, Object *ob)
   }
 
   /* build the menu. */
-  pup = UI_popup_menu_begin(C, IFACE_("Select Collection"), ICON_NONE);
-  layout = UI_popup_menu_layout(pup);
+  ui::PopupMenu *pup = ui::popup_menu_begin(C, IFACE_("Select Collection"), ICON_NONE);
+  ui::Layout &layout = *popup_menu_layout(pup);
 
   for (i = 0; i < collection_count; i++) {
     collection = ob_collections[i];
-    PointerRNA op_ptr = layout->op(
+    PointerRNA op_ptr = layout.op(
         "OBJECT_OT_select_same_collection", collection->id.name + 2, ICON_NONE);
     RNA_string_set(&op_ptr, "collection", collection->id.name + 2);
   }
 
-  UI_popup_menu_end(C, pup);
+  popup_menu_end(C, pup);
   return changed; /* The operator already handle this! */
 }
 

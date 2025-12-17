@@ -52,14 +52,14 @@
 
 #if defined(GLSL_CPP_STUBS)
 #  define GPU_SHADER_NAMED_INTERFACE_INFO(_interface, _inst_name) \
-    namespace interface::_interface { \
+    namespace iface_ns::_interface { \
     struct {
 #  define GPU_SHADER_NAMED_INTERFACE_END(_inst_name) \
     } \
     _inst_name; \
     }
 
-#  define GPU_SHADER_INTERFACE_INFO(_interface) namespace interface::_interface {
+#  define GPU_SHADER_INTERFACE_INFO(_interface) namespace iface_ns::_interface {
 #  define GPU_SHADER_INTERFACE_END() }
 
 #  define GPU_SHADER_CREATE_INFO(_info) \
@@ -125,24 +125,24 @@
 #  define LOCAL_GROUP_SIZE(...) .local_group_size(__VA_ARGS__)
 
 #  define VERTEX_IN(slot, type, name) .vertex_in(slot, Type::type##_t, #name)
-#  define VERTEX_IN_SRD(srd) .shared_resource_descriptor(srd::populate)
 #  define VERTEX_OUT(stage_interface) .vertex_out(stage_interface)
-#  define VERTEX_OUT_SRD(srd) .vertex_out(srd)
 /* TO REMOVE. */
 #  define GEOMETRY_LAYOUT(...) .geometry_layout(__VA_ARGS__)
 #  define GEOMETRY_OUT(stage_interface) .geometry_out(stage_interface)
+
+#  define VERTEX_IN_SRT(srt) .additional_info(srt)
+#  define VERTEX_OUT_SRT(srt) .vertex_out(srt##_t)
+#  define FRAGMENT_OUT_SRT(srt) .additional_info(srt)
+#  define RESOURCE_SRT(srd) .additional_info(srt)
 
 #  define SUBPASS_IN(slot, type, img_type, name, rog) \
     .subpass_in(slot, Type::type##_t, ImageType::img_type, #name, rog)
 
 #  define FRAGMENT_OUT(slot, type, name) .fragment_out(slot, Type::type##_t, #name)
-#  define FRAGMENT_OUT_SRD(srd) .shared_resource_descriptor(srd::populate)
 #  define FRAGMENT_OUT_DUAL(slot, type, name, blend) \
     .fragment_out(slot, Type::type##_t, #name, DualBlend::blend)
 #  define FRAGMENT_OUT_ROG(slot, type, name, rog) \
     .fragment_out(slot, Type::type##_t, #name, DualBlend::NONE, rog)
-
-#  define RESOURCE_SRD(srd) .shared_resource_descriptor(srd::populate)
 
 #  define EARLY_FRAGMENT_TEST(enable) .early_fragment_test(enable)
 #  define DEPTH_WRITE(value) .depth_write(value)
@@ -151,6 +151,8 @@
     .specialization_constant(Type::type##_t, #name, default_value)
 
 #  define COMPILATION_CONSTANT(type, name, value) \
+    .compilation_constant(Type::type##_t, #name, value)
+#  define COMPILATION_CONSTANT_SRT(type, name, value) \
     .compilation_constant(Type::type##_t, #name, value)
 
 #  define PUSH_CONSTANT(type, name) .push_constant(Type::type##_t, #name)
@@ -191,6 +193,7 @@
 #  define VERTEX_SOURCE(filename) .vertex_source(filename)
 #  define FRAGMENT_SOURCE(filename) .fragment_source(filename)
 #  define COMPUTE_SOURCE(filename) .compute_source(filename)
+#  define GRAPHIC_SOURCE(filename) .vertex_source(filename).fragment_source(filename)
 
 #  define VERTEX_FUNCTION(function) .vertex_function(function)
 #  define FRAGMENT_FUNCTION(function) .fragment_function(function)
@@ -207,6 +210,8 @@
 
 #  define ADDITIONAL_INFO(info_name) .additional_info(#info_name)
 #  define TYPEDEF_SOURCE(filename) .typedef_source(filename)
+
+#  define SRT_DATA(srt_name) .additional_info(#srt_name)
 
 #  define MTL_MAX_TOTAL_THREADS_PER_THREADGROUP(value) \
     .mtl_max_total_threads_per_threadgroup(value)
@@ -228,15 +233,11 @@
     namespace gl_VertexShader { \
     const type name = {}; \
     }
-#  define VERTEX_IN_SRD(srd) \
-    namespace gl_VertexShader { \
-    using namespace srd; \
-    }
-#  define VERTEX_OUT(stage_interface) using namespace interface::stage_interface;
-#  define VERTEX_OUT_SRD(srd) using namespace interface::srd;
+#  define VERTEX_OUT(stage_interface) using namespace iface_ns::stage_interface;
+
 /* TO REMOVE. */
 #  define GEOMETRY_LAYOUT(...)
-#  define GEOMETRY_OUT(stage_interface) using namespace interface::stage_interface;
+#  define GEOMETRY_OUT(stage_interface) using namespace iface_ns::stage_interface;
 
 #  define SUBPASS_IN(slot, type, img_type, name, rog) const type name = {};
 
@@ -252,12 +253,11 @@
     namespace gl_FragmentShader { \
     type name; \
     }
-#  define FRAGMENT_OUT_SRD(srd) \
-    namespace gl_FragmentShader { \
-    using namespace srd; \
-    }
 
-#  define RESOURCE_SRD(srd) using namespace srd;
+#  define VERTEX_IN_SRT(srt)
+#  define VERTEX_OUT_SRT(srt)
+#  define FRAGMENT_OUT_SRT(srt)
+#  define RESOURCE_SRT(srd)
 
 #  define EARLY_FRAGMENT_TEST(enable)
 #  define DEPTH_WRITE(value)
@@ -266,6 +266,7 @@
     constexpr type name = type(default_value);
 
 #  define COMPILATION_CONSTANT(type, name, value) constexpr type name = type(value);
+#  define COMPILATION_CONSTANT_SRT(type, name, value)
 
 #  define PUSH_CONSTANT(type, name) extern const type name;
 #  define PUSH_CONSTANT_ARRAY(type, name, array_size) extern const type name[array_size];
@@ -290,6 +291,7 @@
 #  define VERTEX_SOURCE(filename)
 #  define FRAGMENT_SOURCE(filename)
 #  define COMPUTE_SOURCE(filename)
+#  define GRAPHIC_SOURCE(filename)
 
 #  define VERTEX_FUNCTION(filename)
 #  define FRAGMENT_FUNCTION(filename)
@@ -308,6 +310,8 @@
     using namespace info_name; \
     using namespace info_name::gl_FragmentShader; \
     using namespace info_name::gl_VertexShader;
+
+#  define SRT_DATA(srt_name)
 
 #  define TYPEDEF_SOURCE(filename)
 
@@ -745,7 +749,7 @@ using GeneratedSourceList = Vector<shader::GeneratedSource, 0>;
  */
 struct ShaderCreateInfo {
   /** Shader name for debugging. */
-  StringRefNull name_;
+  std::string name_;
   /** True if the shader is static and can be pre-compiled at compile time. */
   bool do_static_compilation_ = false;
   /** True if the shader is not part of gpu_shader_create_info_list. */
@@ -779,6 +783,29 @@ struct ShaderCreateInfo {
 
   GeneratedSourceList generated_sources;
 
+  using ConditionFn = std::function<bool(Span<CompilationConstant>)>;
+  struct Conditions : Vector<ConditionFn, 0> {
+
+    Conditions() = default;
+    Conditions(ConditionFn &fn)
+    {
+      this->append(fn);
+    };
+
+    bool evaluate(Span<CompilationConstant> constants) const
+    {
+      if (is_empty()) {
+        return true;
+      }
+      for (const auto &cond : *this) {
+        if (cond(constants)) {
+          return true;
+        }
+      }
+      return false;
+    }
+  };
+
 #  define TEST_EQUAL(a, b, _member) \
     if (!((a)._member == (b)._member)) { \
       return false; \
@@ -803,7 +830,7 @@ struct ShaderCreateInfo {
       return true;
     }
   };
-  Vector<VertIn> vertex_inputs_;
+  Vector<VertIn, 0> vertex_inputs_;
 
   struct GeometryStageLayout {
     PrimitiveIn primitive_in;
@@ -856,7 +883,7 @@ struct ShaderCreateInfo {
       return true;
     }
   };
-  Vector<FragOut> fragment_outputs_;
+  Vector<FragOut, 0> fragment_outputs_;
 
   struct SubpassIn {
     int index;
@@ -876,14 +903,26 @@ struct ShaderCreateInfo {
       return true;
     }
   };
-  Vector<SubpassIn> subpass_inputs_;
+  Vector<SubpassIn, 0> subpass_inputs_;
 
   Vector<CompilationConstant, 0> compilation_constants_;
-  Vector<SpecializationConstant> specialization_constants_;
+  Vector<SpecializationConstant, 0> specialization_constants_;
+
+  static int find_constant(Span<CompilationConstant> constants, StringRefNull name)
+  {
+    for (const CompilationConstant &constant : constants) {
+      if (constant.name == name) {
+        /* Note: We don't support float for now, so cast everything to int. */
+        return constant.value.i;
+      }
+    }
+    return 0;
+  }
 
   struct SharedVariable {
     Type type;
     ResourceString name;
+    StringRefNull info_name;
   };
 
   Vector<SharedVariable, 0> shared_variables_;
@@ -920,8 +959,11 @@ struct ShaderCreateInfo {
       IMAGE,
     };
 
+    /* Name of the create info that declared this resource. */
+    StringRefNull info_name;
     BindType bind_type;
     int slot;
+    Conditions conditions;
     union {
       Sampler sampler;
       Image image;
@@ -929,7 +971,11 @@ struct ShaderCreateInfo {
       StorageBuf storagebuf;
     };
 
-    Resource(BindType type, int _slot) : bind_type(type), slot(_slot) {};
+    Resource(const ShaderCreateInfo &info, BindType type, int _slot, ConditionFn cond)
+        : info_name(info.name_),
+          bind_type(type),
+          slot(_slot),
+          conditions(cond ? Conditions(cond) : Conditions()) {};
 
     bool operator==(const Resource &b) const
     {
@@ -967,9 +1013,9 @@ struct ShaderCreateInfo {
    * Geometry resources can be changed in a very granular manner (per draw-call).
    * Misuse will only produce suboptimal performance.
    */
-  Vector<Resource> pass_resources_, batch_resources_, geometry_resources_;
+  Vector<Resource, 0> pass_resources_, batch_resources_, geometry_resources_;
 
-  Vector<Resource> &resources_get_(Frequency freq)
+  Vector<Resource, 0> &resources_get_(Frequency freq)
   {
     switch (freq) {
       case Frequency::PASS:
@@ -993,8 +1039,8 @@ struct ShaderCreateInfo {
     return all_resources;
   }
 
-  Vector<StageInterfaceInfo *> vertex_out_interfaces_;
-  Vector<StageInterfaceInfo *> geometry_out_interfaces_;
+  Vector<StageInterfaceInfo *, 0> vertex_out_interfaces_;
+  Vector<StageInterfaceInfo *, 0> geometry_out_interfaces_;
 
   struct PushConst {
     Type type;
@@ -1020,21 +1066,32 @@ struct ShaderCreateInfo {
     }
   };
 
-  Vector<PushConst> push_constants_;
+  Vector<PushConst, 0> push_constants_;
 
   /* Sources for resources type definitions. */
-  Vector<StringRefNull> typedef_sources_;
+  Vector<StringRefNull, 0> typedef_sources_;
 
   StringRefNull vertex_source_, geometry_source_, fragment_source_, compute_source_;
   StringRefNull vertex_entry_fn_ = "main", geometry_entry_fn_ = "main",
                 fragment_entry_fn_ = "main", compute_entry_fn_ = "main";
 
-  Vector<std::array<StringRefNull, 2>> defines_;
-  /**
-   * Name of other infos to recursively merge with this one.
-   * No data slot must overlap otherwise we throw an error.
-   */
-  Vector<StringRefNull> additional_infos_;
+  Vector<std::array<StringRefNull, 2>, 0> defines_;
+
+  struct AdditionalInfo {
+    /**
+     * Name of other infos to recursively merge with this one.
+     * No data slot must overlap otherwise we throw an error.
+     */
+    StringRefNull name;
+    Conditions conditions;
+
+    bool operator==(const AdditionalInfo &b) const
+    {
+      TEST_EQUAL(*this, b, name);
+      return true;
+    }
+  };
+  Vector<AdditionalInfo, 0> additional_infos_;
 
   Vector<PipelineState, 0> pipelines_;
 
@@ -1044,7 +1101,8 @@ struct ShaderCreateInfo {
 #  endif
 
  public:
-  ShaderCreateInfo(const char *name) : name_(name) {};
+  ShaderCreateInfo(const char *name);
+
   ~ShaderCreateInfo() = default;
 
   using Self = ShaderCreateInfo;
@@ -1242,7 +1300,7 @@ struct ShaderCreateInfo {
 
   Self &shared_variable(Type type, StringRefNull name)
   {
-    shared_variables_.append({type, name});
+    shared_variables_.append({type, name, this->name_});
     return *(Self *)this;
   }
 
@@ -1255,9 +1313,10 @@ struct ShaderCreateInfo {
   Self &uniform_buf(int slot,
                     StringRefNull type_name,
                     StringRefNull name,
-                    Frequency freq = Frequency::PASS)
+                    Frequency freq = Frequency::PASS,
+                    ConditionFn cond = nullptr)
   {
-    Resource res(Resource::BindType::UNIFORM_BUFFER, slot);
+    Resource res(*this, Resource::BindType::UNIFORM_BUFFER, slot, cond);
     res.uniformbuf.name = name;
     res.uniformbuf.type_name = type_name;
     resources_get_(freq).append(res);
@@ -1269,9 +1328,10 @@ struct ShaderCreateInfo {
                     Qualifier qualifiers,
                     StringRefNull type_name,
                     StringRefNull name,
-                    Frequency freq = Frequency::PASS)
+                    Frequency freq = Frequency::PASS,
+                    ConditionFn cond = nullptr)
   {
-    Resource res(Resource::BindType::STORAGE_BUFFER, slot);
+    Resource res(*this, Resource::BindType::STORAGE_BUFFER, slot, cond);
     res.storagebuf.qualifiers = qualifiers;
     res.storagebuf.type_name = type_name;
     res.storagebuf.name = name;
@@ -1285,9 +1345,10 @@ struct ShaderCreateInfo {
               Qualifier qualifiers,
               ImageReadWriteType type,
               StringRefNull name,
-              Frequency freq = Frequency::PASS)
+              Frequency freq = Frequency::PASS,
+              ConditionFn cond = nullptr)
   {
-    Resource res(Resource::BindType::IMAGE, slot);
+    Resource res(*this, Resource::BindType::IMAGE, slot, cond);
     res.image.format = format;
     res.image.qualifiers = qualifiers;
     res.image.type = ImageType(type);
@@ -1301,9 +1362,10 @@ struct ShaderCreateInfo {
                 ImageType type,
                 StringRefNull name,
                 Frequency freq = Frequency::PASS,
-                GPUSamplerState sampler = GPUSamplerState::internal_sampler())
+                GPUSamplerState sampler = GPUSamplerState::internal_sampler(),
+                ConditionFn cond = nullptr)
   {
-    Resource res(Resource::BindType::SAMPLER, slot);
+    Resource res(*this, Resource::BindType::SAMPLER, slot, cond);
     res.sampler.type = type;
     res.sampler.name = name;
     /* Produces ASAN errors for the moment. */
@@ -1436,7 +1498,7 @@ struct ShaderCreateInfo {
 
   Self &additional_info(StringRefNull info_name)
   {
-    additional_infos_.append(info_name);
+    additional_infos_.append({info_name});
     return *(Self *)this;
   }
 
@@ -1444,6 +1506,12 @@ struct ShaderCreateInfo {
   {
     additional_info(info_name);
     additional_info(args...);
+    return *(Self *)this;
+  }
+
+  Self &additional_info_with_condition(StringRefNull info_name, ConditionFn cond)
+  {
+    additional_infos_.append({info_name, {cond}});
     return *(Self *)this;
   }
 
@@ -1502,7 +1570,7 @@ struct ShaderCreateInfo {
    * (All statically declared CreateInfos are automatically finalized at startup) */
   void finalize(const bool recursive = false);
 
-  std::string resource_guard_defines() const;
+  std::string resource_guard_defines(Span<CompilationConstant> constants) const;
 
   std::string check_error() const;
   bool is_vulkan_compatible() const;
@@ -1655,7 +1723,7 @@ struct ShaderCreateInfo {
   /**
    * \brief Create a new pipeline state.
    *
-   * On Metal and Vulkan pipelines states will be precompiled when creating the shader to reduce
+   * On Metal and Vulkan pipelines states will be pre-compiled when creating the shader to reduce
    * compilation stuttering when using the shader.
    *
    * \note returned pipeline state is only guaranteed to be valid until the next call to this

@@ -184,28 +184,7 @@ ModifierData *modifier_add(
     /* get new modifier data to add */
     new_md = BKE_modifier_new(type);
 
-    ModifierData *next_md = nullptr;
-    LISTBASE_FOREACH_BACKWARD (ModifierData *, md, &ob->modifiers) {
-      if (md->flag & eModifierFlag_PinLast) {
-        next_md = md;
-      }
-      else {
-        break;
-      }
-    }
-    if (mti->flags & eModifierTypeFlag_RequiresOriginalData) {
-      next_md = static_cast<ModifierData *>(ob->modifiers.first);
-
-      while (next_md && BKE_modifier_get_info((ModifierType)next_md->type)->type ==
-                            ModifierTypeType::OnlyDeform)
-      {
-        if (next_md->next && (next_md->next->flag & eModifierFlag_PinLast) != 0) {
-          break;
-        }
-        next_md = next_md->next;
-      }
-    }
-    BLI_insertlinkbefore(&ob->modifiers, next_md, new_md);
+    BKE_modifiers_add_at_end_if_possible(ob, new_md);
     BKE_modifiers_persistent_uid_init(*ob, *new_md);
 
     if (name) {
@@ -213,7 +192,6 @@ ModifierData *modifier_add(
     }
 
     /* make sure modifier data has unique name */
-
     BKE_modifier_unique_name(&ob->modifiers, new_md);
 
     /* special cases */
@@ -1646,9 +1624,12 @@ static bool edit_modifier_invoke_properties_with_hover(bContext *C,
     return true;
   }
 
-  PointerRNA *panel_ptr = UI_region_panel_custom_data_under_cursor(C, event);
+  PointerRNA *panel_ptr = ui::region_panel_custom_data_under_cursor(C, event);
   if (panel_ptr == nullptr || RNA_pointer_is_null(panel_ptr)) {
-    *r_retval = OPERATOR_CANCELLED;
+    /* The operators using this function can typically be called from UIs that aren't related to
+     * the modifiers UI at all. So include #OPERATOR_PASS_THROUGH to not block events from reaching
+     * other operators/handlers. */
+    *r_retval = (OPERATOR_PASS_THROUGH | OPERATOR_CANCELLED);
     return false;
   }
 

@@ -112,13 +112,17 @@ void USDPointInstancerWriter::do_write(HierarchyContext &context)
   }
   blender::io::usd::set_attribute(scales_attr, scales, time, usd_value_writer_);
 
+  /* IDs */
+  const Span<int> ids = instances->unique_ids();
+  pxr::VtInt64Array usd_ids(ids.begin(), ids.end());
+  pxr::UsdAttribute attr_ids = usd_instancer.CreateIdsAttr();
+  blender::io::usd::set_attribute(attr_ids, usd_ids, time, usd_value_writer_);
+
   /* other attr */
   bke::AttributeAccessor attributes_eval = *component->attributes();
   attributes_eval.foreach_attribute([&](const bke::AttributeIter &iter) {
     if (iter.name[0] == '.' || blender::bke::attribute_name_is_anonymous(iter.name) ||
-        ELEM(iter.name, "instance_transform") || ELEM(iter.name, "scale") ||
-        ELEM(iter.name, "orientation") || ELEM(iter.name, "mask") ||
-        ELEM(iter.name, "proto_index") || ELEM(iter.name, "id"))
+        ELEM(iter.name, "instance_transform", "scale", "orientation", "mask", "proto_index", "id"))
     {
       return;
     }
@@ -357,15 +361,15 @@ void USDPointInstancerWriter::override_transform(const pxr::UsdStageRefPtr stage
     return;
   }
 
-  // Extract translation
+  /* Extract translation. */
   const float3 &pos = transform.location();
   pxr::GfVec3d override_position(pos.x, pos.y, pos.z);
 
-  // Extract rotation
+  /* Extract rotation. */
   const float3 euler = float3(math::to_euler(math::normalize(transform)));
   pxr::GfVec3f override_rotation(euler.x, euler.y, euler.z);
 
-  // Extract scale
+  /* Extract scale. */
   const float3 scale_vec = math::to_scale<true>(transform);
   pxr::GfVec3f override_scale(scale_vec.x, scale_vec.y, scale_vec.z);
 
@@ -439,7 +443,7 @@ void USDPointInstancerWriter::handle_collection_prototypes(
     const int instance_num,
     const Span<std::pair<int, int>> collection_instance_object_count_map) const
 {
-  // Duplicate attributes
+  /* Duplicate attributes. */
   if (usd_instancer.GetPositionsAttr().HasAuthoredValue()) {
     ExpandAttributePerInstance<pxr::GfVec3f>([&]() { return usd_instancer.GetPositionsAttr(); },
                                              [&]() { return usd_instancer.CreatePositionsAttr(); },
@@ -474,7 +478,7 @@ void USDPointInstancerWriter::handle_collection_prototypes(
         time);
   }
 
-  // Duplicate Primvars
+  /* Duplicate Primvars. */
   const pxr::UsdGeomPrimvarsAPI primvars_api(usd_instancer);
   for (const pxr::UsdGeomPrimvar &primvar : primvars_api.GetPrimvars()) {
     if (!primvar.HasAuthoredValue()) {
@@ -598,4 +602,4 @@ void USDPointInstancerWriter::write_attribute_data(const bke::AttributeIter &att
   copy_blender_attribute_to_primvar(attribute, attr.data_type, time, pv_attr, usd_value_writer_);
 }
 
-}  // namespace blender::io::usd
+} /* namespace blender::io::usd */

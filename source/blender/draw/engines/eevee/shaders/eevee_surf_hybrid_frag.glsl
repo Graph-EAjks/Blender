@@ -10,9 +10,10 @@
  */
 
 #include "infos/eevee_geom_infos.hh"
+#include "infos/eevee_nodetree_infos.hh"
 #include "infos/eevee_surf_hybrid_infos.hh"
 
-FRAGMENT_SHADER_CREATE_INFO(eevee_node_tree)
+FRAGMENT_SHADER_CREATE_INFO(eevee_nodetree)
 FRAGMENT_SHADER_CREATE_INFO(eevee_geom_mesh)
 FRAGMENT_SHADER_CREATE_INFO(eevee_surf_deferred_hybrid)
 FRAGMENT_SHADER_CREATE_INFO(eevee_render_pass_out)
@@ -38,6 +39,22 @@ float4 closure_to_rgba(Closure cl_unused)
   float noise = utility_tx_fetch(utility_tx, gl_FragCoord.xy, UTIL_BLUE_NOISE_LAYER).r;
   float closure_rand = fract(noise + sampling_rng_1D_get(SAMPLING_CLOSURE));
   closure_weights_reset(closure_rand);
+
+#if defined(MAT_TRANSPARENT) && defined(MAT_SHADER_TO_RGBA)
+  float3 V = -drw_world_incident_vector(g_data.P);
+  LightProbeSample samp = lightprobe_load(g_data.P, g_data.Ng, V);
+  float3 radiance_behind = lightprobe_spherical_sample_normalized_with_parallax(
+      samp, g_data.P, V, 0.0);
+
+#  ifndef MAT_FIRST_LAYER
+  int2 texel = int2(gl_FragCoord.xy);
+  if (texelFetchExtend(hiz_prev_tx, texel, 0).x != 1.0f) {
+    radiance_behind = texelFetch(previous_layer_radiance_tx, texel, 0).xyz;
+  }
+#  endif
+
+  radiance += radiance_behind * saturate(transmittance);
+#endif
 
   return float4(radiance, saturate(1.0f - average(transmittance)));
 }

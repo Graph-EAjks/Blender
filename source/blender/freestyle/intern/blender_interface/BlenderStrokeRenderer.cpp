@@ -593,7 +593,7 @@ void BlenderStrokeRenderer::GenerateStrokeMesh(StrokeGroup *group, bool hasTex)
   mesh->totcol = group->materials.size();
   BKE_mesh_face_offsets_ensure_alloc(mesh);
   blender::bke::MutableAttributeAccessor attributes = mesh->attributes_for_write();
-  blender::MutableSpan<int> face_offsets = mesh->face_offsets_for_write();
+  MutableSpan<int> face_offsets = mesh->face_offsets_for_write();
   bke::SpanAttributeWriter position_attr = attributes.lookup_or_add_for_write_span<float3>(
       "position", bke::AttrDomain::Point);
   bke::SpanAttributeWriter edge_verts_attr = attributes.lookup_or_add_for_write_span<int2>(
@@ -618,13 +618,13 @@ void BlenderStrokeRenderer::GenerateStrokeMesh(StrokeGroup *group, bool hasTex)
     uv_map_attrs[0] = attributes.lookup_or_add_for_write_span<float2>(uvNames[0],
                                                                       bke::AttrDomain::Corner);
     loopsuv[0] = uv_map_attrs[0].span.data();
-    CustomData_set_layer_active(&mesh->corner_data, CD_PROP_FLOAT2, 0);
+    mesh->uv_maps_active_set(uvNames[0]);
 
     // Second UV layer
     uv_map_attrs[1] = attributes.lookup_or_add_for_write_span<float2>(uvNames[1],
                                                                       bke::AttrDomain::Corner);
     loopsuv[1] = uv_map_attrs[1].span.data();
-    CustomData_set_layer_active(&mesh->corner_data, CD_PROP_FLOAT2, 1);
+    mesh->uv_maps_active_set(uvNames[1]);
   }
 
   // colors and transparency (the latter represented by grayscale colors)

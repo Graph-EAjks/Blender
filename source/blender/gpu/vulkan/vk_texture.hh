@@ -31,6 +31,7 @@ enum class VKImageViewFlags {
 ENUM_OPERATORS(VKImageViewFlags)
 
 class VKTexture : public Texture {
+  friend class VKDescriptorSetTracker;
   friend class VKDescriptorSetUpdator;
   friend class VKContext;
 
@@ -75,6 +76,15 @@ class VKTexture : public Texture {
                                       false,
                                       VKImageViewArrayed::DONT_CARE};
 
+  /**
+   * \brief Has this texture data.
+   *
+   * Is used to decide if host image copy can be performed to overwrite the data outside the
+   * rendergraph.
+   */
+  bool has_data_ = false;
+  bool allow_host_image_copy_ = false;
+
  public:
   VKTexture(const char *name) : Texture(name) {}
 
@@ -98,10 +108,15 @@ class VKTexture : public Texture {
                   int extent[3],
                   eGPUDataFormat format,
                   const void *data,
-                  VKPixelBuffer *pixel_buffer);
+                  VKPixelBuffer *pixel_buffer,
+                  const uint unpack_row_length = 0);
 
-  void update_sub(
-      int mip, int offset[3], int extent[3], eGPUDataFormat format, const void *data) override;
+  void update_sub(int mip,
+                  int offset[3],
+                  int extent[3],
+                  eGPUDataFormat format,
+                  const void *data,
+                  const uint unpack_row_length) override;
   void update_sub(int offset[3],
                   int extent[3],
                   eGPUDataFormat format,

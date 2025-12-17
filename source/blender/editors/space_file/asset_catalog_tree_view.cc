@@ -84,8 +84,8 @@ class AssetCatalogTreeViewItem : public ui::BasicTreeViewItem {
 
   void on_activate(bContext &C) override;
 
-  void build_row(uiLayout &row) override;
-  void build_context_menu(bContext &C, uiLayout &column) const override;
+  void build_row(ui::Layout &row) override;
+  void build_context_menu(bContext &C, ui::Layout &column) const override;
 
   bool supports_renaming() const override;
   bool rename(const bContext &C, StringRefNull new_name) override;
@@ -151,7 +151,7 @@ class AssetCatalogDropTarget : public ui::TreeViewItemDropTarget {
 class AssetCatalogTreeViewAllItem : public ui::BasicTreeViewItem {
   using BasicTreeViewItem::BasicTreeViewItem;
 
-  void build_row(uiLayout &row) override;
+  void build_row(ui::Layout &row) override;
 
   struct DropTarget : public ui::TreeViewItemDropTarget {
     DropTarget(AssetCatalogTreeViewAllItem &item);
@@ -277,7 +277,7 @@ void AssetCatalogTreeViewItem::on_activate(bContext & /*C*/)
   tree_view.activate_catalog_by_id(catalog_item_.get_catalog_id());
 }
 
-void AssetCatalogTreeViewItem::build_row(uiLayout &row)
+void AssetCatalogTreeViewItem::build_row(ui::Layout &row)
 {
   /* Show "*" to the left for consistency with unsaved files in the title bar. */
   const std::string label_override = catalog_item_.has_unsaved_changes() ? ("* " + label_) :
@@ -288,15 +288,17 @@ void AssetCatalogTreeViewItem::build_row(uiLayout &row)
     return;
   }
 
-  uiButViewItem *view_item_but = view_item_button();
+  ui::ButtonViewItem *view_item_but = view_item_button();
   PointerRNA *props;
 
-  props = UI_but_extra_operator_icon_add(
-      (uiBut *)view_item_but, "ASSET_OT_catalog_new", wm::OpCallContext::InvokeDefault, ICON_ADD);
+  props = button_extra_operator_icon_add((ui::Button *)view_item_but,
+                                         "ASSET_OT_catalog_new",
+                                         wm::OpCallContext::InvokeDefault,
+                                         ICON_ADD);
   RNA_string_set(props, "parent_path", catalog_item_.catalog_path().c_str());
 }
 
-void AssetCatalogTreeViewItem::build_context_menu(bContext &C, uiLayout &column) const
+void AssetCatalogTreeViewItem::build_context_menu(bContext &C, ui::Layout &column) const
 {
   PointerRNA props;
 
@@ -322,7 +324,7 @@ void AssetCatalogTreeViewItem::build_context_menu(bContext &C, uiLayout &column)
   if (!mt) {
     return;
   }
-  UI_menutype_draw(&C, mt, &column);
+  ui::menutype_draw(&C, mt, &column);
 }
 
 bool AssetCatalogTreeViewItem::supports_renaming() const
@@ -520,7 +522,6 @@ bool AssetCatalogDropTarget::has_droppable_asset(const wmDrag &drag, const char 
 {
   const ListBase *asset_drags = WM_drag_asset_list_get(&drag);
 
-  *r_disabled_hint = nullptr;
   /* There needs to be at least one asset from the current file. */
   LISTBASE_FOREACH (const wmDragAssetListItem *, asset_item, asset_drags) {
     if (!asset_item->is_external) {
@@ -576,18 +577,18 @@ void AssetCatalogDragController::on_drag_start(bContext & /*C*/)
 
 /* ---------------------------------------------------------------------- */
 
-void AssetCatalogTreeViewAllItem::build_row(uiLayout &row)
+void AssetCatalogTreeViewAllItem::build_row(ui::Layout &row)
 {
   ui::BasicTreeViewItem::build_row(row);
 
   PointerRNA *props;
 
-  UI_but_extra_operator_icon_add(reinterpret_cast<uiBut *>(this->view_item_button()),
+  button_extra_operator_icon_add(reinterpret_cast<ui::Button *>(this->view_item_button()),
                                  "ASSET_OT_catalogs_save",
                                  wm::OpCallContext::InvokeDefault,
                                  ICON_FILE_TICK);
 
-  props = UI_but_extra_operator_icon_add(reinterpret_cast<uiBut *>(this->view_item_button()),
+  props = button_extra_operator_icon_add(reinterpret_cast<ui::Button *>(this->view_item_button()),
                                          "ASSET_OT_catalog_new",
                                          wm::OpCallContext::InvokeDefault,
                                          ICON_ADD);
@@ -763,21 +764,21 @@ bool file_is_asset_visible_in_catalog_filter_settings(
 
 void file_create_asset_catalog_tree_view_in_layout(const bContext *C,
                                                    asset_system::AssetLibrary *asset_library,
-                                                   uiLayout *layout,
+                                                   ui::Layout &layout,
                                                    SpaceFile *space_file,
                                                    FileAssetSelectParams *params)
 {
-  uiBlock *block = layout->block();
+  ui::Block *block = layout.block();
 
-  ui::block_layout_set_current(block, layout);
+  ui::block_layout_set_current(block, &layout);
 
-  ui::AbstractTreeView *tree_view = UI_block_add_view(
+  ui::AbstractTreeView *tree_view = block_add_view(
       *block,
       "asset catalog tree view",
       std::make_unique<ed::asset_browser::AssetCatalogTreeView>(
           asset_library, params, *space_file));
   tree_view->set_context_menu_title("Catalog");
-  ui::TreeViewBuilder::build_tree_view(*C, *tree_view, *layout);
+  ui::TreeViewBuilder::build_tree_view(*C, *tree_view, layout);
 }
 
 }  // namespace blender::ed::asset_browser

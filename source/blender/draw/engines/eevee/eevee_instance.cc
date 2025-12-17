@@ -43,6 +43,7 @@ namespace blender::eevee {
 
 CLG_LogRef Instance::log = {"eevee"};
 
+void *Instance::debug_scope_render_frame = nullptr;
 void *Instance::debug_scope_render_sample = nullptr;
 void *Instance::debug_scope_irradiance_setup = nullptr;
 void *Instance::debug_scope_irradiance_sample = nullptr;
@@ -153,7 +154,6 @@ void Instance::init(const int2 &output_res,
   if (is_viewport()) {
     is_image_render = draw_ctx->is_image_render();
     is_viewport_image_render = draw_ctx->is_viewport_image_render();
-    is_viewport_compositor_enabled = draw_ctx->is_viewport_compositor_enabled();
     is_playback = draw_ctx->is_playback();
     is_navigating = draw_ctx->is_navigating();
     is_painting = draw_ctx->is_painting();
@@ -162,6 +162,11 @@ void Instance::init(const int2 &output_res,
 
     /* Note: Do not update the value here as we use it during sync for checking ID updates. */
     if (depsgraph_last_update_ != DEG_get_update_count(depsgraph)) {
+      sampling.reset();
+    }
+    if (assign_if_different(is_viewport_compositor_enabled,
+                            draw_ctx->is_viewport_compositor_enabled()))
+    {
       sampling.reset();
     }
     if (assign_if_different(debug_mode, (eDebugMode)G.debug_value)) {
@@ -647,6 +652,9 @@ void Instance::render_frame(RenderEngine *engine, RenderLayer *render_layer, con
     }
     return;
   }
+
+  DebugScope debug_scope(debug_scope_render_frame, "EEVEE.render_frame");
+
   /* TODO: Break on RE_engine_test_break(engine) */
   while (!sampling.finished()) {
     this->render_sample();

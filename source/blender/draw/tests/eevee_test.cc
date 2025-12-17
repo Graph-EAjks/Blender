@@ -1225,8 +1225,7 @@ static void test_eevee_shadow_tilemap_amend()
 {
   GPU_render_begin();
 
-  blender::Vector<uint32_t> tilemap_data(SHADOW_TILEMAP_RES * SHADOW_TILEMAP_RES *
-                                         SHADOW_TILEMAP_PER_ROW);
+  Vector<uint32_t> tilemap_data(SHADOW_TILEMAP_RES * SHADOW_TILEMAP_RES * SHADOW_TILEMAP_PER_ROW);
   tilemap_data.fill(0);
 
   auto pixel_get = [&](int x, int y, int tilemap_index) -> uint32_t & {
@@ -1258,12 +1257,12 @@ static void test_eevee_shadow_tilemap_amend()
   /* Setup one directional light with 3 tilemaps. Fill only the needed data. */
   LightData light;
   light.type = LIGHT_SUN;
-  light.sun.clipmap_lod_min = 0;
-  light.sun.clipmap_lod_max = 2;
+  light.sun().clipmap_lod_min = 0;
+  light.sun().clipmap_lod_max = 2;
   /* Shift LOD0 by 1 tile towards bottom. */
-  light.sun.clipmap_base_offset_neg = int2(0, 1 << 0);
+  light.sun().clipmap_base_offset_neg = int2(0, 1 << 0);
   /* Shift LOD1 by 1 tile towards right. */
-  light.sun.clipmap_base_offset_pos = int2(1 << 1, 0);
+  light.sun().clipmap_base_offset_pos = int2(1 << 1, 0);
   light.tilemap_index = 0;
 
   LightDataBuf culling_light_buf = {"Lights_culled"};

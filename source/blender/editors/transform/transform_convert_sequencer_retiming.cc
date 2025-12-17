@@ -116,7 +116,7 @@ static void create_trans_seq_clamp_data(TransInfo *t, const Scene *scene)
   /* Prevent snaps and change in `values` past `offset_clamp` for all selected retiming keys. */
   BLI_rcti_init(&ts->offset_clamp, -INT_MAX, INT_MAX, 0, 0);
 
-  blender::Map selection = seq::retiming_selection_get(ed);
+  Map selection = seq::retiming_selection_get(ed);
   for (auto item : selection.items()) {
     SeqRetimingKey *key = item.key;
 
@@ -254,9 +254,9 @@ static void recalcData_sequencer_retiming(TransInfo *t)
   seq::iterator_set_expand(
       t->scene, seq::active_seqbase_get(ed), transformed_strips, seq::query_strip_effect_chain);
   for (Strip *strip : transformed_strips) {
-    strip->runtime.flag &= ~STRIP_OVERLAP;
+    strip->runtime->flag &= ~seq::StripRuntimeFlag::Overlap;
     if (seq::transform_test_overlap(t->scene, seq::active_seqbase_get(ed), strip)) {
-      strip->runtime.flag |= STRIP_OVERLAP;
+      strip->runtime->flag |= seq::StripRuntimeFlag::Overlap;
     }
   }
 }

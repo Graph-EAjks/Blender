@@ -10,11 +10,9 @@
 
 #include "draw_subdiv_defines.hh"
 
-#ifndef GPU_SHADER
-#  include "GPU_shader_shared_utils.hh"
-#endif
+#include "GPU_shader_shared_utils.hh"
 
-struct DRWSubdivUboStorage {
+struct [[host_shared]] DRWSubdivUboStorage {
   /* Offsets in the buffers data where the source and destination data start. */
   int src_offset;
   int dst_offset;
@@ -52,7 +50,6 @@ struct DRWSubdivUboStorage {
   int _pad3;
   int _pad4;
 };
-BLI_STATIC_ASSERT_ALIGN(DRWSubdivUboStorage, 16)
 
 struct SculptData {
   uint face_set_color;
@@ -118,34 +115,3 @@ struct PatchCoord {
 struct QuadNode {
   uint4 child;
 };
-
-/* When not using OSD we need to defined the structs as they subdiv_info still refer to them. */
-#if !defined(USE_GPU_SHADER_CREATE_INFO) || \
-    (!defined(OSD_PATCH_BASIS_GLSL) && !defined(OSD_PATCH_BASIS_METAL))
-/* This structure is a carbon copy of OpenSubDiv's #Osd::PatchParam. */
-struct OsdPatchParam {
-  int field0;
-  int field1;
-  float sharpness;
-};
-
-/* This structure is a carbon copy of OpenSubDiv's #Osd::PatchArray. */
-struct OsdPatchArray {
-  int regDesc;
-  int desc;
-  int numPatches;
-  int indexBase;
-  int stride;
-  int primitiveIdBase;
-};
-
-/* This structure is a carbon copy of OpenSubDiv's #Osd::PatchCoord. */
-struct OsdPatchCoord {
-  int arrayIndex;
-  int patchIndex;
-  int vertIndex;
-  float s;
-  float t;
-};
-
-#endif

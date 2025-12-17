@@ -272,11 +272,8 @@ static void calculate_depth(gesture::GestureData &gesture_data,
        * compute the radius ourselves.  See #81452.
        */
 
-      Sculpt *sd = CTX_data_tool_settings(vc.C)->sculpt;
-      Brush *brush = BKE_paint_brush(&sd->paint);
-
       depth_radius = object_space_radius_get(
-          vc, sd->paint, *brush, trim_operation->initial_location);
+          vc, *gesture_data.paint, *gesture_data.brush, trim_operation->initial_location);
     }
 
     depth_front = mid_point_depth - depth_radius;
@@ -619,7 +616,7 @@ static void gesture_end(bContext & /*C*/, gesture::GestureData &gesture_data)
   Object *object = gesture_data.vc.obact;
   Mesh *mesh = (Mesh *)object->data;
 
-  /* Assign a new Face Set ID to the new faces created by the trim operation. */
+  /* Assign a new face set ID to the new faces created by the trim operation. */
   const int next_face_set_id = face_set::find_next_available_id(*object);
   face_set::initialize_none_to_id(mesh, next_face_set_id);
 

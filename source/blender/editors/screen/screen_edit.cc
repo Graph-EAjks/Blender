@@ -197,9 +197,7 @@ ScrArea *area_split(const wmWindow *win,
 
 bScreen *screen_add(Main *bmain, const char *name, const rcti *rect)
 {
-  bScreen *screen = static_cast<bScreen *>(BKE_libblock_alloc(bmain, ID_SCR, name, 0));
-  screen->do_refresh = true;
-  screen->redraws_flag = TIME_ALL_3D_WIN | TIME_ALL_ANIM_WIN;
+  bScreen *screen = BKE_id_new<bScreen>(bmain, name);
 
   ScrVert *sv1 = screen_geom_vertex_add(screen, rect->xmin, rect->ymin);
   ScrVert *sv2 = screen_geom_vertex_add(screen, rect->xmin, rect->ymax - 1);
@@ -215,54 +213,6 @@ bScreen *screen_add(Main *bmain, const char *name, const rcti *rect)
   screen_addarea(screen, sv1, sv2, sv3, sv4, SPACE_EMPTY);
 
   return screen;
-}
-
-void screen_data_copy(bScreen *to, bScreen *from)
-{
-  /* Free contents of 'to', is from blenkernel `screen.cc`. */
-  BKE_screen_free_data(to);
-
-  to->flag = from->flag;
-
-  BLI_duplicatelist(&to->vertbase, &from->vertbase);
-  BLI_duplicatelist(&to->edgebase, &from->edgebase);
-  BLI_duplicatelist(&to->areabase, &from->areabase);
-  BLI_listbase_clear(&to->regionbase);
-
-  ScrVert *s2 = static_cast<ScrVert *>(to->vertbase.first);
-  for (ScrVert *s1 = static_cast<ScrVert *>(from->vertbase.first); s1;
-       s1 = s1->next, s2 = s2->next)
-  {
-    s1->newv = s2;
-  }
-
-  LISTBASE_FOREACH (ScrEdge *, se, &to->edgebase) {
-    se->v1 = se->v1->newv;
-    se->v2 = se->v2->newv;
-    BKE_screen_sort_scrvert(&(se->v1), &(se->v2));
-  }
-
-  ScrArea *from_area = static_cast<ScrArea *>(from->areabase.first);
-  LISTBASE_FOREACH (ScrArea *, area, &to->areabase) {
-    area->v1 = area->v1->newv;
-    area->v2 = area->v2->newv;
-    area->v3 = area->v3->newv;
-    area->v4 = area->v4->newv;
-
-    BLI_listbase_clear(&area->spacedata);
-    BLI_listbase_clear(&area->regionbase);
-    BLI_listbase_clear(&area->actionzones);
-    BLI_listbase_clear(&area->handlers);
-
-    ED_area_data_copy(area, from_area, true);
-
-    from_area = from_area->next;
-  }
-
-  /* put at zero (needed?) */
-  LISTBASE_FOREACH (ScrVert *, s1, &from->vertbase) {
-    s1->newv = nullptr;
-  }
 }
 
 void screen_new_activate_prepare(const wmWindow *win, bScreen *screen_new)
@@ -832,7 +782,7 @@ static void screen_refresh_if_needed(bContext *C, wmWindowManager *wm, wmWindow 
     }
 
     /* Called even when creating the ghost window fails in #WM_window_open. */
-    if (win->ghostwin) {
+    if (win->runtime->ghostwin) {
       /* Header size depends on DPI, let's verify. */
       WM_window_dpi_set_userdef(win);
     }
@@ -886,8 +836,8 @@ void ED_screens_init(bContext *C, Main *bmain, wmWindowManager *wm)
     }
 
     ED_screen_refresh(C, wm, win);
-    if (win->eventstate) {
-      ED_screen_set_active_region(nullptr, win, win->eventstate->xy);
+    if (win->runtime->eventstate) {
+      ED_screen_set_active_region(nullptr, win, win->runtime->eventstate->xy);
     }
   }
 
@@ -929,7 +879,7 @@ void ED_region_exit(bContext *C, ARegion *region)
 
   /* Stop panel animation in this region if there are any. */
   LISTBASE_FOREACH (Panel *, panel, &region->panels) {
-    UI_panel_stop_animation(C, panel);
+    blender::ui::panel_stop_animation(C, panel);
   }
 
   if (region->regiontype == RGN_TYPE_TEMPORARY) {
@@ -1073,6 +1023,9 @@ static void screen_cursor_set(wmWindow *win, const int xy[2])
     else if (az->type == AZONE_REGION_SCROLL) {
       WM_cursor_set(win, WM_CURSOR_DEFAULT);
     }
+    else if (az->type == AZONE_REGION_QUAD) {
+      WM_cursor_set(win, WM_CURSOR_NSEW_SCROLL);
+    }
     else if (az->type == AZONE_REGION) {
       if (ELEM(az->edge, AE_LEFT_TO_TOPRIGHT, AE_RIGHT_TO_TOPLEFT)) {
         WM_cursor_set(win, WM_CURSOR_X_MOVE);
@@ -1195,7 +1148,7 @@ void ED_screen_set_active_region(bContext *C, wmWindow *win, const int xy[2])
        * because it can undo setting the right button as active due
        * to delayed notifier handling. */
       if (C) {
-        UI_screen_free_active_but_highlight(C, screen);
+        blender::ui::UI_screen_free_active_but_highlight(C, screen);
       }
     }
   }
@@ -1208,7 +1161,7 @@ int ED_screen_area_active(const bContext *C)
   ScrArea *area = CTX_wm_area(C);
 
   if (win && screen && area) {
-    AZone *az = ED_area_actionzone_find_xy(area, win->eventstate->xy);
+    AZone *az = ED_area_actionzone_find_xy(area, win->runtime->eventstate->xy);
 
     if (az && az->type == AZONE_REGION) {
       return 1;
@@ -1383,11 +1336,11 @@ void screen_change_prepare(
      * On the other hand this is a rare occurrence, script developers will often show errors
      * in a console too, so it's not such a priority to relocate these to the new screen.
      * See: #144958. */
-    UI_popup_handlers_remove_all(C, &win->modalhandlers);
+    blender::ui::popup_handlers_remove_all(C, &win->runtime->modalhandlers);
 
     /* remove handlers referencing areas in old screen */
     LISTBASE_FOREACH (ScrArea *, area, &screen_old->areabase) {
-      WM_event_remove_handlers_by_area(&win->modalhandlers, area);
+      WM_event_remove_handlers_by_area(&win->runtime->modalhandlers, area);
     }
 
     /* we put timer to sleep, so screen_exit has to think there's no timer */
@@ -1672,6 +1625,8 @@ static bScreen *screen_state_to_nonnormal(bContext *C,
   if (toggle_area) {
     ED_area_data_swap(newa, toggle_area);
     newa->flag = toggle_area->flag; /* mostly for AREA_FLAG_WASFULLSCREEN */
+    newa->quadview_ratio[0] = toggle_area->quadview_ratio[0];
+    newa->quadview_ratio[1] = toggle_area->quadview_ratio[1];
   }
 
   if (state == SCREENFULL) {
@@ -1763,7 +1718,7 @@ ScrArea *ED_screen_state_toggle(bContext *C, wmWindow *win, ScrArea *area, const
      * switching screens with tooltip open because region and tooltip
      * are no longer in the same screen */
     LISTBASE_FOREACH (ARegion *, region, &area->regionbase) {
-      UI_blocklist_free(C, region);
+      blender::ui::blocklist_free(C, region);
       if (region->runtime->regiontimer) {
         WM_event_timer_remove(wm, nullptr, region->runtime->regiontimer);
         region->runtime->regiontimer = nullptr;
@@ -1855,6 +1810,8 @@ ScrArea *ED_screen_state_toggle(bContext *C, wmWindow *win, ScrArea *area, const
     if (fullsa) {
       ED_area_data_swap(fullsa, area);
       ED_area_tag_refresh(fullsa);
+      fullsa->quadview_ratio[0] = area->quadview_ratio[0];
+      fullsa->quadview_ratio[1] = area->quadview_ratio[1];
     }
 
     /* animtimer back */

@@ -763,6 +763,7 @@ if(WITH_BLENDER)
       preview_loading
       preview_range
       prev_keyframe
+      project
       properties
       prop_con
       prop_off
@@ -916,6 +917,8 @@ if(WITH_BLENDER)
       unlocked
       unpinned
       url
+      usb_drive
+      usb_drive_large
       user
       uv
       uv_data

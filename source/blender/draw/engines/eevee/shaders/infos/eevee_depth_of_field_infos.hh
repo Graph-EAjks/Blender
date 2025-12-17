@@ -13,7 +13,9 @@
 #  include "eevee_depth_of_field_shared.hh"
 #  include "eevee_sampling_infos.hh"
 #  include "eevee_velocity_infos.hh"
+#endif
 
+#ifdef GLSL_CPP_STUBS
 #  define DOF_BOKEH_TEXTURE true
 #  define DILATE_MODE_MIN_MAX true
 #endif
@@ -99,8 +101,8 @@ UNIFORM_BUF(6, DepthOfFieldData, dof_buf)
 SAMPLER(0, sampler2D, downsample_tx)
 STORAGE_BUF(0, write, ScatterRect, scatter_fg_list_buf[])
 STORAGE_BUF(1, write, ScatterRect, scatter_bg_list_buf[])
-STORAGE_BUF(2, read_write, DrawCommand, scatter_fg_indirect_buf)
-STORAGE_BUF(3, read_write, DrawCommand, scatter_bg_indirect_buf)
+STORAGE_BUF(2, read_write, DrawCommandArray, scatter_fg_indirect_buf)
+STORAGE_BUF(3, read_write, DrawCommandArray, scatter_bg_indirect_buf)
 IMAGE(0, SFLOAT_16_16_16_16, read_write, image2D, inout_color_lod0_img)
 IMAGE(1, SFLOAT_16_16_16_16, write, image2D, out_color_lod1_img)
 IMAGE(2, SFLOAT_16_16_16_16, write, image2D, out_color_lod2_img)

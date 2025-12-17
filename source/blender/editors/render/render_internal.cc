@@ -337,6 +337,14 @@ static wmOperatorStatus screen_render_exec(bContext *C, wmOperator *op)
   const bool use_sequencer_scene = RNA_boolean_get(op->ptr, "use_sequencer_scene");
 
   Scene *scene = use_sequencer_scene ? CTX_data_sequencer_scene(C) : CTX_data_scene(C);
+
+  if (scene == nullptr) {
+    BKE_report(op->reports,
+               RPT_ERROR,
+               use_sequencer_scene ? "No sequencer scene to render" : "No scene to render");
+    return OPERATOR_CANCELLED;
+  }
+
   ViewLayer *active_layer = use_sequencer_scene ? BKE_view_layer_default_render(scene) :
                                                   CTX_data_view_layer(C);
   RenderEngineType *re_type = RE_engines_find(scene->r.engine);
@@ -357,15 +365,15 @@ static wmOperatorStatus screen_render_exec(bContext *C, wmOperator *op)
     return OPERATOR_CANCELLED;
   }
 
+  /* custom scene and single layer re-render */
+  screen_render_single_layer_set(op, mainp, active_layer, &scene, &single_layer);
+
   int frame_start, frame_end;
   get_render_operator_frame_range(op, scene, frame_start, frame_end);
   if (is_animation && frame_start > frame_end) {
     BKE_report(op->reports, RPT_ERROR, "Start frame is larger than end frame");
     return OPERATOR_CANCELLED;
   }
-
-  /* custom scene and single layer re-render */
-  screen_render_single_layer_set(op, mainp, active_layer, &scene, &single_layer);
 
   if (!is_animation && is_write_still && BKE_imtype_is_movie(scene->r.im_format.imtype)) {
     BKE_report(
@@ -1027,6 +1035,14 @@ static wmOperatorStatus screen_render_invoke(bContext *C, wmOperator *op, const 
 
   View3D *v3d = use_viewport ? CTX_wm_view3d(C) : nullptr;
   Scene *scene = use_sequencer_scene ? CTX_data_sequencer_scene(C) : CTX_data_scene(C);
+
+  if (scene == nullptr) {
+    BKE_report(op->reports,
+               RPT_ERROR,
+               use_sequencer_scene ? "No sequencer scene to render" : "No scene to render");
+    return OPERATOR_CANCELLED;
+  }
+
   ViewLayer *active_layer = use_sequencer_scene ? BKE_view_layer_default_render(scene) :
                                                   CTX_data_view_layer(C);
   RenderEngineType *re_type = RE_engines_find(scene->r.engine);
@@ -1047,15 +1063,15 @@ static wmOperatorStatus screen_render_invoke(bContext *C, wmOperator *op, const 
     return OPERATOR_CANCELLED;
   }
 
+  /* custom scene and single layer re-render */
+  screen_render_single_layer_set(op, bmain, active_layer, &scene, &single_layer);
+
   int frame_start, frame_end;
   get_render_operator_frame_range(op, scene, frame_start, frame_end);
   if (is_animation && frame_start > frame_end) {
     BKE_report(op->reports, RPT_ERROR, "Start frame is larger than end frame");
     return OPERATOR_CANCELLED;
   }
-
-  /* custom scene and single layer re-render */
-  screen_render_single_layer_set(op, bmain, active_layer, &scene, &single_layer);
 
   /* only one render job at a time */
   if (WM_jobs_test(CTX_wm_manager(C), scene, WM_JOB_TYPE_RENDER)) {

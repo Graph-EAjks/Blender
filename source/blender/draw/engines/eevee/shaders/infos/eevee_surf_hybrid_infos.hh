@@ -11,7 +11,9 @@
 #  include "eevee_sampling_infos.hh"
 #  include "eevee_shadow_infos.hh"
 #  include "eevee_surf_deferred_infos.hh"
+#endif
 
+#ifdef GLSL_CPP_STUBS
 #  define CURVES_SHADER
 #  define DRW_HAIR_INFO
 
@@ -20,7 +22,6 @@
 
 #  define SHADOW_UPDATE_ATOMIC_RASTER
 #  define MAT_TRANSPARENT
-
 #endif
 
 #include "eevee_defines.hh"
@@ -32,4 +33,7 @@ ADDITIONAL_INFO(eevee_surf_deferred_base)
 ADDITIONAL_INFO(eevee_light_data)
 ADDITIONAL_INFO(eevee_lightprobe_data)
 ADDITIONAL_INFO(eevee_shadow_data)
+/* Optionally added depending on the material. */
+// ADDITIONAL_INFO(eevee_hiz_prev_data)
+// ADDITIONAL_INFO(eevee_previous_layer_radiance)
 GPU_SHADER_CREATE_END()

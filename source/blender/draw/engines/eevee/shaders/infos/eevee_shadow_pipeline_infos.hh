@@ -10,14 +10,16 @@
 #  include "draw_view_infos.hh"
 #  include "eevee_common_infos.hh"
 #  include "eevee_debug_shared.hh"
+#  include "eevee_fullscreen_infos.hh"
 #  include "eevee_light_infos.hh"
 #  include "eevee_lightprobe_infos.hh"
 #  include "eevee_sampling_infos.hh"
 #  include "eevee_shadow_infos.hh"
 #  include "eevee_shadow_shared.hh"
 #  include "eevee_uniform_infos.hh"
-#  include "gpu_shader_fullscreen_infos.hh"
+#endif
 
+#ifdef GLSL_CPP_STUBS
 #  define SPHERE_PROBE
 #endif
 
@@ -198,7 +200,7 @@ STORAGE_BUF(2, read_write, ShadowPagesInfoData, pages_infos_buf)
 STORAGE_BUF(3, read_write, uint, pages_free_buf[])
 STORAGE_BUF(4, read_write, uint2, pages_cached_buf[])
 STORAGE_BUF(5, write, DispatchCommand, clear_dispatch_buf)
-STORAGE_BUF(6, write, DrawCommand, tile_draw_buf)
+STORAGE_BUF(6, write, DrawCommandArray, tile_draw_buf)
 STORAGE_BUF(7, read_write, ShadowStatistics, statistics_buf)
 TYPEDEF_SOURCE("eevee_defines.hh")
 TYPEDEF_SOURCE("eevee_shadow_shared.hh")
@@ -245,7 +247,7 @@ STORAGE_BUF(0, read_write, ShadowStatistics, statistics_buf)
 STORAGE_BUF(1, read, ShadowRenderView, render_view_buf[SHADOW_VIEW_MAX])
 STORAGE_BUF(2, read_write, uint, tiles_buf[])
 STORAGE_BUF(3, read_write, DispatchCommand, clear_dispatch_buf)
-STORAGE_BUF(4, read_write, DrawCommand, tile_draw_buf)
+STORAGE_BUF(4, read_write, DrawCommandArray, tile_draw_buf)
 STORAGE_BUF(5, write, uint, dst_coord_buf[SHADOW_RENDER_MAP_SIZE])
 STORAGE_BUF(6, write, uint, src_coord_buf[SHADOW_RENDER_MAP_SIZE])
 STORAGE_BUF(7, write, uint, render_map_buf[SHADOW_RENDER_MAP_SIZE])
@@ -362,7 +364,7 @@ PUSH_CONSTANT(int, debug_mode)
 PUSH_CONSTANT(int, debug_tilemap_index)
 DEPTH_WRITE(DepthWrite::ANY)
 FRAGMENT_SOURCE("eevee_shadow_debug_frag.glsl")
-ADDITIONAL_INFO(gpu_fullscreen)
+ADDITIONAL_INFO(eevee_fullscreen)
 ADDITIONAL_INFO(draw_view)
 ADDITIONAL_INFO(eevee_hiz_data)
 ADDITIONAL_INFO(eevee_light_data)
