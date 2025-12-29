@@ -70,7 +70,10 @@ ExternalProject_Add(ll
 
   PATCH_COMMAND ${PATCH_CMD} -p 1 -d
     ${BUILD_DIR}/ll/src/ll <
-    ${PATCH_DIR}/llvm.diff
+    ${PATCH_DIR}/llvm.diff &&
+  ${PATCH_CMD} -p 1 -d
+    ${BUILD_DIR}/ll/src/ll <
+    ${PATCH_DIR}/llvm_clang_cuda_msvc_header_fix.diff
 
   CMAKE_ARGS
     -DCMAKE_INSTALL_PREFIX=${LIBDIR}/llvm

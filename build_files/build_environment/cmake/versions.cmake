@@ -302,11 +302,9 @@ set(OPENIMAGEIO_HOMEPAGE https://github.com/AcademySoftwareFoundation/OpenImageI
 set(OPENIMAGEIO_LICENSE SPDX:Apache-2.0)
 set(OPENIMAGEIO_COPYRIGHT "Copyright Contributors to the OpenImageIO project.")
 
-# 9.1.0 is currently oiio's preferred version although never versions may be available.
-# the preferred version can be found in oiio's externalpackages.cmake
-set(FMT_VERSION 9.1.0)
+set(FMT_VERSION 12.1.0)
 set(FMT_URI https://github.com/fmtlib/fmt/archive/refs/tags/${FMT_VERSION}.tar.gz)
-set(FMT_HASH 5dea48d1fcddc3ec571ce2058e13910a0d4a6bab4cc09a809d8b1dd1c88ae6f2)
+set(FMT_HASH ea7de4299689e12b6dddd392f9896f08fb0777ac7168897a244a6d6085043fea)
 set(FMT_HASH_TYPE SHA256)
 set(FMT_FILE fmt-${FMT_VERSION}.tar.gz)
 set(FMT_CPE "cpe:2.3:a:fmt:fmt:${FMT_VERSION}:*:*:*:*:*:*:*")
