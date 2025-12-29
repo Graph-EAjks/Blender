@@ -1498,3 +1498,30 @@ set(LIBHEIF_COPYRIGHT [=[
 Copyright (c) 2017-2020 Struktur AG
 Copyright (c) 2017-2025 Dirk Farin
 ]=])
+
+set(ABSEIL_VERSION 20250814.1)
+set(ABSEIL_URI https://github.com/abseil/abseil-cpp/releases/download/${ABSEIL_VERSION}/abseil-cpp-${ABSEIL_VERSION}.tar.gz)
+set(ABSEIL_HASH 1692f77d1739bacf3f94337188b78583cf09bab7e420d2dc6c5605a4f86785a1)
+set(ABSEIL_HASH_TYPE SHA256)
+set(ABSEIL_FILE abseil-cpp-${ABSEIL_VERSION}.tar.gz)
+set(ABSEIL_HOMEPAGE https://abseil.io/)
+set(ABSEIL_LICENSE SPDX:Apache-2.0)
+set(ABSEIL_COPYRIGHT "Copyright 2023 The Abseil Authors.")
+
+set(EIGEN_VERSION 8a1083e9bf41b91fdea6546681f806154efdc25a) # latest on 2025-12-05 didn't build, picked a slightly older commit.
+set(EIGEN_URI https://gitlab.com/libeigen/eigen/-/archive/${EIGEN_VERSION}/eigen-${EIGEN_VERSION}.tar.gz)
+set(EIGEN_HASH cc28a84fdec496c6777596350ea805519bf10f717d21044ae6ba3dd562183a26)
+set(EIGEN_HASH_TYPE SHA256)
+set(EIGEN_FILE eigen-${EIGEN_VERSION}.tar.gz)
+set(EIGEN_HOMEPAGE http://eigen.tuxfamily.org)
+set(EIGEN_LICENSE SPDX:I-Dont-know)
+set(EIGEN_COPYRIGHT "I-Dont-know")
+
+set(CERES_VERSION 0c70ed3a1a2d6ba47c06c7e8b3b040880bc474db) # Latest main on 2025-12-05
+set(CERES_URI https://github.com/ceres-solver/ceres-solver/archive/${CERES_VERSION}.tar.gz)
+set(CERES_HASH bf0bcc78fae884e59dd893693e52510da7cc6866a7444fdae9ba8f19eae266cd)
+set(CERES_HASH_TYPE SHA256)
+set(CERES_FILE ceres-${CERES_VERSION}.tar.gz)
+set(CERES_HOMEPAGE http://ceres-solver.org/)
+set(CERES_LICENSE SPDX:BSD-3-Clause)
+set(CERES_COPYRIGHT "Copyright 2023 Google Inc. All rights reserved.")
