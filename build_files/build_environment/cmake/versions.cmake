@@ -369,7 +369,7 @@ set(RUBBERBAND_COPYRIGHT "Copyright (c) 2025 Particular Programs Ltd")
 
 # NOTE: When updating the python version, it's required to check the versions of
 # it wants to use in PCbuild/get_externals.bat for the following dependencies:
-# BZIP2, FFI and change the versions in this file as well. For compliance
+# BZIP2 and change the versions in this file as well. For compliance
 # reasons there can be no exceptions to this.
 # Additionally, keep the PYTHON_PIP_VERSION in sync with the pip version bundled
 # into Python.
@@ -393,7 +393,7 @@ set(PYTHON_COPYRIGHT "Copyright (c) 2001-2023 Python Software Foundation. All ri
 # Currently it is done manually by tracking _PIP_VERSION variable in the
 # `Lib/ensurepip/__init__.py`. For example,
 #   https://github.com/python/cpython/tree/v3.11.9/Lib/ensurepip/__init__.py
-set(PYTHON_PIP_VERSION 24.0)
+set(PYTHON_PIP_VERSION 25.2)
 set(PYTHON_PIP_CPE "cpe:2.3:a:pypa:pip:${PYTHON_PIP_VERSION}:*:*:*:*:*:*:*")
 
 set(TBB_YEAR 2022)
