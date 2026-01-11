@@ -126,6 +126,7 @@ include(cmake/opencolorio.cmake)
 include(cmake/openjph.cmake)
 include(cmake/thorvg.cmake)
 include(cmake/libheif.cmake)
+include(cmake/ffi.cmake)
 
 if(BLENDER_PLATFORM_ARM)
   include(cmake/sse2neon.cmake)
@@ -166,7 +167,6 @@ endif()
 
 if(UNIX)
   include(cmake/bzip2.cmake)
-  include(cmake/ffi.cmake)
   include(cmake/lzma.cmake)
 endif()
 
