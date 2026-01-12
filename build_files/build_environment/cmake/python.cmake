@@ -190,12 +190,12 @@ add_dependencies(
   external_ssl
   external_zlib
   external_sqlite
+  external_ffi
 )
 if(UNIX)
   add_dependencies(
     external_python
     external_bzip2
-    external_ffi
     external_lzma
   )
 endif()

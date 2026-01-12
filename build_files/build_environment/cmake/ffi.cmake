@@ -13,7 +13,7 @@ if(WIN32)
     set(FFI_MSVC_SH_FLAGS -m64)
   endif()
 
-  set(CONFIGURE_ENV ${CONFIGURE_ENV} && 
+  set(CONFIGURE_ENV_FFI ${CONFIGURE_ENV} &&
     set CC=${BUILD_DIR}/ffi/src/external_ffi/msvcc.sh ${FFI_MSVC_SH_FLAGS} &&
     set CXX=${BUILD_DIR}/ffi/src/external_ffi/msvcc.sh ${FFI_MSVC_SH_FLAGS} && 
     set LD=link &&
@@ -34,6 +34,7 @@ if(WIN32)
       --host=${FFI_TARGET_HOST}
   )
 else()
+  set(CONFIGURE_ENV_FFI ${CONFIGURE_ENV})
   set(FFI_INSTALL make install)
   set(FFI_EXTRA_ARGS
       --disable-multi-os-directory
@@ -49,13 +50,13 @@ ExternalProject_Add(external_ffi
   DOWNLOAD_DIR ${DOWNLOAD_DIR}
   PREFIX ${BUILD_DIR}/ffi
 
-  CONFIGURE_COMMAND ${CONFIGURE_ENV} &&
+  CONFIGURE_COMMAND ${CONFIGURE_ENV_FFI} &&
     cd ${BUILD_DIR}/ffi/src/external_ffi/ &&
     ${CONFIGURE_COMMAND} --prefix=${LIBDIR}/ffi
       --libdir=${LIBDIR}/ffi/lib/
       ${FFI_EXTRA_ARGS}
 
-  BUILD_COMMAND ${CONFIGURE_ENV} &&
+  BUILD_COMMAND ${CONFIGURE_ENV_FFI} &&
     cd ${BUILD_DIR}/ffi/src/external_ffi/ &&
     make -j${MAKE_THREADS}
 
