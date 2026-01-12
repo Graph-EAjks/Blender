@@ -56,5 +56,6 @@ if(WIN32)
     )
   endif()  
 else()
-  # TODO 
+  harvest(external_thorvg thorvg/include thorvg/include "*.h")
+  harvest(external_thorvg thorvg/lib thorvg/lib "*.a")
 endif()

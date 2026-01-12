@@ -336,6 +336,8 @@ if(WITH_CYCLES AND WITH_CYCLES_OSL)
   find_package(OSL 1.13.4 REQUIRED)
 endif()
 add_bundled_libraries(osl/lib)
+# OSL dependecy
+add_bundled_libraries(openjph/lib)
 
 if(WITH_CYCLES AND WITH_CYCLES_EMBREE)
   find_package(Embree 4.0.0 REQUIRED)

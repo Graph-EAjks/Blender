@@ -122,28 +122,22 @@ else()
   endif()
   set(PYTHON_BINARY ${LIBDIR}/python/bin/python${PYTHON_SHORT_VERSION})
 
-  # Various flags to convince Python to use our own versions of:
-  # `ffi`, `sqlite`, `ssl`, `bzip2`, `lzma` and `zlib`.
-  # Using pkg-config is only supported for some, and even then we need to work around issues.
-  set(PYTHON_CONFIGURE_EXTRA_ARGS --with-openssl=${LIBDIR}/ssl)
+  # Using pkg-config is supported for most libs besides bzip2, so make sure it is on.
+  set(PYTHON_CONFIGURE_EXTRA_ARGS --with-pkg-config=yes --enable-loadable-sqlite-extensions)
   set(PYTHON_CFLAGS "${PLATFORM_CFLAGS} ")
-  # Manually specify some library paths. For ffi there is no other way,
-  # for sqlite is needed because LIBSQLITE3_LIBS does not work,
-  # and ssl because it uses the wrong ssl/lib dir instead of ssl/lib64.
-  set(PYTHON_LDFLAGS "-L${LIBDIR}/ffi/lib -L${LIBDIR}/sqlite/lib -L${LIBDIR}/ssl/lib -L${LIBDIR}/ssl/lib64 ${PLATFORM_LDFLAGS} ")
+  # We need to add the zlib static lib path here as even if python itself links the static zlib correctly,
+  # the "_sqlite" cpython library needs to know where to get it from.
+  set(PYTHON_LDFLAGS "-L${LIBDIR}/zlib/lib ${PLATFORM_LDFLAGS} ")
   set(PYTHON_CONFIGURE_EXTRA_ENV
     export CFLAGS=${PYTHON_CFLAGS} &&
     export CPPFLAGS=${PYTHON_CFLAGS} &&
     export LDFLAGS=${PYTHON_LDFLAGS} &&
-    # Use pkg-config for libraries that support it.
-    export PKG_CONFIG_PATH=${LIBDIR}/ffi/lib/pkgconfig:${LIBDIR}/sqlite/lib/pkgconfig:${LIBDIR}/ssl/lib/pkgconfig:${LIBDIR}/ssl/lib64/pkgconfig
+    export PKG_CONFIG=pkg-config\ --static
+    # Use pkg-config for libraries that support it, and ensure that it used static libraries.
+    export PKG_CONFIG_PATH=${LIBDIR}/ffi/lib/pkgconfig:${LIBDIR}/sqlite/lib/pkgconfig:${LIBDIR}/ssl/lib/pkgconfig:${LIBDIR}/ssl/lib64/pkgconfig:${LIBDIR}/lzma/lib/pkgconfig:${LIBDIR}/zlib/share/pkgconfig
     # Use flags documented by ./configure for other libs.
     export BZIP2_CFLAGS=-I${LIBDIR}/bzip2/include
     export BZIP2_LIBS=${LIBDIR}/bzip2/lib/${LIBPREFIX}bz2${LIBEXT}
-    export LIBLZMA_CFLAGS=-I${LIBDIR}/lzma/include
-    export LIBLZMA_LIBS=${LIBDIR}/lzma/lib/${LIBPREFIX}lzma${LIBEXT}
-    export ZLIB_CFLAGS=-I${LIBDIR}/zlib/include
-    export ZLIB_LIBS=${LIBDIR}/zlib/lib/${ZLIB_LIBRARY}
   )
 
   # This patch includes changes to fix missing `-lm` for SQLITE
@@ -153,12 +147,6 @@ else()
       ${PATCH_CMD} --verbose -p1 -d
         ${BUILD_DIR}/python/src/external_python <
         ${PATCH_DIR}/python_apple.diff
-    )
-  else()
-    set(PYTHON_PATCH
-      ${PATCH_CMD} --verbose -p1 -d
-        ${BUILD_DIR}/python/src/external_python <
-        ${PATCH_DIR}/python_unix.diff
     )
   endif()
 

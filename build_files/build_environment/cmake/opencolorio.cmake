@@ -4,14 +4,10 @@
 
 set(OCIO_PATCH echo .)
 
-# Unsure if these changed for just windows or linux as well
-# for now play it safe and keep the old values for linux.
-if(WIN32) 
+if(WIN32)
   set(MINIZIP_LIBRARY minizip${LIBEXT})
-  set(MINIZIP_INCLUDE_DIR ${LIBDIR}/minizipng/include/minizip-ng/minizip)
 else()
   set(MINIZIP_LIBRARY libminizip${LIBEXT})
-  set(MINIZIP_INCLUDE_DIR ${LIBDIR}/minizipng/include/minizip-ng)
 endif()
 
 set(OPENCOLORIO_EXTRA_ARGS
@@ -33,7 +29,7 @@ set(OPENCOLORIO_EXTRA_ARGS
   -Dpystring_ROOT=${LIBDIR}/pystring
   -DImath_ROOT=${LIBDIR}/imath
   -Dminizip-ng_ROOT=${LIBDIR}/minizipng
-  -Dminizip-ng_INCLUDE_DIR=${MINIZIP_INCLUDE_DIR}
+  -Dminizip-ng_INCLUDE_DIR=${LIBDIR}/minizipng/include/minizip-ng/minizip
   -Dminizip-ng_LIBRARY=${LIBDIR}/minizipng/lib/${MINIZIP_LIBRARY}
   -DZLIB_LIBRARY=${LIBDIR}/zlib/lib/${ZLIB_LIBRARY}
   -DZLIB_INCLUDE_DIR=${LIBDIR}/zlib/include/

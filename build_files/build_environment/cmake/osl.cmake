@@ -2,6 +2,8 @@
 #
 # SPDX-License-Identifier: GPL-2.0-or-later
 
+string(REPLACE "-DCMAKE_CXX_STANDARD=20" " " OSL_CMAKE_FLAGS "${DEFAULT_CMAKE_FLAGS}")
+
 if(WIN32)
   set(OSL_CMAKE_CXX_STANDARD_LIBRARIES "kernel32${LIBEXT} user32${LIBEXT} gdi32${LIBEXT} winspool${LIBEXT} shell32${LIBEXT} ole32${LIBEXT} oleaut32${LIBEXT} uuid${LIBEXT} comdlg32${LIBEXT} advapi32${LIBEXT} psapi${LIBEXT}")
   set(OSL_CMAKE_LINKER_FLAGS)
@@ -85,7 +87,7 @@ ExternalProject_Add(external_osl
   CMAKE_ARGS
     -DCMAKE_INSTALL_PREFIX=${LIBDIR}/osl
     -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
-    ${DEFAULT_CMAKE_FLAGS}
+    ${OSL_CMAKE_FLAGS}
     ${OSL_EXTRA_ARGS}
 
   INSTALL_DIR ${LIBDIR}/osl

@@ -63,11 +63,6 @@ ExternalProject_Add(external_ffi
     cd ${BUILD_DIR}/ffi/src/external_ffi/ &&
     ${FFI_INSTALL}
 
-  PATCH_COMMAND ${PATCH_CMD} -p 1 -d
-    # Fix compilation errors on Apple Clang >= 17, remove when FFI is updated beyond 3.4.7, see PR #136934 for details.
-    ${BUILD_DIR}/ffi/src/external_ffi <
-    ${PATCH_DIR}/ffi_apple_clang_17.diff
-
   INSTALL_DIR ${LIBDIR}/ffi
 )
 

@@ -31,7 +31,6 @@ set(OPENVDB_EXTRA_ARGS
   -DUSE_NANOVDB=ON
   -DOPENVDB_BUILD_PYTHON_MODULE=ON
   -DOPENVDB_PYTHON_WRAP_ALL_GRID_TYPES=ON
-  -DUSE_NUMPY=ON
   -DPython_EXECUTABLE=${PYTHON_BINARY}
   -Dnanobind_DIR=${LIBDIR}/nanobind/nanobind/cmake/
   # Needed to still build with VS2019
@@ -75,7 +74,7 @@ add_dependencies(
   external_zlib
   external_blosc
   external_python
-  external_numpy
+  external_numpy # Runtime dependency
   external_nanobind
 )
 

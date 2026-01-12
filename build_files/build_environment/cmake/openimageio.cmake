@@ -160,6 +160,7 @@ add_dependencies(
   external_python
   external_pybind11
   external_tbb
+  external_libheif
 )
 
 if(WIN32)

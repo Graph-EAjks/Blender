@@ -34,5 +34,6 @@ if(WIN32)
       DEPENDEES install
     )
 else()
-  # TODO 
+    harvest(external_openjph openjph/include openjph/include "*.h")
+    harvest_rpath_lib(external_openjph openjph/lib openjph/lib "*${SHAREDLIBEXT}*")
 endif()

@@ -795,19 +795,16 @@ set(BZIP2_HOMEPAGE https://sourceware.org/bzip2/)
 set(BZIP2_LICENSE SPDX:bzip2-1.0.6)
 set(BZIP2_COPYRIGHT "Copyright (C) 1996-2019 Julian R Seward. All rights reserved.")
 
-# NOTE: This will *HAVE* to match the version python ships on windows which
-# is hardcoded in pythons PCbuild/get_externals.bat. For compliance reasons there
-# can be no exceptions to this.
-set(FFI_VERSION 3.4.4)
+set(FFI_VERSION 3.5.2)
 set(FFI_NAME libffi)
 set(FFI_URI https://github.com/libffi/libffi/releases/download/v${FFI_VERSION}/libffi-${FFI_VERSION}.tar.gz)
-set(FFI_HASH d66c56ad259a82cf2a9dfc408b32bf5da52371500b84745f7fb8b645712df676)
+set(FFI_HASH f3a3082a23b37c293a4fcd1053147b371f2ff91fa7ea1b2a52e335676bac82dc)
 set(FFI_HASH_TYPE SHA256)
 set(FFI_FILE libffi-${FFI_VERSION}.tar.gz)
 set(FFI_CPE "cpe:2.3:a:libffi_project:libffi:${FFI_VERSION}:*:*:*:*:*:*:*")
 set(FFI_HOMEPAGE https://github.com/libffi/libffi/)
 set(FFI_LICENSE SPDX:MIT)
-set(FFI_COPYRIGHT "Copyright (c) 1996-2024  Anthony Green, Red Hat, Inc and others.")
+set(FFI_COPYRIGHT "Copyright (c) 1996-2025  Anthony Green, Red Hat, Inc and others.")
 
 set(LZMA_VERSION 5.2.5)
 set(LZMA_URI https://tukaani.org/xz/xz-${LZMA_VERSION}.tar.bz2)
@@ -1075,17 +1072,6 @@ set(OPENPGL_HOMEPAGE http://www.openpgl.org/)
 set(OPENPGL_LICENSE SPDX:Apache-2.0)
 set(OPENPGL_COPYRIGHT "Copyright 2020 Intel Corporation.")
 
-# Default version used by DPCPP: unified-runtime/cmake/FetchLevelZero.cmake
-set(LEVEL_ZERO_VERSION 1.21.9)
-set(LEVEL_ZERO_NAME "oneAPI Level Zero")
-set(LEVEL_ZERO_URI https://codeload.github.com/oneapi-src/level-zero/tar.gz/refs/tags/v${LEVEL_ZERO_VERSION})
-set(LEVEL_ZERO_HASH ba543a01adbcbd241518c3eee80b75414094d1fd3efcde9ff2693196cea4d057)
-set(LEVEL_ZERO_HASH_TYPE SHA256)
-set(LEVEL_ZERO_FILE level-zero-${LEVEL_ZERO_VERSION}.tar.gz)
-set(LEVEL_ZERO_HOMEPAGE https://github.com/oneapi-src/level-zero)
-set(LEVEL_ZERO_LICENSE SPDX:MIT)
-set(LEVEL_ZERO_COPYRIGHT "Copyright (C) 2019-2024 Intel Corporation")
-
 # Currently latest commit from sycl-rel-6_2 release branch
 set(DPCPP_VERSION 05e047c0932d5043ddff5e4058a3afca8e0943aa)
 set(DPCPP_URI https://github.com/intel/llvm/archive/${DPCPP_VERSION}.tar.gz)
@@ -1104,6 +1090,17 @@ set(DPCPP_COPYRIGHT "Copyright (C) 2021-2025 Intel Corporation")
 # the source in the dpcpp source tree for the version chosen is documented
 # by each dep, these will only have to be downloaded and unpacked, dpcpp
 # will take care of building them, unpack is being done in dpcpp_deps.cmake
+
+# Default version used by DPCPP: unified-runtime/cmake/FetchLevelZero.cmake
+set(LEVEL_ZERO_VERSION 1.21.9)
+set(LEVEL_ZERO_NAME "oneAPI Level Zero")
+set(LEVEL_ZERO_URI https://codeload.github.com/oneapi-src/level-zero/tar.gz/refs/tags/v${LEVEL_ZERO_VERSION})
+set(LEVEL_ZERO_HASH ba543a01adbcbd241518c3eee80b75414094d1fd3efcde9ff2693196cea4d057)
+set(LEVEL_ZERO_HASH_TYPE SHA256)
+set(LEVEL_ZERO_FILE level-zero-${LEVEL_ZERO_VERSION}.tar.gz)
+set(LEVEL_ZERO_HOMEPAGE https://github.com/oneapi-src/level-zero)
+set(LEVEL_ZERO_LICENSE SPDX:MIT)
+set(LEVEL_ZERO_COPYRIGHT "Copyright (C) 2019-2024 Intel Corporation")
 
 # Source llvm/lib/SYCLLowerIR/CMakeLists.txt
 set(VCINTRINSICS_VERSION 4e51b2467104a257c22788e343dafbdde72e28bb)
@@ -1168,7 +1165,7 @@ set(UNIFIED_RUNTIME_HOMEPAGE https://github.com/oneapi-src/unified-runtime)
 set(UNIFIED_RUNTIME_LICENSE SPDX:Apache-2.0 WITH LLVM-exception)
 set(UNIFIED_RUNTIME_COPYRIGHT "Copyright (C) 2019-2025 Intel Corporation")
 
-# Source unified-runtime/source/common/CMakeList.txt
+# Source unified-runtime/source/common/CMakeLists.txt
 set(UNIFIED_MEMORY_FRAMEWORK_VERSION v0.11.0)
 set(UNIFIED_MEMORY_FRAMEWORK_URI https://github.com/oneapi-src/unified-memory-framework/archive/${UNIFIED_MEMORY_FRAMEWORK_VERSION}.tar.gz)
 set(UNIFIED_MEMORY_FRAMEWORK_HASH d7a6cafe978d89628003e3001a1adef57cd733c9d9a6dfef0375c2123ec2e29c)
@@ -1178,7 +1175,7 @@ set(UNIFIED_MEMORY_FRAMEWORK_HOMEPAGE https://github.com/oneapi-src/unified-memo
 set(UNIFIED_MEMORY_FRAMEWORK_LICENSE SPDX:Apache-2.0 WITH LLVM-exception)
 set(UNIFIED_MEMORY_FRAMEWORK_COPYRIGHT "Copyright (C) 2023-2024 Intel Corporation")
 
-# Source xptifw/src/CMakeList.txt
+# Source xptifw/src/CMakeLists.txt
 set(PARALLEL_HASHMAP_VERSION 8a889d3699b3c09ade435641fb034427f3fd12b6)
 set(PARALLEL_HASHMAP_URI https://github.com/greg7mdp/parallel-hashmap/archive/${PARALLEL_HASHMAP_VERSION}.tar.gz)
 set(PARALLEL_HASHMAP_HASH da853a4a2cee32b1563391a3661cff3cf48af5e76e320c004d5520835eb9e5f6)

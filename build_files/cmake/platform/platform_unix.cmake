@@ -370,6 +370,8 @@ if(WITH_CYCLES AND WITH_CYCLES_OSL)
   endif()
 endif()
 add_bundled_libraries(osl/lib)
+# OSL dependecy
+add_bundled_libraries(openjph/lib)
 
 if(WITH_CYCLES AND DEFINED LIBDIR)
   set(CYCLES_LEVEL_ZERO ${LIBDIR}/level-zero CACHE PATH "Path to Level Zero installation")

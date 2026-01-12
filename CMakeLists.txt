@@ -1455,10 +1455,10 @@ if(WITH_PYTHON)
   # Do this before main 'platform_*' checks,
   # because UNIX will search for the old Python paths which may not exist.
   # giving errors about missing paths before this case is met.
-  if(DEFINED PYTHON_VERSION AND "${PYTHON_VERSION}" VERSION_LESS "3.11")
+  if(DEFINED PYTHON_VERSION AND "${PYTHON_VERSION}" VERSION_LESS "3.13")
     message(
       FATAL_ERROR
-      "At least Python 3.11 is required to build, but found Python ${PYTHON_VERSION}"
+      "At least Python 3.13 is required to build, but found Python ${PYTHON_VERSION}"
     )
   endif()
 endif()
@@ -2570,9 +2570,6 @@ if(WITH_PYTHON)
   elseif((WITH_PYTHON_INSTALL AND WITH_PYTHON_INSTALL_NUMPY) OR WITH_PYTHON_NUMPY)
     if(("${PYTHON_NUMPY_PATH}" STREQUAL "") OR (${PYTHON_NUMPY_PATH} MATCHES NOTFOUND))
       set(_numpy_include "_core/include")
-      if(PYTHON_VERSION VERSION_LESS "3.13")
-        set(_numpy_include "core/include")
-      endif()
       find_python_package(numpy "${_numpy_include}")
       unset(_numpy_include)
     endif()

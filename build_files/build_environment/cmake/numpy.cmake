@@ -23,7 +23,7 @@ if(WIN32)
   )
   set(NUMPY_CONF ${CMAKE_BINARY_DIR}/fix_path.bat)
 else()
-  set(NUMPY_CONF echo .)
+  set(NUMPY_CONF export CYTHON=${LIBDIR}/python/bin/cython)
 endif()
 
 ExternalProject_Add(external_numpy
@@ -33,7 +33,6 @@ ExternalProject_Add(external_numpy
   PREFIX ${BUILD_DIR}/numpy
   PATCH_COMMAND ${NUMPY_PATCH}
   CONFIGURE_COMMAND ""
-  LOG_BUILD 1
   BUILD_IN_SOURCE 1
 
   BUILD_COMMAND ${NUMPY_CONF} && ${PYTHON_BINARY} -m pip install --no-build-isolation .

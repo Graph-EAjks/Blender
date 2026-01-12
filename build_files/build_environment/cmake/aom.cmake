@@ -20,32 +20,22 @@ if(WIN32 AND NOT BLENDER_PLATFORM_WINDOWS_ARM)
   set(AOM_EXTRA_ARGS ${AOM_EXTRA_ARGS}-DCMAKE_ASM_NASM_COMPILER=)
 endif()
 
-# This is slightly different from all other deps in the way that
-# aom uses cmake as a build system, but still needs the environment setup
-# to include perl so we manually setup the environment and call
-# cmake directly for the configure, build and install commands.
-
 ExternalProject_Add(external_aom
   URL file://${PACKAGE_DIR}/${AOM_FILE}
   DOWNLOAD_DIR ${DOWNLOAD_DIR}
   URL_HASH ${AOM_HASH_TYPE}=${AOM_HASH}
+  CMAKE_GENERATOR ${PLATFORM_ALT_GENERATOR}
   PREFIX ${BUILD_DIR}/aom
 
   PATCH_COMMAND ${PATCH_CMD} --verbose -p 1 -N -d
     ${BUILD_DIR}/aom/src/external_aom <
     ${PATCH_DIR}/aom_6d2b7f71b98bfa28e372b1f2d85f137280bdb3de.diff
 
-  CONFIGURE_COMMAND ${CONFIGURE_ENV} &&
-    cd ${BUILD_DIR}/aom/src/external_aom-build/ &&
-    ${CMAKE_COMMAND}
-      -DCMAKE_INSTALL_PREFIX=${LIBDIR}/aom
-      -G "${PLATFORM_ALT_GENERATOR}"
-      ${AOM_CMAKE_FLAGS}
-      ${AOM_EXTRA_ARGS}
-      ${BUILD_DIR}/aom/src/external_aom/
+  CMAKE_ARGS
+    -DCMAKE_INSTALL_PREFIX=${LIBDIR}/aom
+    ${AOM_CMAKE_FLAGS}
+    ${AOM_EXTRA_ARGS}
 
-  BUILD_COMMAND ${CMAKE_COMMAND} --build .
-  INSTALL_COMMAND ${CMAKE_COMMAND} --build . --target install
   INSTALL_DIR ${LIBDIR}/aom
 )
 

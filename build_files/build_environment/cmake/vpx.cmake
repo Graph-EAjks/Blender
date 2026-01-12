@@ -59,7 +59,11 @@ else()
       set(VPX_EXTRA_FLAGS --target=x86_64-darwin17-gcc)
     endif()
   else()
-    set(VPX_EXTRA_FLAGS --target=generic-gnu)
+   if(NOT BLENDER_PLATFORM_ARM)
+     set(VPX_EXTRA_FLAGS --target=x86_64-linux-gcc)
+   else()
+     set(VPX_EXTRA_FLAGS --target=generic-gnu)
+   endif()
   endif()
 
   set(VPX_CONFIGURE_COMMAND ${CONFIGURE_ENV})
@@ -71,16 +75,6 @@ else()
   set(VPX_INSTALL_COMMAND ${CONFIGURE_ENV} &&
     cd ${BUILD_DIR}/vpx/src/external_vpx/ &&
     make install
-  )
-endif()
-
-if(NOT BLENDER_PLATFORM_ARM)
-  list(APPEND VPX_EXTRA_FLAGS
-    --enable-sse4_1
-    --enable-sse3
-    --enable-ssse3
-    --enable-avx
-    --enable-avx2
   )
 endif()
 
