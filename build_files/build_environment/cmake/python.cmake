@@ -122,33 +122,44 @@ else()
   endif()
   set(PYTHON_BINARY ${LIBDIR}/python/bin/python${PYTHON_SHORT_VERSION})
 
-  # Using pkg-config is supported for most libs besides bzip2, so make sure it is on.
-  set(PYTHON_CONFIGURE_EXTRA_ARGS --with-pkg-config=yes --enable-loadable-sqlite-extensions)
   set(PYTHON_CFLAGS "${PLATFORM_CFLAGS} ")
   # We need to add the zlib static lib path here as even if python itself links the static zlib correctly,
   # the "_sqlite" cpython library needs to know where to get it from.
   set(PYTHON_LDFLAGS "-L${LIBDIR}/zlib/lib ${PLATFORM_LDFLAGS} ")
+
+  # Using pkg-config is supported for most libs besides bzip2, so make sure it is on.
+  set(PYTHON_CONFIGURE_EXTRA_ARGS
+    --with-pkg-config=yes
+    --enable-loadable-sqlite-extensions
+  )
+
+  set(PYTHON_CONFIGURE_PKG_CONFIG_PATH "\
+${LIBDIR}/ffi/lib/pkgconfig:${LIBDIR}/sqlite/lib/pkgconfig:${LIBDIR}/ssl/lib/pkgconfig:\
+${LIBDIR}/ssl/lib64/pkgconfig:${LIBDIR}/lzma/lib/pkgconfig:${LIBDIR}/zlib/share/pkgconfig")
+
   set(PYTHON_CONFIGURE_EXTRA_ENV
     export CFLAGS=${PYTHON_CFLAGS} &&
     export CPPFLAGS=${PYTHON_CFLAGS} &&
     export LDFLAGS=${PYTHON_LDFLAGS} &&
-    export PKG_CONFIG=pkg-config\ --static
+
     # Use pkg-config for libraries that support it, and ensure that it used static libraries.
-    export PKG_CONFIG_PATH=${LIBDIR}/ffi/lib/pkgconfig:${LIBDIR}/sqlite/lib/pkgconfig:${LIBDIR}/ssl/lib/pkgconfig:${LIBDIR}/ssl/lib64/pkgconfig:${LIBDIR}/lzma/lib/pkgconfig:${LIBDIR}/zlib/share/pkgconfig
+    export PKG_CONFIG=pkg-config\ --static
+    export PKG_CONFIG_PATH=${PYTHON_CONFIGURE_PKG_CONFIG_PATH}
+
     # Use flags documented by ./configure for other libs.
     export BZIP2_CFLAGS=-I${LIBDIR}/bzip2/include
     export BZIP2_LIBS=${LIBDIR}/bzip2/lib/${LIBPREFIX}bz2${LIBEXT}
   )
 
   if(APPLE)
-    # Prevent linking against Homebrew's libmpdec if it exists
+    # Prevent linking against Homebrew's libmpdec if it exists.
     set(PYTHON_CONFIGURE_EXTRA_ARGS
       ${PYTHON_CONFIGURE_EXTRA_ARGS}
       --without-system-libmpdec
     )
 
     # Override library paths for SQLite and zlib on macOS (which are normally provided by pkg-config).
-    # Redefining these prevents Python from wrongly dynamically linking zlib in SQLite and various built-in modules.
+    # Redefining these prevents Python from wrongly trying to dynamically link zlib in SQLite and various built-in modules.
     set(PYTHON_CONFIGURE_EXTRA_ENV
       ${PYTHON_CONFIGURE_EXTRA_ENV}
       export LIBSQLITE3_CFLAGS=-I${LIBDIR}/sqlite/include
