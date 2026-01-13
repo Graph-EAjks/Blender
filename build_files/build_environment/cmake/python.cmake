@@ -140,16 +140,6 @@ else()
     export BZIP2_LIBS=${LIBDIR}/bzip2/lib/${LIBPREFIX}bz2${LIBEXT}
   )
 
-  # This patch includes changes to fix missing `-lm` for SQLITE
-  # and fix the order of `-ldl` flags for SSL to avoid link errors.
-  if(APPLE)
-    set(PYTHON_PATCH
-      ${PATCH_CMD} --verbose -p1 -d
-        ${BUILD_DIR}/python/src/external_python <
-        ${PATCH_DIR}/python_apple.diff
-    )
-  endif()
-
   # NOTE: untested on APPLE so far.
   if(NOT APPLE)
     set(PYTHON_CONFIGURE_EXTRA_ARGS
