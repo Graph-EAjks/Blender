@@ -13,11 +13,15 @@
 #include "BLI_map.hh"
 #include "BLI_vector.hh"
 
+#include "SEQ_modifier.hh"
+
+namespace blender {
+
 struct MovieReader;
 struct Strip;
 struct StripModifierData;
 
-namespace blender::deg {
+namespace deg {
 
 struct Depsgraph;
 
@@ -32,9 +36,11 @@ class StripModifierDataBackup {
 
   bool isEmpty() const;
 
+  /* For Sound Modifiers. */
   void *sound_in;
   void *sound_out;
-  float *last_buf;
+  eStripModifierFlag flag;
+  uint64_t params_hash;
 };
 
 /* Backup of a single strip. */
@@ -54,4 +60,5 @@ class StripBackup {
   Map<int, StripModifierDataBackup> modifiers;
 };
 
-}  // namespace blender::deg
+}  // namespace deg
+}  // namespace blender

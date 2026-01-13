@@ -1,9 +1,9 @@
 
 msgid ""
 msgstr ""
-"Project-Id-Version: Blender 5.1.0 Alpha (b'7d4876cf0c11')\n"
+"Project-Id-Version: Blender 5.1.0 Alpha (b'12e628ea43f8')\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-16 11:27+0000\n"
+"POT-Creation-Date: 2026-01-12 15:09+0000\n"
 "PO-Revision-Date: 2025-07-23 15:31+0000\n"
 "Last-Translator: Balázs Füvesi <fuvesib@gmail.com>\n"
 "Language-Team: Hungarian <https://translate.blender.org/projects/blender-ui/ui/hu/>\n"
@@ -6577,6 +6577,22 @@ msgid "Use Material Mask"
 msgstr "Anyagmaszk használata"
 
 
+msgid "Show/Hide"
+msgstr "Mutat/Rejt"
+
+
+msgid "Metaball"
+msgstr "Meta test"
+
+
+msgid "Clean Up"
+msgstr "Tisztítás"
+
+
+msgid "Import"
+msgstr "Importálás"
+
+
 msgid "Mirror"
 msgstr "Tükrözés"
 
@@ -6589,12 +6605,12 @@ msgid "Navigation"
 msgstr "Navigáció"
 
 
+msgid "UV"
+msgstr "UV"
+
+
 msgid "Align View"
 msgstr "Nézet igazítása"
-
-
-msgid "Metaball"
-msgstr "Meta test"
 
 
 msgid "Light"
@@ -6609,40 +6625,24 @@ msgid "Rigid Body"
 msgstr "Szilárd test"
 
 
-msgid "Keying"
-msgstr "Kulcsozás"
-
-
 msgid "Apply"
 msgstr "Elfogadás"
-
-
-msgid "Tracking"
-msgstr "Követés"
 
 
 msgid "Track"
 msgstr "Nyom"
 
 
-msgid "Show/Hide"
-msgstr "Mutat/Rejt"
+msgid "Keying"
+msgstr "Kulcsozás"
 
 
-msgid "Clean Up"
-msgstr "Tisztítás"
+msgid "Tracking"
+msgstr "Követés"
 
 
 msgid "Merge"
 msgstr "Összefésülés"
-
-
-msgid "Import"
-msgstr "Importálás"
-
-
-msgid "UV"
-msgstr "UV"
 
 
 msgctxt "MovieClip"
@@ -12797,12 +12797,12 @@ msgid "Detail Size"
 msgstr "Részlet mérete"
 
 
-msgid "Motion Tracking"
-msgstr "Mozgáskövetés"
-
-
 msgid "Render Pass"
 msgstr "Render vezeték"
+
+
+msgid "Motion Tracking"
+msgstr "Mozgáskövetés"
 
 
 msgid "Chain Scaling"
@@ -13338,10 +13338,6 @@ msgstr "Az egér alatti mélység használata a pásztázás/forgatás/zoomolás
 
 msgid "Emulate 3 Button Mouse"
 msgstr "3 gombos egér emulálása"
-
-
-msgid "Use selection as the pivot point"
-msgstr "Kijelölés használata a nézetforgatás középpontjaként"
 
 
 msgid "Zoom in towards the mouse pointer's position in the 3D view, rather than the 2D window center"

@@ -57,9 +57,11 @@
 
 #include "node_composite_util.hh"
 
-namespace path_templates = blender::bke::path_templates;
+namespace blender {
 
-namespace blender::nodes::node_composite_file_output_cc {
+namespace path_templates = bke::path_templates;
+
+namespace nodes::node_composite_file_output_cc {
 
 NODE_STORAGE_FUNCS(NodeCompositorFileOutput)
 
@@ -108,7 +110,7 @@ static void node_declare(NodeDeclarationBuilder &b)
 static void node_init(const bContext *C, PointerRNA *node_pointer)
 {
   bNode *node = node_pointer->data_as<bNode>();
-  NodeCompositorFileOutput *data = MEM_callocN<NodeCompositorFileOutput>(__func__);
+  NodeCompositorFileOutput *data = MEM_new_for_free<NodeCompositorFileOutput>(__func__);
   node->storage = data;
   data->save_as_render = true;
   data->file_name = BLI_strdup("file_name");
@@ -139,8 +141,8 @@ static void node_copy_storage(bNodeTree * /*destination_node_tree*/,
                               const bNode *source_node)
 {
   const NodeCompositorFileOutput &source_storage = node_storage(*source_node);
-  NodeCompositorFileOutput *destination_storage = MEM_dupallocN<NodeCompositorFileOutput>(
-      __func__, source_storage);
+  NodeCompositorFileOutput *destination_storage = MEM_new_for_free<NodeCompositorFileOutput>(
+      __func__, dna::shallow_copy(source_storage));
   destination_storage->file_name = BLI_strdup_null(source_storage.file_name);
   BKE_image_format_copy(&destination_storage->format, &source_storage.format);
   destination_node->storage = destination_storage;
@@ -282,13 +284,13 @@ static void output_paths_layout(ui::Layout &layout,
   const Scene &scene = *CTX_data_scene(context);
 
   if (bool(scene.r.scemode & R_MULTIVIEW) && format.views_format == R_IMF_VIEWS_MULTIVIEW) {
-    LISTBASE_FOREACH (SceneRenderView *, view, &scene.r.views) {
-      if (!BKE_scene_multiview_is_render_view_active(&scene.r, view)) {
+    for (SceneRenderView &view : scene.r.views) {
+      if (!BKE_scene_multiview_is_render_view_active(&scene.r, &view)) {
         continue;
       }
 
       output_path_layout(
-          layout, directory, file_name, file_name_suffix, view->name, format, scene, node);
+          layout, directory, file_name, file_name_suffix, view.name, format, scene, node);
     }
   }
   else {
@@ -449,7 +451,7 @@ class FileOutputOperation : public NodeOperation {
 
   void execute_single_layer()
   {
-    const NodeCompositorFileOutput &storage = node_storage(this->bnode());
+    const NodeCompositorFileOutput &storage = node_storage(this->node());
     for (const int i : IndexRange(storage.items_count)) {
       const NodeCompositorFileOutputItem &item = storage.items[i];
       const std::string identifier = FileOutputItemsAccessor::socket_identifier_for_item(item);
@@ -465,10 +467,10 @@ class FileOutputOperation : public NodeOperation {
        * be stored in views. An exception to this is stereo images, which needs to have the same
        * structure as non-EXR images. */
       const auto &format = item.override_node_format ? item.format :
-                                                       node_storage(this->bnode()).format;
+                                                       node_storage(this->node()).format;
       const bool save_as_render = item.override_node_format ?
                                       item.save_as_render :
-                                      node_storage(this->bnode()).save_as_render;
+                                      node_storage(this->node()).save_as_render;
       const bool is_exr = format.imtype == R_IMF_IMTYPE_OPENEXR;
       const int views_count = BKE_scene_multiview_num_views_get(
           &this->context().get_render_data());
@@ -540,7 +542,7 @@ class FileOutputOperation : public NodeOperation {
       return;
     }
 
-    const ImageFormatData format = node_storage(this->bnode()).format;
+    const ImageFormatData format = node_storage(this->node()).format;
     const bool store_views_in_single_file = this->is_multi_view_exr();
     const char *view = this->context().get_view_name().data();
 
@@ -562,7 +564,7 @@ class FileOutputOperation : public NodeOperation {
     const char *pass_view = store_views_in_single_file ? view : "";
     file_output.add_view(pass_view);
 
-    const NodeCompositorFileOutput &storage = node_storage(bnode());
+    const NodeCompositorFileOutput &storage = node_storage(node());
     for (const int i : IndexRange(storage.items_count)) {
       const NodeCompositorFileOutputItem &item = storage.items[i];
       const std::string identifier = FileOutputItemsAccessor::socket_identifier_for_item(item);
@@ -777,6 +779,10 @@ class FileOutputOperation : public NodeOperation {
           bke::cryptomatte::BKE_cryptomatte_meta_data_key(cryptomatte_layer_name, "conversion"),
           result.meta_data.cryptomatte.conversion);
     }
+
+    for (const auto &item : result.meta_data.fields.items()) {
+      file_output.add_meta_data(item.key, item.value);
+    }
   }
 
   Vector<path_templates::Error> get_image_path(const ImageFormatData &format,
@@ -792,7 +798,7 @@ class FileOutputOperation : public NodeOperation {
         this->context().get_frame_number(),
         format,
         this->context().get_scene(),
-        this->bnode(),
+        this->node(),
         this->is_animation_render(),
         r_image_path);
 
@@ -806,18 +812,18 @@ class FileOutputOperation : public NodeOperation {
 
   bool is_multi_layer()
   {
-    return node_storage(this->bnode()).format.imtype == R_IMF_IMTYPE_MULTILAYER;
+    return node_storage(this->node()).format.imtype == R_IMF_IMTYPE_MULTILAYER;
   }
 
   StringRefNull get_file_name()
   {
-    const char *file_name = node_storage(this->bnode()).file_name;
+    const char *file_name = node_storage(this->node()).file_name;
     return file_name ? file_name : "";
   }
 
   StringRefNull get_directory()
   {
-    return node_storage(this->bnode()).directory;
+    return node_storage(this->node()).directory;
   }
 
   /* If true, save views in a multi-view EXR file, otherwise, save each view in its own file. */
@@ -827,7 +833,7 @@ class FileOutputOperation : public NodeOperation {
       return false;
     }
 
-    return node_storage(this->bnode()).format.views_format == R_IMF_VIEWS_MULTIVIEW;
+    return node_storage(this->node()).format.views_format == R_IMF_VIEWS_MULTIVIEW;
   }
 
   bool is_multi_view_scene()
@@ -857,14 +863,14 @@ class FileOutputOperation : public NodeOperation {
   }
 };
 
-static NodeOperation *get_compositor_operation(Context &context, DNode node)
+static NodeOperation *get_compositor_operation(Context &context, const bNode &node)
 {
   return new FileOutputOperation(context, node);
 }
 
 static void node_register()
 {
-  static blender::bke::bNodeType ntype;
+  static bke::bNodeType ntype;
 
   cmp_node_type_base(&ntype, "CompositorNodeOutputFile", CMP_NODE_OUTPUT_FILE);
   ntype.ui_name = "File Output";
@@ -877,21 +883,20 @@ static void node_register()
   ntype.insert_link = node_insert_link;
   ntype.register_operators = node_operators;
   ntype.initfunc_api = node_init;
-  blender::bke::node_type_storage(
-      ntype, "NodeCompositorFileOutput", node_free_storage, node_copy_storage);
+  bke::node_type_storage(ntype, "NodeCompositorFileOutput", node_free_storage, node_copy_storage);
   ntype.blend_write_storage_content = node_blend_write;
   ntype.blend_data_read_storage_content = node_blend_read;
   ntype.get_extra_info = node_extra_info;
   ntype.gather_link_search_ops = node_gather_link_searches;
   ntype.get_compositor_operation = get_compositor_operation;
 
-  blender::bke::node_register_type(ntype);
+  bke::node_register_type(ntype);
 }
 NOD_REGISTER_NODE(node_register)
 
-}  // namespace blender::nodes::node_composite_file_output_cc
+}  // namespace nodes::node_composite_file_output_cc
 
-namespace blender::nodes {
+namespace nodes {
 
 StructRNA *FileOutputItemsAccessor::item_srna = &RNA_NodeCompositorFileOutputItem;
 
@@ -911,8 +916,9 @@ std::string FileOutputItemsAccessor::validate_name(const StringRef name)
 {
   char file_name[FILE_MAX] = "";
   STRNCPY(file_name, name.data());
-  BLI_path_make_safe_filename(file_name);
+  BLI_path_make_safe(file_name);
   return file_name;
 }
 
-}  // namespace blender::nodes
+}  // namespace nodes
+}  // namespace blender

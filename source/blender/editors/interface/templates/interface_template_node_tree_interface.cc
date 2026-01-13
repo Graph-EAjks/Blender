@@ -30,9 +30,11 @@
 
 #include "WM_api.hh"
 
-namespace node_interface = blender::bke::node_interface;
+namespace blender {
 
-namespace blender::ui {
+namespace node_interface = bke::node_interface;
+
+namespace ui {
 namespace nodes {
 
 namespace {
@@ -306,7 +308,7 @@ class NodeTreeInterfaceView : public AbstractTreeView {
       if (item == skip_item) {
         continue;
       }
-      switch (NodeTreeInterfaceItemType(item->item_type)) {
+      switch (eNodeTreeInterfaceItemType(item->item_type)) {
         case NODE_INTERFACE_SOCKET: {
           bNodeTreeInterfaceSocket *socket = node_interface::get_item_as<bNodeTreeInterfaceSocket>(
               item);
@@ -581,4 +583,5 @@ void template_tree_interface(Layout *layout, const bContext *C, PointerRNA *ptr)
   TreeViewBuilder::build_tree_view(*C, *tree_view, *layout);
 }
 
-}  // namespace blender::ui
+}  // namespace ui
+}  // namespace blender

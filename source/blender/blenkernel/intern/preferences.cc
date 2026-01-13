@@ -25,8 +25,9 @@
 
 #include "BLO_read_write.hh"
 
-#include "DNA_defaults.h"
 #include "DNA_userdef_types.h"
+
+namespace blender {
 
 #define U BLI_STATIC_ASSERT(false, "Global 'U' not allowed, only use arguments passed in!")
 
@@ -34,7 +35,7 @@
 /** \name Preferences File
  * \{ */
 
-namespace blender::bke::preferences {
+namespace bke::preferences {
 
 bool exists()
 {
@@ -48,7 +49,7 @@ bool exists()
   return BLI_exists(userpref);
 }
 
-}  // namespace blender::bke::preferences
+}  // namespace bke::preferences
 
 /** \} */
 
@@ -60,7 +61,7 @@ bUserAssetLibrary *BKE_preferences_asset_library_add(UserDef *userdef,
                                                      const char *name,
                                                      const char *dirpath)
 {
-  bUserAssetLibrary *library = DNA_struct_default_alloc(bUserAssetLibrary);
+  bUserAssetLibrary *library = MEM_new_for_free<bUserAssetLibrary>(__func__);
 
   BLI_addtail(&userdef->asset_libraries, library);
   if (userdef->experimental.no_data_block_packing) {
@@ -117,9 +118,9 @@ bUserAssetLibrary *BKE_preferences_asset_library_find_by_name(const UserDef *use
 bUserAssetLibrary *BKE_preferences_asset_library_containing_path(const UserDef *userdef,
                                                                  const char *path)
 {
-  LISTBASE_FOREACH (bUserAssetLibrary *, asset_lib_pref, &userdef->asset_libraries) {
-    if (asset_lib_pref->dirpath[0] && BLI_path_contains(asset_lib_pref->dirpath, path)) {
-      return asset_lib_pref;
+  for (bUserAssetLibrary &asset_lib_pref : userdef->asset_libraries) {
+    if (asset_lib_pref.dirpath[0] && BLI_path_contains(asset_lib_pref.dirpath, path)) {
+      return &asset_lib_pref;
     }
   }
   return nullptr;
@@ -184,7 +185,7 @@ bUserExtensionRepo *BKE_preferences_extension_repo_add(UserDef *userdef,
                                                        const char *module,
                                                        const char *custom_dirpath)
 {
-  bUserExtensionRepo *repo = DNA_struct_default_alloc(bUserExtensionRepo);
+  bUserExtensionRepo *repo = MEM_new_for_free<bUserExtensionRepo>(__func__);
   BLI_addtail(&userdef->extension_repos, repo);
 
   /* Set the unique ID-name. */
@@ -200,11 +201,11 @@ bUserExtensionRepo *BKE_preferences_extension_repo_add(UserDef *userdef,
 
   /* While not a strict rule, ignored paths that already exist, *
    * pointing to the same path is going to logical problems with package-management. */
-  LISTBASE_FOREACH (const bUserExtensionRepo *, repo_iter, &userdef->extension_repos) {
-    if (repo == repo_iter) {
+  for (const bUserExtensionRepo &repo_iter : userdef->extension_repos) {
+    if (repo == &repo_iter) {
       continue;
     }
-    if (BLI_path_cmp(repo->custom_dirpath, repo_iter->custom_dirpath) == 0) {
+    if (BLI_path_cmp(repo->custom_dirpath, repo_iter.custom_dirpath) == 0) {
       repo->custom_dirpath[0] = '\0';
       break;
     }
@@ -388,21 +389,21 @@ bUserExtensionRepo *BKE_preferences_extension_repo_find_by_remote_url_prefix(
   const int path_full_len = strlen(remote_url_full);
   const int path_full_offset = BKE_preferences_extension_repo_remote_scheme_end(remote_url_full);
 
-  LISTBASE_FOREACH (bUserExtensionRepo *, repo, &userdef->extension_repos) {
-    if (only_enabled && (repo->flag & USER_EXTENSION_REPO_FLAG_DISABLED)) {
+  for (bUserExtensionRepo &repo : userdef->extension_repos) {
+    if (only_enabled && (repo.flag & USER_EXTENSION_REPO_FLAG_DISABLED)) {
       continue;
     }
 
     /* Has a valid remote path to check. */
-    if ((repo->flag & USER_EXTENSION_REPO_FLAG_USE_REMOTE_URL) == 0) {
+    if ((repo.flag & USER_EXTENSION_REPO_FLAG_USE_REMOTE_URL) == 0) {
       continue;
     }
-    if (repo->remote_url[0] == '\0') {
+    if (repo.remote_url[0] == '\0') {
       continue;
     }
 
     /* Set path variables which may be offset by the "scheme". */
-    const char *path_repo = repo->remote_url;
+    const char *path_repo = repo.remote_url;
     const char *path_test = remote_url_full;
     int path_test_len = path_full_len;
 
@@ -435,7 +436,7 @@ bUserExtensionRepo *BKE_preferences_extension_repo_find_by_remote_url_prefix(
     if (!url_char_is_delimiter(path_test[path_repo_len])) {
       continue;
     }
-    return repo;
+    return &repo;
   }
   return nullptr;
 }
@@ -557,7 +558,7 @@ void BKE_preferences_extension_repo_write_data(BlendWriter *writer, const bUserE
 static bUserAssetShelfSettings *asset_shelf_settings_new(UserDef *userdef,
                                                          const char *shelf_idname)
 {
-  bUserAssetShelfSettings *settings = DNA_struct_default_alloc(bUserAssetShelfSettings);
+  bUserAssetShelfSettings *settings = MEM_new_for_free<bUserAssetShelfSettings>(__func__);
   BLI_addtail(&userdef->asset_shelves_settings, settings);
   STRNCPY(settings->shelf_idname, shelf_idname);
   BLI_assert(BLI_listbase_is_empty(&settings->enabled_catalog_paths));
@@ -612,3 +613,5 @@ bool BKE_preferences_asset_shelf_settings_ensure_catalog_path_enabled(UserDef *u
 }
 
 /** \} */
+
+}  // namespace blender

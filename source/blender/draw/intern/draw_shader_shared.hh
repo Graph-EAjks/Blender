@@ -11,6 +11,10 @@
 #  include "GPU_shader.hh"
 #  include "draw_defines.hh"
 
+#  if defined(__cplusplus) && !defined(GPU_SHADER)
+namespace blender {
+#  endif
+
 struct ViewCullingData;
 struct ViewMatrices;
 struct ObjectMatrices;
@@ -37,13 +41,13 @@ struct ViewLayer;
 struct GPUUniformAttr;
 struct GPULayerAttr;
 
-namespace blender::draw {
+namespace draw {
 
 class ObjectRef;
 
-}  // namespace blender::draw
+}  // namespace draw
 
-using namespace blender::math;
+using namespace math;
 
 #  endif
 #endif
@@ -137,7 +141,7 @@ struct [[host_shared]] ObjectMatrices {
 #endif
 };
 
-enum eObjectInfoFlag : uint32_t {
+enum [[host_shared]] eObjectInfoFlag : uint32_t {
   OBJECT_SELECTED = (1u << 0u),
   OBJECT_FROM_DUPLI = (1u << 1u),
   OBJECT_FROM_SET = (1u << 2u),
@@ -175,7 +179,7 @@ struct [[host_shared]] ObjectInfos {
 
 #ifndef GPU_SHADER
   void sync();
-  void sync(const blender::draw::ObjectRef ref, bool is_active_object, bool is_active_edit_mode);
+  void sync(const draw::ObjectRef ref, bool is_active_object, bool is_active_edit_mode);
 #endif
 };
 
@@ -257,10 +261,13 @@ struct [[host_shared]] CurvesInfos {
 };
 
 #pragma pack(push, 4)
-struct ObjectAttribute {
+struct [[host_shared]] ObjectAttribute {
   /* Workaround the padding cost from alignment requirements.
    * (see GL spec : 7.6.2.2 Standard Uniform Block Layout) */
-  float data_x, data_y, data_z, data_w;
+  float data_x;
+  float data_y;
+  float data_z;
+  float data_w;
   uint hash_code;
 
 #ifndef GPU_SHADER
@@ -268,7 +275,7 @@ struct ObjectAttribute {
    * Go through all possible source of the given object uniform attribute.
    * Returns true if the attribute was correctly filled.
    */
-  bool sync(const blender::draw::ObjectRef &ref, const GPUUniformAttr &attr);
+  bool sync(const draw::ObjectRef &ref, const GPUUniformAttr &attr);
 #endif
 };
 #pragma pack(pop)
@@ -276,19 +283,17 @@ struct ObjectAttribute {
  * C++ compiler gives us the same size. */
 BLI_STATIC_ASSERT_ALIGN(ObjectAttribute, 20)
 
-#pragma pack(push, 4)
-struct LayerAttribute {
+struct [[host_shared]] LayerAttribute {
   float4 data;
   uint hash_code;
   uint buffer_length; /* Only in the first record. */
-  uint _pad1, _pad2;
+  uint _pad1;
+  uint _pad2;
 
 #ifndef GPU_SHADER
   bool sync(const Scene *scene, const ViewLayer *layer, const GPULayerAttr &attr);
 #endif
 };
-#pragma pack(pop)
-BLI_STATIC_ASSERT_ALIGN(LayerAttribute, 32)
 
 /** \} */
 
@@ -409,3 +414,7 @@ struct [[host_shared]] DRWDebugDrawBuffer {
 #define drw_debug_draw_offset 1
 
 /** \} */
+
+#if !defined(GPU_SHADER)
+}  // namespace blender
+#endif

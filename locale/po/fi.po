@@ -1,9 +1,9 @@
 
 msgid ""
 msgstr ""
-"Project-Id-Version: Blender 5.1.0 Alpha (b'7d4876cf0c11')\n"
+"Project-Id-Version: Blender 5.1.0 Alpha (b'12e628ea43f8')\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-16 11:27+0000\n"
+"POT-Creation-Date: 2026-01-12 15:09+0000\n"
 "PO-Revision-Date: 2025-07-23 15:32+0000\n"
 "Last-Translator: Leevi Oksanen <laavi.oksanen@gmail.com>\n"
 "Language-Team: Finnish <https://translate.blender.org/projects/blender-ui/ui/fi/>\n"
@@ -7244,72 +7244,24 @@ msgid "ID Type"
 msgstr "ID-tyyppi"
 
 
-msgid "UV Mapping"
-msgstr "UV-kartoittaminen"
-
-
-msgid "Select More/Less"
-msgstr "Valitse enemmän/vähemmän"
-
-
-msgid "Select Similar"
-msgstr "Valitse samankaltainen"
-
-
-msgid "Select All by Trait"
-msgstr "Valitse kaikki piirteen mukaan"
-
-
-msgid "Select Loops"
-msgstr "Valitse silmukat"
-
-
-msgid "Metaball"
-msgstr "Metapallo"
-
-
-msgid "Light"
-msgstr "Valo"
-
-
-msgid "Light Probe"
-msgstr "Valoluotain"
-
-
-msgid "Add Image"
-msgstr "Lisää kuva"
-
-
-msgid "Track"
-msgstr "Raide"
-
-
-msgid "Utilities"
-msgstr "Työkalut"
+msgid "Show/Hide"
+msgstr "Näytä/Piilota"
 
 
 msgid "Math"
 msgstr "Matematiikka"
 
 
-msgid "Show/Hide"
-msgstr "Näytä/Piilota"
+msgid "Metaball"
+msgstr "Metapallo"
 
 
-msgid "Hooks"
-msgstr "Koukut"
-
-
-msgid "Random Mask"
-msgstr "Satunnainen maski"
+msgid "Utilities"
+msgstr "Työkalut"
 
 
 msgid "Names"
 msgstr "Nimet"
-
-
-msgid "Mesh Select Mode"
-msgstr "Muodon valintatila"
 
 
 msgid "Read"
@@ -7328,8 +7280,56 @@ msgid "Import"
 msgstr "Tuo"
 
 
+msgid "UV Mapping"
+msgstr "UV-kartoittaminen"
+
+
 msgid "UV"
 msgstr "UV"
+
+
+msgid "Select More/Less"
+msgstr "Valitse enemmän/vähemmän"
+
+
+msgid "Select Similar"
+msgstr "Valitse samankaltainen"
+
+
+msgid "Select All by Trait"
+msgstr "Valitse kaikki piirteen mukaan"
+
+
+msgid "Select Loops"
+msgstr "Valitse silmukat"
+
+
+msgid "Light"
+msgstr "Valo"
+
+
+msgid "Light Probe"
+msgstr "Valoluotain"
+
+
+msgid "Add Image"
+msgstr "Lisää kuva"
+
+
+msgid "Track"
+msgstr "Raide"
+
+
+msgid "Hooks"
+msgstr "Koukut"
+
+
+msgid "Random Mask"
+msgstr "Satunnainen maski"
+
+
+msgid "Mesh Select Mode"
+msgstr "Muodon valintatila"
 
 
 msgid "Basic"
@@ -13644,6 +13644,10 @@ msgid "AOV"
 msgstr "AOV"
 
 
+msgid "Mesh has no UV data"
+msgstr "Muodolla ei ole UV-dataa"
+
+
 msgid "Invalid Input Error"
 msgstr "Virheellinen syöte -virhe"
 
@@ -14677,10 +14681,6 @@ msgid "OneDrive"
 msgstr "OneDrive"
 
 
-msgid "Movies"
-msgstr "Elokuvat"
-
-
 msgid "Cursor X"
 msgstr "X-kursori"
 
@@ -15182,10 +15182,6 @@ msgstr "Muotoavainta ei löydy"
 
 msgid "Could not remove ShapeKey"
 msgstr "Muotoavainta ei kyetty poistamaan"
-
-
-msgid "Mesh has no UV data"
-msgstr "Muodolla ei ole UV-dataa"
 
 
 msgid "Scripting"

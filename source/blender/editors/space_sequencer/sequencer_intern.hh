@@ -15,6 +15,7 @@
 #include "BLI_vector.hh"
 #include "BLI_vector_set.hh"
 
+#include "DNA_listBase.h"
 #include "DNA_sequence_types.h"
 
 #include "RNA_access.hh"
@@ -22,6 +23,8 @@
 #include "GPU_viewport.hh"
 
 #include "sequencer_scopes.hh"
+
+namespace blender {
 
 /* Internal exports only. */
 
@@ -31,6 +34,7 @@ struct ColorManagedViewSettings;
 struct ColorManagedDisplaySettings;
 struct Scene;
 struct SeqRetimingKey;
+struct SeqTimelineChannel;
 struct Strip;
 struct SpaceSeq;
 struct StripElem;
@@ -42,13 +46,12 @@ struct wmOperator;
 struct wmOperatorType;
 struct ScrArea;
 struct Editing;
-struct ListBase;
 
-namespace blender::ed::asset {
+namespace ed::asset {
 struct AssetItemTree;
 }
 
-namespace blender::ed::vse {
+namespace ed::vse {
 
 class SeqQuadsBatch;
 class StripsDrawBatch;
@@ -77,8 +80,8 @@ struct SeqChannelDrawContext {
 
   Scene *scene;
   Editing *ed;
-  ListBase *seqbase;  /* Displayed seqbase. */
-  ListBase *channels; /* Displayed channels. */
+  ListBaseT<Strip> *seqbase;               /* Displayed seqbase. */
+  ListBaseT<SeqTimelineChannel> *channels; /* Displayed channels. */
 
   float draw_offset;
   float channel_height;
@@ -117,7 +120,7 @@ struct TimelineDrawContext {
   SpaceSeq *sseq;
   View2D *v2d;
   Editing *ed;
-  ListBase *channels;
+  ListBaseT<SeqTimelineChannel> *channels;
   GPUViewport *viewport;
   gpu::FrameBuffer *framebuffer_overlay;
   float pixelx, pixely; /* Width and height of pixel in timeline space. */
@@ -369,10 +372,6 @@ wmOperatorStatus sequencer_retiming_key_select_exec(bContext *C,
                                                     SeqRetimingKey *key,
                                                     const Strip *key_owner);
 /* Select a key and all following keys. */
-wmOperatorStatus sequencer_retiming_select_linked_time(bContext *C,
-                                                       wmOperator *op,
-                                                       SeqRetimingKey *key,
-                                                       const Strip *key_owner);
 wmOperatorStatus sequencer_select_exec(bContext *C, wmOperator *op);
 wmOperatorStatus sequencer_retiming_select_all_exec(bContext *C, wmOperator *op);
 wmOperatorStatus sequencer_retiming_box_select_exec(bContext *C, wmOperator *op);
@@ -386,8 +385,6 @@ void sequencer_retiming_speed_draw(const TimelineDrawContext &ctx,
 void realize_fake_keys(const Scene *scene, Strip *strip);
 SeqRetimingKey *try_to_realize_fake_keys(const bContext *C, Strip *strip, const int mval[2]);
 SeqRetimingKey *retiming_mouseover_key_get(const bContext *C, const int mval[2], Strip **r_strip);
-int left_fake_key_frame_get(const bContext *C, const Strip *strip);
-int right_fake_key_frame_get(const bContext *C, const Strip *strip);
 bool retiming_keys_can_be_displayed(const SpaceSeq *sseq);
 rctf strip_retiming_keys_box_get(const Scene *scene, const View2D *v2d, const Strip *strip);
 
@@ -404,7 +401,7 @@ void SEQUENCER_OT_text_cursor_set(wmOperatorType *ot);
 void SEQUENCER_OT_text_edit_copy(wmOperatorType *ot);
 void SEQUENCER_OT_text_edit_paste(wmOperatorType *ot);
 void SEQUENCER_OT_text_edit_cut(wmOperatorType *ot);
-int2 strip_text_cursor_offset_to_position(const TextVarsRuntime *text, int cursor_offset);
+int2 strip_text_cursor_offset_to_position(const seq::TextVarsRuntime *text, int cursor_offset);
 IndexRange strip_text_selection_range_get(const TextVars *data);
 
 /* `sequencer_timeline_draw.cc` */
@@ -423,4 +420,5 @@ MenuType add_catalog_assets_menu_type();
 MenuType add_unassigned_assets_menu_type();
 MenuType add_scene_menu_type();
 
-}  // namespace blender::ed::vse
+}  // namespace ed::vse
+}  // namespace blender

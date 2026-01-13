@@ -1,9 +1,9 @@
 
 msgid ""
 msgstr ""
-"Project-Id-Version: Blender 5.1.0 Alpha (b'7d4876cf0c11')\n"
+"Project-Id-Version: Blender 5.1.0 Alpha (b'12e628ea43f8')\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-16 11:27+0000\n"
+"POT-Creation-Date: 2026-01-12 15:09+0000\n"
 "PO-Revision-Date: 2025-12-04 22:18+0000\n"
 "Last-Translator: Jackson Zheng <business.jackson.zheng@gmail.com>\n"
 "Language-Team: Hindi <https://translate.blender.org/projects/blender-ui/ui/hi/>\n"
@@ -2581,12 +2581,36 @@ msgid "Dots"
 msgstr "बिन्दु्"
 
 
-msgid "Mirror"
-msgstr "दर्पण"
+msgid "Show/Hide"
+msgstr "छुपाएँ / दिखाएँ"
+
+
+msgid "Math"
+msgstr "गणित"
+
+
+msgid "Names"
+msgstr "नाम"
+
+
+msgid "Bone Roll"
+msgstr "हड्डी पंजी"
 
 
 msgid "Snap"
 msgstr "स्नैप"
+
+
+msgid "Import"
+msgstr "आयात करें"
+
+
+msgid "Mirror"
+msgstr "दर्पण"
+
+
+msgid "UV"
+msgstr "यूवी"
 
 
 msgid "Light"
@@ -2597,10 +2621,6 @@ msgid "Rigid Body"
 msgstr "कठोर-पदार्थ"
 
 
-msgid "Keying"
-msgstr "कुंजीयन"
-
-
 msgid "Apply"
 msgstr "लागू करें"
 
@@ -2609,16 +2629,8 @@ msgid "Track"
 msgstr "ट्रैक"
 
 
-msgid "Math"
-msgstr "गणित"
-
-
 msgid "Quick Effects"
 msgstr "त्वरित प्रभाव"
-
-
-msgid "Show/Hide"
-msgstr "छुपाएँ / दिखाएँ"
 
 
 msgid "Make Single User"
@@ -2629,8 +2641,8 @@ msgid "Hooks"
 msgstr "खूँटी"
 
 
-msgid "Names"
-msgstr "नाम"
+msgid "Keying"
+msgstr "कुंजीयन"
 
 
 msgid "Toggle Bone Options"
@@ -2643,18 +2655,6 @@ msgstr "हड्डी विकल्प को सक्षम करें"
 
 msgid "Merge"
 msgstr "विलय करें"
-
-
-msgid "Bone Roll"
-msgstr "हड्डी पंजी"
-
-
-msgid "Import"
-msgstr "आयात करें"
-
-
-msgid "UV"
-msgstr "यूवी"
 
 
 msgid "Basic"

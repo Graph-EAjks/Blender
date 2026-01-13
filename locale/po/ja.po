@@ -1,9 +1,9 @@
 
 msgid ""
 msgstr ""
-"Project-Id-Version: Blender 5.1.0 Alpha (b'7d4876cf0c11')\n"
+"Project-Id-Version: Blender 5.1.0 Alpha (b'12e628ea43f8')\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-16 11:27+0000\n"
+"POT-Creation-Date: 2026-01-12 15:09+0000\n"
 "PO-Revision-Date: 2025-12-15 18:48+0000\n"
 "Last-Translator: Satoshi Yamasaki <yamyam@yo.rim.or.jp>\n"
 "Language-Team: Japanese <https://translate.blender.org/projects/blender-ui/ui/ja/>\n"
@@ -18875,16 +18875,8 @@ msgid "Is Layered Action"
 msgstr "レイヤー化アクション"
 
 
-msgid "Return whether this is a layered Action. An empty Action is considered as both a 'legacy' and a 'layered' Action."
-msgstr "これがレイヤー化アクションかどうかを返します．空のアクションは 'legacy' と 'layered' アクションの両方とみなされます."
-
-
 msgid "Is Legacy Action"
 msgstr "旧アクション"
-
-
-msgid "Return whether this is a legacy Action. Legacy Actions have no layers or slots. An empty Action is considered as both a 'legacy' and a 'layered' Action. Since Blender 4.4 actions are automatically updated to layered actions, and thus this will only return True when the action is empty"
-msgstr "これが旧 (Legacy) アクションかどうかを返します．旧アクションにはレイヤーもスロットもありません．空のアクションは 'legacy' と 'layered' アクションの両方とみなされます．Blender 4.4のアクションは自動的にレイヤー化アクションにアップデートされるため，アクションが空の時のみ True を返します"
 
 
 msgid "Is Empty"
@@ -20717,18 +20709,6 @@ msgstr "ブラシ直径を100％としたブラシの塗りの間隔"
 
 msgid "Stabilize Normal"
 msgstr "法線を安定化"
-
-
-msgid "Stabilize the orientation of the brush plane."
-msgstr "ブラシ平面の方向の安定化を行います"
-
-
-msgid "Stabilize Plane"
-msgstr "平面を安定化"
-
-
-msgid "Stabilize the center of the brush plane."
-msgstr "ブラシ平面の中心の安定化を行います"
 
 
 msgid "Stencil Dimensions"
@@ -35426,12 +35406,104 @@ msgid "Editor menu containing buttons"
 msgstr "ボタンを含むエディターメニュー"
 
 
-msgid "Mirror"
-msgstr "ミラー"
+msgid "Show/Hide"
+msgstr "表示/隠す"
+
+
+msgid "Special Characters"
+msgstr "特殊文字"
+
+
+msgid "Kerning"
+msgstr "カーニング"
+
+
+msgid "Math"
+msgstr "数式"
+
+
+msgid "Metaball"
+msgstr "メタボール"
+
+
+msgid "Utilities"
+msgstr "ユーティリティ"
+
+
+msgid "Names"
+msgstr "名前"
+
+
+msgid "Bone Roll"
+msgstr "ボーンロール"
+
+
+msgid "Clean Up"
+msgstr "クリーンアップ"
+
+
+msgid "Read"
+msgstr "読込"
+
+
+msgid "Sample"
+msgstr "サンプル"
+
+
+msgid "Write"
+msgstr "書込"
+
+
+msgid "Pivot Point"
+msgstr "ピボットポイント"
+
+
+msgid "Primitives"
+msgstr "プリミティブ"
 
 
 msgid "Snap"
 msgstr "スナップ"
+
+
+msgid "Proportional Editing Falloff"
+msgstr "プロポーショナル編集の減衰タイプ"
+
+
+msgid "Mask Edit"
+msgstr "マスク編集"
+
+
+msgid "Automasking"
+msgstr "自動マスク"
+
+
+msgid "Face Sets Edit"
+msgstr "面セット編集"
+
+
+msgid "Vertex Group Locks"
+msgstr "頂点グループのロック"
+
+
+msgid "Gizmo"
+msgstr "ギズモ"
+
+
+msgid "Instances"
+msgstr "インスタンス"
+
+
+msgid "Import"
+msgstr "インポート"
+
+
+msgid "Deprecated"
+msgstr "廃止予定"
+
+
+msgid "Mirror"
+msgstr "ミラー"
 
 
 msgid "UV Mapping"
@@ -35442,12 +35514,20 @@ msgid "Local View"
 msgstr "ローカルビュー"
 
 
+msgid "List"
+msgstr "リスト"
+
+
 msgid "Viewpoint"
 msgstr "視点"
 
 
 msgid "Navigation"
 msgstr "視点の操作"
+
+
+msgid "UV"
+msgstr "UV"
 
 
 msgid "Align View"
@@ -35486,14 +35566,6 @@ msgid "Assign Material"
 msgstr "マテリアルを割り当て"
 
 
-msgid "Metaball"
-msgstr "メタボール"
-
-
-msgid "Layout"
-msgstr "レイアウト"
-
-
 msgid "Light"
 msgstr "ライト"
 
@@ -35510,52 +35582,20 @@ msgid "Relations"
 msgstr "関係"
 
 
-msgid "Adjust"
-msgstr "調整"
-
-
 msgid "Rigid Body"
 msgstr "リジッドボディ"
-
-
-msgid "Keying"
-msgstr "キーイング"
 
 
 msgid "Apply"
 msgstr "適用"
 
 
-msgid "Tracking"
-msgstr "トラッキング"
-
-
 msgid "Track"
 msgstr "トラック"
 
 
-msgid "Utilities"
-msgstr "ユーティリティ"
-
-
-msgid "Math"
-msgstr "数式"
-
-
 msgid "Quick Effects"
 msgstr "クイックエフェクト"
-
-
-msgid "Creative"
-msgstr "クリエイティブ"
-
-
-msgid "Show/Hide"
-msgstr "表示/隠す"
-
-
-msgid "Clean Up"
-msgstr "クリーンアップ"
 
 
 msgid "Asset"
@@ -35578,16 +35618,12 @@ msgid "Hooks"
 msgstr "フック"
 
 
-msgid "Vertex Group Locks"
-msgstr "頂点グループのロック"
+msgid "Layout"
+msgstr "レイアウト"
 
 
 msgid "Trim/Add"
 msgstr "トリム/追加"
-
-
-msgid "Render Preview"
-msgstr "レンダープレビュー"
 
 
 msgid "Sculpt Set Pivot"
@@ -35606,6 +35642,10 @@ msgid "Clear Transform"
 msgstr "トランスフォームをクリア"
 
 
+msgid "Adjust"
+msgstr "調整"
+
+
 msgid "In-Betweens"
 msgstr "中間ポーズ"
 
@@ -35618,12 +35658,20 @@ msgid "Bone Collections"
 msgstr "ボーンコレクション"
 
 
-msgid "Names"
-msgstr "名前"
+msgid "Keying"
+msgstr "キーイング"
+
+
+msgid "Tracking"
+msgstr "トラッキング"
 
 
 msgid "Toggle Bone Options"
 msgstr "ボーンオプションを切り替え"
+
+
+msgid "Creative"
+msgstr "クリエイティブ"
 
 
 msgid "Enable Bone Options"
@@ -35650,80 +35698,12 @@ msgid "Set Face Strength"
 msgstr "面の強さを設定"
 
 
+msgid "Render Preview"
+msgstr "レンダープレビュー"
+
+
 msgid "Merge"
 msgstr "マージ"
-
-
-msgid "Read"
-msgstr "読込"
-
-
-msgid "Sample"
-msgstr "サンプル"
-
-
-msgid "Write"
-msgstr "書込"
-
-
-msgid "Primitives"
-msgstr "プリミティブ"
-
-
-msgid "Special Characters"
-msgstr "特殊文字"
-
-
-msgid "Kerning"
-msgstr "カーニング"
-
-
-msgid "Gizmo"
-msgstr "ギズモ"
-
-
-msgid "Instances"
-msgstr "インスタンス"
-
-
-msgid "Bone Roll"
-msgstr "ボーンロール"
-
-
-msgid "Import"
-msgstr "インポート"
-
-
-msgid "Deprecated"
-msgstr "廃止予定"
-
-
-msgid "List"
-msgstr "リスト"
-
-
-msgid "Pivot Point"
-msgstr "ピボットポイント"
-
-
-msgid "UV"
-msgstr "UV"
-
-
-msgid "Proportional Editing Falloff"
-msgstr "プロポーショナル編集の減衰タイプ"
-
-
-msgid "Mask Edit"
-msgstr "マスク編集"
-
-
-msgid "Automasking"
-msgstr "自動マスク"
-
-
-msgid "Face Sets Edit"
-msgstr "面セット編集"
 
 
 msgid "Keyframe Insert Pie"
@@ -54752,13 +54732,8 @@ msgstr "連番画像をインポート"
 
 
 msgctxt "Operator"
-msgid "Texture Setup"
-msgstr "テクスチャセットアップ"
-
-
-msgctxt "Operator"
-msgid "Principled Texture Setup"
-msgstr "プリンシプルテクスチャセットアップ"
+msgid "Add Texture Setup"
+msgstr "テクスチャセットアップを追加"
 
 
 msgctxt "Operator"
@@ -57588,15 +57563,6 @@ msgstr "使用されていない物のみ"
 
 msgid "Only unused (Fake User only) actions get considered"
 msgstr "未使用(フェイクユーザーのみ)のアクションを考慮します"
-
-
-msgctxt "Operator"
-msgid "Convert Legacy Action"
-msgstr "旧アクションを変換"
-
-
-msgid "Convert a legacy Action to a layered Action on the active object"
-msgstr "アクティブオブジェクトの旧アクションをレイヤー化アクションに変換します"
 
 
 msgctxt "Operator"
@@ -83073,10 +83039,6 @@ msgid "Project the geometry onto a plane defined by a line"
 msgstr "線で定義された平面に形状を投影します"
 
 
-msgid "Sample the vertex color of the active vertex"
-msgstr "アクティブ頂点の頂点カラーを取得します"
-
-
 msgctxt "Operator"
 msgid "Sample Detail Size"
 msgstr "ディテールサイズを採取"
@@ -92397,6 +92359,58 @@ msgid "Panel containing UI elements"
 msgstr "UIの要素を含むパネル"
 
 
+msgid "glTF Variants"
+msgstr "glTFバリアント"
+
+
+msgid "glTF Material Variants"
+msgstr "glTFマテリアルバリアント"
+
+
+msgid "glTF"
+msgstr "glTF"
+
+
+msgid "glTF Animations"
+msgstr "glTFアニメーション"
+
+
+msgid "Active Tool"
+msgstr "アクティブツール"
+
+
+msgid "View Lock"
+msgstr "ビューのロック"
+
+
+msgid "Selectability & Visibility"
+msgstr "選択可否と可視性"
+
+
+msgid "Wireframe Color"
+msgstr "ワイヤカラー"
+
+
+msgid "Shadow Settings"
+msgstr "影の設定"
+
+
+msgid "SSAO Settings"
+msgstr "SSAO設定"
+
+
+msgid "Cavity"
+msgstr "キャビティ"
+
+
+msgid "Render Pass"
+msgstr "レンダーパス"
+
+
+msgid "Compositor"
+msgstr "コンポジター"
+
+
 msgid "Overlays"
 msgstr "オーバーレイ"
 
@@ -92487,58 +92501,6 @@ msgstr "VR"
 
 msgid "VR Info"
 msgstr "VR情報"
-
-
-msgid "glTF Variants"
-msgstr "glTFバリアント"
-
-
-msgid "glTF Material Variants"
-msgstr "glTFマテリアルバリアント"
-
-
-msgid "glTF"
-msgstr "glTF"
-
-
-msgid "glTF Animations"
-msgstr "glTFアニメーション"
-
-
-msgid "Active Tool"
-msgstr "アクティブツール"
-
-
-msgid "View Lock"
-msgstr "ビューのロック"
-
-
-msgid "Selectability & Visibility"
-msgstr "選択可否と可視性"
-
-
-msgid "Wireframe Color"
-msgstr "ワイヤカラー"
-
-
-msgid "Shadow Settings"
-msgstr "影の設定"
-
-
-msgid "SSAO Settings"
-msgstr "SSAO設定"
-
-
-msgid "Cavity"
-msgstr "キャビティ"
-
-
-msgid "Render Pass"
-msgstr "レンダーパス"
-
-
-msgid "Compositor"
-msgstr "コンポジター"
 
 
 msgid "Import Settings"
@@ -96915,10 +96877,6 @@ msgid "Orbit Around Selection"
 msgstr "選択部分を中心に回転"
 
 
-msgid "Use selection as the pivot point"
-msgstr "選択部分をピボットポイントに使用します"
-
-
 msgid "Zoom to Mouse Position"
 msgstr "マウス位置でズーム"
 
@@ -97846,14 +97804,6 @@ msgid "Chinese (Traditional) - 繁體中文"
 msgstr "繁体字中国語 - 繁體中文"
 
 
-msgid "Croatian - Hrvatski"
-msgstr "クロアチア語（Hrvatski）"
-
-
-msgid "Locale code: hr_HR. Translation progress: 0%"
-msgstr "ロケールコード：hr_HR．翻訳の進行状況: 0％"
-
-
 msgid "Czech - Čeština"
 msgstr "チェコ語 - Čeština"
 
@@ -97922,14 +97872,6 @@ msgid "Locale code: el_GR. Translation progress: 1%"
 msgstr "ロケールコード：el_GR．翻訳の進行状況: 1％"
 
 
-msgid "Hausa - Hausa"
-msgstr "ハウサ語 - Hausa"
-
-
-msgid "Locale code: ha. Translation progress: 0%"
-msgstr "ロケールコード：ha．翻訳の進行状況: 0％"
-
-
 msgid "Hebrew - תירִבְעִ"
 msgstr "ヘブライ語 - תירִבְעִ"
 
@@ -97960,14 +97902,6 @@ msgstr "イタリア語 - Italiano"
 
 msgid "Japanese - 日本語"
 msgstr "日本語 - Japanese"
-
-
-msgid "Khmer - ខ្មែរ"
-msgstr "クメール語 - ខ្មែរ"
-
-
-msgid "Locale code: km. Translation progress: 0%"
-msgstr "ロケールコード：km．翻訳の進行状況: 0％"
 
 
 msgid "Korean - 한국어"
@@ -98002,14 +97936,6 @@ msgid "Locale code: ml. Translation progress: 0%"
 msgstr "ロケールコード：ml．翻訳の進行状況: 0％"
 
 
-msgid "Nepali - नेपाली"
-msgstr "ネパール語 - नेपाली"
-
-
-msgid "Locale code: ne_NP. Translation progress: 0%"
-msgstr "ロケールコード：ne_NP．翻訳の進行状況: 0％"
-
-
 msgid "Persian - ﯽﺳﺭﺎﻓ"
 msgstr "ペルシア語 - ﯽﺳﺭﺎﻓ"
 
@@ -98020,10 +97946,6 @@ msgstr "ロケールコード：fa_IR．翻訳の進行状況: 3％"
 
 msgid "Polish - Polski"
 msgstr "ポーランド語 - Polski"
-
-
-msgid "Locale code: pl_PL. Translation progress: 18%"
-msgstr "ロケールコード：pl_PL．翻訳の進行状況: 18％"
 
 
 msgid "Portuguese (Brazil) - Português brasileiro"
@@ -98080,10 +98002,6 @@ msgstr "スワヒリ語 - Kiswahili"
 
 msgid "Swedish - Svenska"
 msgstr "スウェーデン語 - Svenska"
-
-
-msgid "Locale code: sv_SE. Translation progress: 22%"
-msgstr "ロケールコード：sv_SE．翻訳の進行状況: 22％"
 
 
 msgid "Tamil - தமிழ்"
@@ -120944,16 +120862,6 @@ msgstr "連番画像"
 
 
 msgctxt "Operator"
-msgid "Add Texture Setup"
-msgstr "テクスチャセットアップを追加"
-
-
-msgctxt "Operator"
-msgid "Add Principled Setup"
-msgstr "プリンシプルセットアップを追加"
-
-
-msgctxt "Operator"
 msgid "Settings from Active"
 msgstr "アクティブから設定"
 
@@ -122277,10 +122185,6 @@ msgstr "すべてのボーンコレクションが使用中です"
 
 msgid "An action slot can only be created when an action is assigned"
 msgstr "アクションスロットはアクションが割り当て済みの時のみ作成可能です"
-
-
-msgid "Action slots are only supported by layered Actions. Upgrade this Action first"
-msgstr "アクションスロットはレイヤー化アクションでのみ対応しています．アクションを先にアップグレードしてください"
 
 
 msgid "Creating a new Slot is not possible on a linked Action"
@@ -129751,11 +129655,6 @@ msgstr "ビューから投影 (バウンド)"
 
 
 msgctxt "Operator"
-msgid "Frame Last Stroke"
-msgstr "最後のストロークを表示"
-
-
-msgctxt "Operator"
 msgid "Render Playblast"
 msgstr "プレイブラストをレンダリング"
 
@@ -131791,6 +131690,18 @@ msgid "particles"
 msgstr "パーティクル"
 
 
+msgid "Object was not yet evaluated"
+msgstr "オブジェクトが未評価です"
+
+
+msgid "Mesh has no UV data"
+msgstr "メッシュに UV データがありません"
+
+
+msgid "Mesh has no VCol data"
+msgstr "メッシュに頂点色データがありません"
+
+
 msgid "Unsaved"
 msgstr "未保存"
 
@@ -132560,18 +132471,6 @@ msgid "color_index is invalid"
 msgstr "無効な color_index です"
 
 
-msgid "Compositor node tree has cyclic links!"
-msgstr "コンポジターノードツリーにリンクのループがあります！"
-
-
-msgid "Compositor node tree has undefined nodes or sockets!"
-msgstr "コンポジターノードツリーに未定義ノードまたはソケットがあります！"
-
-
-msgid "Compositor node tree has unsupported nodes."
-msgstr "コンポジターノードツリーに未対応ノードがあります."
-
-
 msgid "Error: Too many AOVs"
 msgstr "エラー：AOV が多すぎです"
 
@@ -132836,10 +132735,6 @@ msgid "No active action to operate on"
 msgstr "操作するアクティブアクションがありません"
 
 
-msgid "Active action is not layered"
-msgstr "アクティブアクションはレイヤー化されていません"
-
-
 msgid "No active object"
 msgstr "アクティブオブジェクトなし"
 
@@ -132935,10 +132830,6 @@ msgstr "アニメーションの統合に失敗しました．NLA ストリッ�
 
 msgid "Expected an animation area to be active"
 msgstr "アニメーション領域をアクティブにしてください"
-
-
-msgid "Action is already layered"
-msgstr "アクションはすでにレイヤー化されています"
 
 
 msgid "Active object has no action"
@@ -135892,18 +135783,6 @@ msgid "Loop cut does not work well on deformed edit mesh display"
 msgstr "デフォーム編集メッシュ表示では，ループカットはうまく動作しません"
 
 
-msgid "Create Mesh From Paint Mask"
-msgstr "ペイントマスクからメッシュ作成"
-
-
-msgid "Extract"
-msgstr "抽出"
-
-
-msgid "The geometry cannot be extracted with dyntopo activated"
-msgstr "Dyntopo 有効時は形状が抽出できません"
-
-
 msgid "Path selection requires two matching elements to be selected"
 msgstr "経路を選択するには適合する要素を二つ選択してください"
 
@@ -138771,6 +138650,18 @@ msgid "Texture mapping not set to 3D, results may be unpredictable"
 msgstr "テクスチャマッピングが3Dに設定されておらず，予期せぬ結果になる可能性があります"
 
 
+msgid "Create Mesh From Paint Mask"
+msgstr "ペイントマスクからメッシュ作成"
+
+
+msgid "Extract"
+msgstr "抽出"
+
+
+msgid "The geometry cannot be extracted with dyntopo activated"
+msgstr "Dyntopo 有効時は形状が抽出できません"
+
+
 msgid "non-triangle face"
 msgstr "非三角面"
 
@@ -139390,10 +139281,6 @@ msgstr "ビデオ"
 
 msgid "OneDrive"
 msgstr "OneDrive"
-
-
-msgid "Movies"
-msgstr "映画"
 
 
 msgid "Cursor X"
@@ -140063,10 +139950,6 @@ msgstr "新しい場所でお互いが重なるため，選択中のストリッ
 
 msgid "Cannot swap selected strips as they will not be able to fit in their new places"
 msgstr "新しい場所に収まらないため，選択中のストリップを交換できません"
-
-
-msgid "Action '%s' does not specify what data-blocks it can be used on (try setting the 'ID Root Type' setting from the data-blocks editor for this action to avoid future problems)"
-msgstr "アクション「%s」で使用可能なデータブロックを指定できません（将来的な問題を回避するため，データブロックエディターでこのアクション用の「IDルートタイプ」を設定してみてください）"
 
 
 msgid "Could not add action '%s' as it cannot be used relative to ID-blocks of type '%s'"
@@ -141603,12 +141486,12 @@ msgid "Select movie or image strips"
 msgstr "動画または画像ストリップを選択してください"
 
 
-msgid "Cannot create key inside of speed transition"
-msgstr "スピードトランジション内にはキーを作成できません"
-
-
 msgid "Cannot create freeze frame"
 msgstr "フリーズフレームを作成できません"
+
+
+msgid "Cannot create key inside of speed transition"
+msgstr "スピードトランジション内にはキーを作成できません"
 
 
 msgid "Cannot create transition from first or last key"
@@ -143771,16 +143654,8 @@ msgid "Cannot return channelbag when slot is None"
 msgstr "スロットが None の時はチャンネルバッグを返すことができません"
 
 
-msgid "Cannot add slots to a legacy Action '%s'. Convert it to a layered Action first."
-msgstr "スロットは旧アクション「%s」に追加できません．先にレイヤー化アクションへ変換してください."
-
-
 msgid "Invalid slot name '%s': name must not be empty."
 msgstr "「%s」は無効なスロット名です：名前を空にしないでください."
-
-
-msgid "Cannot add layers to a legacy Action '%s'. Convert it to a layered Action first."
-msgstr "レイヤーは旧アクション「%s」に追加できません．先にレイヤー化アクションへ変換してください."
 
 
 msgid "F-Curve '%s[%d]' already exists in this channelbag"
@@ -144915,18 +144790,6 @@ msgstr "無効なターゲットです！"
 
 msgid "uv_on_emitter() requires a modifier from an evaluated object"
 msgstr "uv_on_emitter() は評価されるオブジェクトのモディファイアーが必要です"
-
-
-msgid "Mesh has no UV data"
-msgstr "メッシュに UV データがありません"
-
-
-msgid "Object was not yet evaluated"
-msgstr "オブジェクトが未評価です"
-
-
-msgid "Mesh has no VCol data"
-msgstr "メッシュに頂点色データがありません"
 
 
 msgid "Cannot edit bone groups for library overrides"
@@ -147331,54 +147194,6 @@ msgstr ""
 "粒状またはノイズの多い結果になる可能性があります"
 
 
-msgid "Wrong Image Input Type"
-msgstr "間違った画像入力タイプ"
-
-
-msgid "Wrong Mask Input Type"
-msgstr "間違ったマスク入力タイプ"
-
-
-msgid "Unsupported Inputs"
-msgstr "未対応の入力"
-
-
-msgid "Node group's main Image input should be of type Color"
-msgstr "ノードグループのメイン画像入力はカラータイプにしてください"
-
-
-msgid "Node group's Mask input should be of type Color"
-msgstr "ノードグループのマスク入力はカラータイプにしてください"
-
-
-msgid "Only a main Image and Mask inputs are supported, the rest are unsupported and will return zero"
-msgstr "メイン画像とマスク入力のみ対応，他は未対応で０を返します"
-
-
-msgid "No Output"
-msgstr "出力なし"
-
-
-msgid "Wrong Output Type"
-msgstr "間違った出力タイプ"
-
-
-msgid "Ignored Outputs"
-msgstr "無視された出力があります"
-
-
-msgid "Node group must have a Color output socket"
-msgstr "ノードグループにカラー出力ソケットが必要です"
-
-
-msgid "Node group's first output must be a color output"
-msgstr "ノードグループの最初の出力はカラーにしてください"
-
-
-msgid "Only the first output is considered while the rest are ignored"
-msgstr "最初の出力のみ考慮，残りは無視されます"
-
-
 msgid "Fac"
 msgstr "係数"
 
@@ -147777,6 +147592,10 @@ msgstr "アルファを置換"
 
 msgid "Replace the input image's alpha channel by the alpha input value"
 msgstr "入力画像のアルファチャンネルをアルファ入力値で置き換えます"
+
+
+msgid "SDF"
+msgstr "SDF"
 
 
 msgid "Line position where the image should be split"
@@ -149403,10 +149222,6 @@ msgid "Turn regions where all voxels have the same value and active state (withi
 msgstr ""
 "（しきい値以内の）同じ値を持ちアクティブ状態のボクセルの領域を\n"
 "すべて非アクティブの背景タイルにします"
-
-
-msgid "SDF"
-msgstr "SDF"
 
 
 msgid "Replace inactive tiles with inactive nodes. Faster than tolerance-based pruning, useful for cases like narrow-band SDF grids with only inside or outside background values."
@@ -151261,8 +151076,56 @@ msgid "Inspection index is out of range"
 msgstr "調査インデックスが範囲外です"
 
 
+msgid "Wrong Image Input Type"
+msgstr "間違った画像入力タイプ"
+
+
+msgid "Wrong Mask Input Type"
+msgstr "間違ったマスク入力タイプ"
+
+
+msgid "Unsupported Inputs"
+msgstr "未対応の入力"
+
+
+msgid "No Output"
+msgstr "出力なし"
+
+
+msgid "Wrong Output Type"
+msgstr "間違った出力タイプ"
+
+
+msgid "Ignored Outputs"
+msgstr "無視された出力があります"
+
+
 msgid "Unused Output"
 msgstr "未使用の出力"
+
+
+msgid "Node group's main Image input should be of type Color"
+msgstr "ノードグループのメイン画像入力はカラータイプにしてください"
+
+
+msgid "Node group's Mask input should be of type Color"
+msgstr "ノードグループのマスク入力はカラータイプにしてください"
+
+
+msgid "Only a main Image and Mask inputs are supported, the rest are unsupported and will return zero"
+msgstr "メイン画像とマスク入力のみ対応，他は未対応で０を返します"
+
+
+msgid "Node group must have a Color output socket"
+msgstr "ノードグループにカラー出力ソケットが必要です"
+
+
+msgid "Node group's first output must be a color output"
+msgstr "ノードグループの最初の出力はカラーにしてください"
+
+
+msgid "Only the first output is considered while the rest are ignored"
+msgstr "最初の出力のみ考慮，残りは無視されます"
 
 
 msgid "There are multiple group output nodes and this one is not active"

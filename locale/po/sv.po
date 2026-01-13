@@ -1,9 +1,9 @@
 
 msgid ""
 msgstr ""
-"Project-Id-Version: Blender 5.1.0 Alpha (b'7d4876cf0c11')\n"
+"Project-Id-Version: Blender 5.1.0 Alpha (b'12e628ea43f8')\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-16 11:27+0000\n"
+"POT-Creation-Date: 2026-01-12 15:09+0000\n"
 "PO-Revision-Date: 2025-11-18 20:05+0000\n"
 "Last-Translator: Daniel Nylander <blender@danielnylander.se>\n"
 "Language-Team: Swedish <https://translate.blender.org/projects/blender-ui/ui/sv/>\n"
@@ -9339,12 +9339,68 @@ msgid "Use Material Mask"
 msgstr "Använd materialmask"
 
 
-msgid "Mirror"
-msgstr "Spegla"
+msgid "Show/Hide"
+msgstr "Visa/dölj"
+
+
+msgid "Special Characters"
+msgstr "Specialtecken"
+
+
+msgid "Math"
+msgstr "Matematik"
+
+
+msgid "Metaball"
+msgstr "Metaboll"
+
+
+msgid "Utilities"
+msgstr "Verktyg"
+
+
+msgid "Names"
+msgstr "Namn"
+
+
+msgid "Clean Up"
+msgstr "Städa upp"
+
+
+msgid "Read"
+msgstr "Läs"
+
+
+msgid "Write"
+msgstr "Skriv"
+
+
+msgid "Pivot Point"
+msgstr "Fast punkt"
+
+
+msgid "Primitives"
+msgstr "Primitiver"
 
 
 msgid "Snap"
 msgstr "Snäpp"
+
+
+msgid "Instances"
+msgstr "Instanser"
+
+
+msgid "Import"
+msgstr "Importera"
+
+
+msgid "Deprecated"
+msgstr "Föråldrad"
+
+
+msgid "Mirror"
+msgstr "Spegla"
 
 
 msgid "Local View"
@@ -9357,6 +9413,10 @@ msgstr "Visningspunkt"
 
 msgid "Navigation"
 msgstr "Navigering"
+
+
+msgid "UV"
+msgstr "UV"
 
 
 msgid "Align View"
@@ -9375,14 +9435,6 @@ msgid "Assign Material"
 msgstr "Tilldela material"
 
 
-msgid "Metaball"
-msgstr "Metaboll"
-
-
-msgid "Layout"
-msgstr "Layout"
-
-
 msgid "Light"
 msgstr "Ljus"
 
@@ -9399,10 +9451,6 @@ msgid "Relations"
 msgstr "Relationer"
 
 
-msgid "Adjust"
-msgstr "Justera"
-
-
 msgid "Rigid Body"
 msgstr "Rigid kropp"
 
@@ -9415,24 +9463,8 @@ msgid "Track"
 msgstr "Spår"
 
 
-msgid "Utilities"
-msgstr "Verktyg"
-
-
-msgid "Math"
-msgstr "Matematik"
-
-
 msgid "Quick Effects"
 msgstr "Snabbeffekter"
-
-
-msgid "Show/Hide"
-msgstr "Visa/dölj"
-
-
-msgid "Clean Up"
-msgstr "Städa upp"
 
 
 msgid "Asset"
@@ -9447,52 +9479,20 @@ msgid "Link/Transfer Data"
 msgstr "Länka/överför data"
 
 
+msgid "Layout"
+msgstr "Layout"
+
+
+msgid "Adjust"
+msgstr "Justera"
+
+
 msgid "Propagate"
 msgstr "Propagera"
 
 
-msgid "Names"
-msgstr "Namn"
-
-
 msgid "Merge"
 msgstr "Sammanfoga"
-
-
-msgid "Read"
-msgstr "Läs"
-
-
-msgid "Write"
-msgstr "Skriv"
-
-
-msgid "Primitives"
-msgstr "Primitiver"
-
-
-msgid "Special Characters"
-msgstr "Specialtecken"
-
-
-msgid "Instances"
-msgstr "Instanser"
-
-
-msgid "Import"
-msgstr "Importera"
-
-
-msgid "Deprecated"
-msgstr "Föråldrad"
-
-
-msgid "Pivot Point"
-msgstr "Fast punkt"
-
-
-msgid "UV"
-msgstr "UV"
 
 
 msgid "Animals"
@@ -13238,8 +13238,8 @@ msgstr "Importera bildsekvens"
 
 
 msgctxt "Operator"
-msgid "Texture Setup"
-msgstr "Texturkonfiguration"
+msgid "Add Texture Setup"
+msgstr "Lägg till texturinställning"
 
 
 msgctxt "Operator"
@@ -21371,6 +21371,18 @@ msgid "Palette Color"
 msgstr "Palettfärg"
 
 
+msgid "Active Tool"
+msgstr "Aktivt verktyg"
+
+
+msgid "Cavity"
+msgstr "Hålrum"
+
+
+msgid "Render Pass"
+msgstr "Renderingspass"
+
+
 msgid "Overlays"
 msgstr "Överlägg"
 
@@ -21389,18 +21401,6 @@ msgstr "Streckplacering"
 
 msgid "VR"
 msgstr "VR"
-
-
-msgid "Active Tool"
-msgstr "Aktivt verktyg"
-
-
-msgid "Cavity"
-msgstr "Hålrum"
-
-
-msgid "Render Pass"
-msgstr "Renderingspass"
 
 
 msgid "Import Settings"
@@ -23010,10 +23010,6 @@ msgid "Chinese (Traditional) - 繁體中文"
 msgstr "Kinesiska (traditionell) - 繁體中文"
 
 
-msgid "Croatian - Hrvatski"
-msgstr "Kroatiska - Hrvatski"
-
-
 msgid "Czech - Čeština"
 msgstr "Tjeckiska - Čeština"
 
@@ -23058,10 +23054,6 @@ msgid "Greek - Ελληνικά"
 msgstr "Grekiska - Ελληνικά"
 
 
-msgid "Hausa - Hausa"
-msgstr "Hausa - Hausa"
-
-
 msgid "Hebrew - תירִבְעִ"
 msgstr "Hebreiska - תירִבְעִ"
 
@@ -23086,10 +23078,6 @@ msgid "Japanese - 日本語"
 msgstr "Japanska - 日本語"
 
 
-msgid "Khmer - ខ្មែរ"
-msgstr "Khmer - ខ្មែរ"
-
-
 msgid "Korean - 한국어"
 msgstr "Koreanska - 한국어"
 
@@ -23104,10 +23092,6 @@ msgstr "Litauiska - Lietuviškai"
 
 msgid "Malayalam - മലയാളം"
 msgstr "Malayalam - മലയാളം"
-
-
-msgid "Nepali - नेपाली"
-msgstr "Nepali - नेपाली"
 
 
 msgid "Persian - ﯽﺳﺭﺎﻓ"
@@ -26225,11 +26209,6 @@ msgstr "Variant"
 msgctxt "Operator"
 msgid "Image Sequence"
 msgstr "Bildsekvens"
-
-
-msgctxt "Operator"
-msgid "Add Texture Setup"
-msgstr "Lägg till texturinställning"
 
 
 msgctxt "Operator"
@@ -30559,10 +30538,6 @@ msgid "CombinedAction"
 msgstr "CombinedAction"
 
 
-msgid "Active action is not layered"
-msgstr "Aktiv åtgärd är inte uppdelad i lager"
-
-
 msgid "<invalid>"
 msgstr "<ogiltig>"
 
@@ -31884,10 +31859,6 @@ msgstr "Videor"
 
 msgid "OneDrive"
 msgstr "OneDrive"
-
-
-msgid "Movies"
-msgstr "Filmer"
 
 
 msgid "Interpolation:"

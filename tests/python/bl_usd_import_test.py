@@ -375,7 +375,7 @@ class USDImportTest(AbstractUSDTest):
 
         mat = bpy.data.materials["Channel"]
         self.assert_all_nodes_present(
-            mat, ["Principled BSDF", "Image Texture", "Separate Color", "UV Map", "Material Output"])
+            mat, ["Principled BSDF", "Image Texture", "Separate Color", "Math", "UV Map", "Material Output"])
 
         mat = bpy.data.materials["ChannelClip_LessThan"]
         self.assert_all_nodes_present(
@@ -421,6 +421,68 @@ class USDImportTest(AbstractUSDTest):
         for mat_index in range(0, 4):
             face_indices = [i for i, d in enumerate(material_index_attr.data) if d.value == mat_index]
             self.assertEqual(len(face_indices), 4, f"Incorrect number of faces with material index {mat_index}")
+
+    def test_import_material_opacity(self):
+        """Validate correct import of Displacement information for the UsdPreviewSurface"""
+
+        # Use the existing materials test file to create the USD file
+        # for import. It is validated as part of the bl_usd_export test.
+        bpy.ops.wm.open_mainfile(filepath=str(self.testdir / "usd_materials_transmission.blend"))
+        testfile = str(self.tempdir / "usd_materials_transmission.usda")
+        res = bpy.ops.wm.usd_export(filepath=str(testfile), export_materials=True)
+        self.assertEqual({'FINISHED'}, res, f"Unable to export to {testfile}")
+
+        # Reload the empty file and import back in
+        bpy.ops.wm.open_mainfile(filepath=str(self.testdir / "empty.blend"))
+        res = bpy.ops.wm.usd_import(filepath=testfile)
+        self.assertEqual({'FINISHED'}, res, f"Unable to import USD file {testfile}")
+
+        # Most shader graph validation should occur through the Hydra render test suite. Here we
+        # will only check some high-level criteria for each expected node graph.
+
+        mat = bpy.data.materials["MAT_transmission01"]
+        self.assertAlmostEqual(
+            mat.node_tree.nodes["Principled BSDF"].inputs["Transmission Weight"].default_value, 1.0)
+
+        mat = bpy.data.materials["MAT_transmission02"]
+        self.assertAlmostEqual(
+            mat.node_tree.nodes["Principled BSDF"].inputs["Transmission Weight"].default_value, 0.842)
+
+        expected_nodes = [
+            "Principled BSDF", "Image Texture", "UV Map", "Vector Math",
+            "Separate Color", "Math", "Material Output"]
+
+        mat = bpy.data.materials["MAT_transmission03"]
+        self.assert_all_nodes_present(mat, expected_nodes)
+        vector_math = mat.node_tree.nodes["Vector Math"]
+        separate_color = mat.node_tree.nodes["Separate Color"]
+        self.assertEqual(self.round_vector(vector_math.inputs[1].default_value), [-1, 1, 1])
+        self.assertEqual(self.round_vector(vector_math.inputs[2].default_value), [1, 0, 0])
+        self.assertEqual([o.is_linked for o in separate_color.outputs], [True, False, False])
+
+        mat = bpy.data.materials["MAT_transmission04"]
+        self.assert_all_nodes_present(mat, expected_nodes)
+        vector_math = mat.node_tree.nodes["Vector Math"]
+        separate_color = mat.node_tree.nodes["Separate Color"]
+        self.assertEqual(self.round_vector(vector_math.inputs[1].default_value), [-1, 0, 0])
+        self.assertEqual(self.round_vector(vector_math.inputs[2].default_value), [1, 0, 0])
+        self.assertEqual([o.is_linked for o in separate_color.outputs], [True, False, False])
+
+        mat = bpy.data.materials["MAT_transmission05"]
+        self.assert_all_nodes_present(mat, expected_nodes)
+        vector_math = mat.node_tree.nodes["Vector Math"]
+        separate_color = mat.node_tree.nodes["Separate Color"]
+        self.assertEqual(self.round_vector(vector_math.inputs[1].default_value), [1, -1, 1])
+        self.assertEqual(self.round_vector(vector_math.inputs[2].default_value), [0, 1, 0])
+        self.assertEqual([o.is_linked for o in separate_color.outputs], [False, True, False])
+
+        mat = bpy.data.materials["MAT_transmission06"]
+        self.assert_all_nodes_present(mat, expected_nodes)
+        vector_math = mat.node_tree.nodes["Vector Math"]
+        separate_color = mat.node_tree.nodes["Separate Color"]
+        self.assertEqual(self.round_vector(vector_math.inputs[1].default_value), [1, 1, -1])
+        self.assertEqual(self.round_vector(vector_math.inputs[2].default_value), [0, 0, 1])
+        self.assertEqual([o.is_linked for o in separate_color.outputs], [False, False, True])
 
     def test_import_material_displacement(self):
         """Validate correct import of Displacement information for the UsdPreviewSurface"""
@@ -1357,16 +1419,16 @@ class USDImportTest(AbstractUSDTest):
         # Ensure we find the expected number of mesh objects
         blender_objects = [ob for ob in bpy.data.objects if ob.type == 'MESH']
         self.assertEqual(
-            9,
+            10,
             len(blender_objects),
-            f"Test scene {infile} should have 9 mesh objects; found {len(blender_objects)}")
+            f"Test scene {infile} should have 10 mesh objects; found {len(blender_objects)}")
 
         # A MeshSequenceCache modifier should be present on every imported object
         for ob in blender_objects:
             self.assertTrue(len(ob.modifiers) == 1 and ob.modifiers[0].type ==
                             'MESH_SEQUENCE_CACHE', f"{ob.name} has incorrect modifiers")
 
-        # Check that the shape with the color attribute properly updates and has correct values
+        # Check that the shapes with the color attributes properly update and have correct values
         def get_first_color_value(blender_object, frame):
             bpy.context.scene.frame_set(frame)
             depsgraph = bpy.context.evaluated_depsgraph_get()
@@ -1375,6 +1437,10 @@ class USDImportTest(AbstractUSDTest):
         self.assertEqual(self.round_vector(blender_color), [0.8, 1.0, 0.0, 1.0])
         blender_color = get_first_color_value(bpy.data.objects["capsule_color"], 2)
         self.assertEqual(self.round_vector(blender_color), [0.1, 0.8, 0.0, 1.0])
+        blender_color = get_first_color_value(bpy.data.objects["cube_color"], 1)
+        self.assertEqual(self.round_vector(blender_color), [1.0, 0.0, 0.0, 1.0])
+        blender_color = get_first_color_value(bpy.data.objects["cube_color"], 2)
+        self.assertEqual(self.round_vector(blender_color), [0.0, 1.0, 0.0, 1.0])
 
     def test_import_collection_creation(self):
         """Test that the 'create_collection' option functions correctly."""
@@ -1394,8 +1460,8 @@ class USDImportTest(AbstractUSDTest):
         self.assertEqual(len(bpy.data.collections), 2)
         self.assertEqual(bpy.data.collections["Usd Shapes Test"].users, 1)
         self.assertEqual(bpy.data.collections["Usd Shapes Test.001"].users, 1)
-        self.assertEqual(len(bpy.data.collections["Usd Shapes Test"].all_objects), 10)
-        self.assertEqual(len(bpy.data.collections["Usd Shapes Test.001"].all_objects), 10)
+        self.assertEqual(len(bpy.data.collections["Usd Shapes Test"].all_objects), 11)
+        self.assertEqual(len(bpy.data.collections["Usd Shapes Test.001"].all_objects), 11)
 
     def test_import_id_props(self):
         """Test importing object and data IDProperties."""

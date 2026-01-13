@@ -63,7 +63,8 @@ static USDStageReader *stage_reader_from_handle(CacheArchiveHandle *handle)
   return reinterpret_cast<USDStageReader *>(handle);
 }
 
-static bool gather_objects_paths(const pxr::UsdPrim &object, ListBase *object_paths)
+static bool gather_objects_paths(const pxr::UsdPrim &object,
+                                 ListBaseT<CacheObjectPath> *object_paths)
 {
   if (!object.IsValid()) {
     return false;
@@ -73,7 +74,7 @@ static bool gather_objects_paths(const pxr::UsdPrim &object, ListBase *object_pa
     gather_objects_paths(childPrim, object_paths);
   }
 
-  CacheObjectPath *usd_path = MEM_callocN<CacheObjectPath>("CacheObjectPath");
+  CacheObjectPath *usd_path = MEM_new_for_free<CacheObjectPath>("CacheObjectPath");
 
   STRNCPY(usd_path->path, object.GetPrimPath().GetString().c_str());
   BLI_addtail(object_paths, usd_path);
@@ -489,7 +490,7 @@ USDMeshReadParams create_mesh_read_params(const double motion_sample_time, const
 
 void USD_read_geometry(CacheReader *reader,
                        const Object *ob,
-                       blender::bke::GeometrySet &geometry_set,
+                       bke::GeometrySet &geometry_set,
                        const USDMeshReadParams params,
                        const char **r_err_str)
 {
@@ -571,7 +572,7 @@ void USD_CacheReader_free(CacheReader *reader)
 
 CacheArchiveHandle *USD_create_handle(Main * /*bmain*/,
                                       const char *filepath,
-                                      ListBase *object_paths)
+                                      ListBaseT<CacheObjectPath> *object_paths)
 {
   pxr::UsdStageRefPtr stage = pxr::UsdStage::Open(filepath);
 

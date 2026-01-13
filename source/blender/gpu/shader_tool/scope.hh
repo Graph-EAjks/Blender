@@ -9,8 +9,8 @@
 
 #pragma once
 
-#include "parser.hh"
 #include "token.hh"
+#include "token_stream.hh"
 
 #include <cassert>
 
@@ -48,15 +48,18 @@ enum class ScopeType : char {
 };
 
 struct Scope {
+#ifdef NDEBUG
   /* String view for nicer debugging experience. Isn't actually used. */
   std::string_view token_view;
   std::string_view str_view;
+#endif
 
-  const Parser *data;
+  const TokenStream *data;
   int64_t index;
 
-  static Scope from_position(const Parser *data, int64_t index)
+  static Scope from_position(const TokenStream *data, int64_t index)
   {
+#ifdef NDEBUG
     IndexRange index_range = data->scope_ranges[index];
     int str_start = data->token_offsets[index_range.start].start;
     int str_end = data->token_offsets[index_range.last()].last();
@@ -64,11 +67,18 @@ struct Scope {
             std::string_view(data->str).substr(str_start, str_end - str_start + 1),
             data,
             index};
+#else
+    return {data, index};
+#endif
   }
 
   static Scope invalid()
   {
+#ifdef NDEBUG
     return {"", "", nullptr, 0};
+#else
+    return {nullptr, 0};
+#endif
   }
 
   bool is_valid() const
@@ -85,12 +95,14 @@ struct Scope {
     return is_invalid() ? Token::invalid() : Token::from_position(data, range().start + i);
   }
 
-  Token start() const
+  /* Return first token of that scope. */
+  Token front() const
   {
     return is_invalid() ? Token::invalid() : Token::from_position(data, range().start);
   }
 
-  Token end() const
+  /* Return last token of that scope. */
+  Token back() const
   {
     return is_invalid() ? Token::invalid() : Token::from_position(data, range().last());
   }
@@ -115,16 +127,23 @@ struct Scope {
     return is_invalid() ? ScopeType::Invalid : ScopeType(data->scope_types[index]);
   }
 
+  /* WORKAROUND: Only used for semantic tagging of scopes after parsing pass.
+   * The type is only retained until the next parsing pass. */
+  void set_type(ScopeType type)
+  {
+    const_cast<TokenStream *>(data)->scope_types[index] = char(type);
+  }
+
   /* Returns the scope that contains this scope. */
   Scope scope() const
   {
     if (is_invalid()) {
       return Scope::invalid();
     }
-    const size_t scope_start = this->start().str_index_start();
+    const size_t scope_start = this->front().str_index_start();
     Scope scope = *this;
     while ((scope = scope.prev()).is_valid()) {
-      if (scope.end().str_index_last() > scope_start) {
+      if (scope.back().str_index_last() > scope_start) {
         return scope;
       }
     }
@@ -135,14 +154,14 @@ struct Scope {
    * previous scope inside the same container. */
   Scope prev() const
   {
-    return is_invalid() ? Scope::invalid() : start().prev().scope();
+    return is_invalid() ? Scope::invalid() : front().prev().scope();
   }
 
   /* Returns the next scope after this scope. Can be either the container scope or the next scope
    * inside the same container. */
   Scope next() const
   {
-    return is_invalid() ? Scope::invalid() : end().next().scope();
+    return is_invalid() ? Scope::invalid() : back().next().scope();
   }
 
   bool contains(const Scope sub) const
@@ -154,13 +173,19 @@ struct Scope {
     return parent == *this;
   }
 
+  /* Returns true if scope contains the substring. */
+  bool contains(const std::string &str) const
+  {
+    return this->str().find(str) != std::string::npos;
+  }
+
   std::string str_with_whitespace() const
   {
     if (this->is_invalid()) {
       return "";
     }
-    return data->str.substr(start().str_index_start(),
-                            end().str_index_last() - start().str_index_start() + 1);
+    return data->str.substr(front().str_index_start(),
+                            back().str_index_last() - front().str_index_start() + 1);
   }
 
   std::string str() const
@@ -168,8 +193,8 @@ struct Scope {
     if (this->is_invalid()) {
       return "";
     }
-    return data->str.substr(start().str_index_start(),
-                            end().str_index_last_no_whitespace() - start().str_index_start() + 1);
+    return data->str.substr(front().str_index_start(),
+                            back().str_index_last_no_whitespace() - front().str_index_start() + 1);
   }
 
   /* Return the content without the first and last token. */
@@ -178,8 +203,8 @@ struct Scope {
     if (this->is_invalid() || this->token_count() <= 2) {
       return "";
     }
-    Token start = this->start().next();
-    Token end = this->end().prev();
+    Token start = this->front().next();
+    Token end = this->back().prev();
     return data->str.substr(start.str_index_start(),
                             end.str_index_last_no_whitespace() - start.str_index_start() + 1);
   }
@@ -265,7 +290,7 @@ struct Scope {
 
         /* Scope skipping. */
         if (!is_last_token && curr_search_token == '.' && next_search_token == '.') {
-          cursor = match[i - 1].scope().end().index;
+          cursor = match[i - 1].scope().back().index;
           i++;
           continue;
         }
@@ -310,7 +335,7 @@ struct Scope {
     size_t pos = this->index;
     while ((pos = data->scope_types.find(char(type), pos)) != std::string::npos) {
       Scope scope = Scope::from_position(data, pos);
-      if (scope.start().index > this->end().index) {
+      if (scope.front().index > this->back().index) {
         /* Found scope starts after this scope. End iteration. */
         break;
       }
@@ -333,10 +358,19 @@ struct Scope {
     });
   }
 
-  void foreach_token(const TokenType token_type, std::function<void(const Token)> callback) const
+  template<typename Callback>
+  void foreach_token(const TokenType token_type, Callback callback) const
   {
-    const char str[2] = {token_type, '\0'};
-    foreach_match(str, [&](const std::vector<Token> &tokens) { callback(tokens[0]); });
+    IndexRange index_range = data->scope_ranges[index];
+    std::string_view view(data->token_types);
+
+    size_t offset = index_range.start;
+    for (const char c : view.substr(index_range.start, index_range.size)) {
+      if (token_type == TokenType(c)) {
+        callback(Token::from_position(data, offset));
+      }
+      offset++;
+    }
   }
 
   /* Run a callback for all existing function scopes. */

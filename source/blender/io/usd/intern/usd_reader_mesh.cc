@@ -50,6 +50,9 @@
 #include <algorithm>
 
 #include "CLG_log.h"
+
+namespace blender {
+
 static CLG_LogRef LOG = {"io.usd"};
 
 namespace usdtokens {
@@ -58,7 +61,7 @@ static const pxr::TfToken st("st", pxr::TfToken::Immortal);
 static const pxr::TfToken normalsPrimvar("normals", pxr::TfToken::Immortal);
 }  // namespace usdtokens
 
-namespace blender::io::usd {
+namespace io::usd {
 
 namespace utils {
 
@@ -171,12 +174,12 @@ void USDMeshReader::create_object(Main *bmain)
   Mesh *mesh = BKE_mesh_add(bmain, name_.c_str());
 
   object_ = BKE_object_add_only_object(bmain, OB_MESH, name_.c_str());
-  object_->data = mesh;
+  object_->data = id_cast<ID *>(mesh);
 }
 
 void USDMeshReader::read_object_data(Main *bmain, const pxr::UsdTimeCode time)
 {
-  Mesh *mesh = (Mesh *)object_->data;
+  Mesh *mesh = id_cast<Mesh *>(object_->data);
 
   is_initial_load_ = true;
   const USDMeshReadParams params = create_mesh_read_params(time.GetValue(),
@@ -393,7 +396,7 @@ void USDMeshReader::read_uv_data_primvar(Mesh *mesh,
 
 void USDMeshReader::read_subdiv()
 {
-  ModifierData *md = (ModifierData *)(object_->modifiers.last);
+  ModifierData *md = static_cast<ModifierData *>(object_->modifiers.last);
   SubsurfModifierData *subdiv_data = reinterpret_cast<SubsurfModifierData *>(md);
 
   pxr::TfToken uv_smooth;
@@ -932,6 +935,20 @@ Mesh *USDMeshReader::read_mesh(Mesh *existing_mesh,
   settings.read_flag |= params.read_flags;
 
   if (topology_changed(existing_mesh, params.motion_sample_time)) {
+    /* Check if the topology makes sense. */
+    if (positions_.size() == 0) {
+      face_counts_.clear();
+      face_indices_.clear();
+    }
+    else {
+      const auto max_it = std::max_element(face_indices_.cbegin(), face_indices_.cend());
+      if (max_it == face_indices_.cend() || (*max_it + 1) > positions_.size()) {
+        positions_.clear();
+        face_counts_.clear();
+        face_indices_.clear();
+      }
+    }
+
     new_mesh = true;
     active_mesh = BKE_mesh_new_nomain_from_template(
         existing_mesh, positions_.size(), 0, face_counts_.size(), face_indices_.size());
@@ -1026,4 +1043,5 @@ std::optional<XformResult> USDMeshReader::get_local_usd_xform(const pxr::UsdTime
   return USDXformReader::get_local_usd_xform(time);
 }
 
-}  // namespace blender::io::usd
+}  // namespace io::usd
+}  // namespace blender

@@ -1,9 +1,9 @@
 
 msgid ""
 msgstr ""
-"Project-Id-Version: Blender 5.1.0 Alpha (b'7d4876cf0c11')\n"
+"Project-Id-Version: Blender 5.1.0 Alpha (b'12e628ea43f8')\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-16 11:27+0000\n"
+"POT-Creation-Date: 2026-01-12 15:09+0000\n"
 "PO-Revision-Date: 2025-07-23 15:08+0000\n"
 "Last-Translator: Bartosz <gang65@poczta.onet.pl>\n"
 "Language-Team: Ukrainian <https://translate.blender.org/projects/blender-ui/ui/uk/>\n"
@@ -26358,12 +26358,84 @@ msgid "Material slot name"
 msgstr "Назва гнізда матеріалу"
 
 
-msgid "Mirror"
-msgstr "Дзеркалення"
+msgid "Show/Hide"
+msgstr "Показати/приховати"
+
+
+msgid "Special Characters"
+msgstr "Спеціальні символи"
+
+
+msgid "Kerning"
+msgstr "Кернінг"
+
+
+msgid "Math"
+msgstr "Математика"
+
+
+msgid "Metaball"
+msgstr "Метакуля"
+
+
+msgid "Utilities"
+msgstr "Утиліти"
+
+
+msgid "Names"
+msgstr "Назви"
+
+
+msgid "Bone Roll"
+msgstr "Прокручення Кістки"
+
+
+msgid "Clean Up"
+msgstr "Вичищення"
+
+
+msgid "Sample"
+msgstr "Вибірка"
+
+
+msgid "Pivot Point"
+msgstr "Точка Опертя"
+
+
+msgid "Primitives"
+msgstr "Примітиви"
 
 
 msgid "Snap"
 msgstr "Підхоп"
+
+
+msgid "Proportional Editing Falloff"
+msgstr "Спад Пропорційного Редагування"
+
+
+msgid "Mask Edit"
+msgstr "Редагування Маски"
+
+
+msgid "Automasking"
+msgstr "Автомаскування"
+
+
+msgid "Face Sets Edit"
+msgstr "Редагування Наборів Граней"
+
+
+msgid "Vertex Group Locks"
+msgstr "Блокування Груп Вершин"
+
+
+msgid "Import"
+msgstr "Імпортувати"
+
+
+msgid "Mirror"
+msgstr "Дзеркалення"
 
 
 msgid "UV Mapping"
@@ -26380,6 +26452,10 @@ msgstr "Точка зору"
 
 msgid "Navigation"
 msgstr "Навігація"
+
+
+msgid "UV"
+msgstr "UV"
 
 
 msgid "Align View"
@@ -26418,14 +26494,6 @@ msgid "Assign Material"
 msgstr "Призначити Матеріал"
 
 
-msgid "Metaball"
-msgstr "Метакуля"
-
-
-msgid "Layout"
-msgstr "Розстановка"
-
-
 msgid "Light"
 msgstr "Слабко"
 
@@ -26446,40 +26514,16 @@ msgid "Rigid Body"
 msgstr "Тверде тіло"
 
 
-msgid "Keying"
-msgstr "Ключування"
-
-
 msgid "Apply"
 msgstr "Застосувати"
-
-
-msgid "Tracking"
-msgstr "Стеження"
 
 
 msgid "Track"
 msgstr "Стеження"
 
 
-msgid "Utilities"
-msgstr "Утиліти"
-
-
-msgid "Math"
-msgstr "Математика"
-
-
 msgid "Quick Effects"
 msgstr "Швидкі ефекти"
-
-
-msgid "Show/Hide"
-msgstr "Показати/приховати"
-
-
-msgid "Clean Up"
-msgstr "Вичищення"
 
 
 msgid "Asset"
@@ -26502,8 +26546,8 @@ msgid "Hooks"
 msgstr "Гачки"
 
 
-msgid "Vertex Group Locks"
-msgstr "Блокування Груп Вершин"
+msgid "Layout"
+msgstr "Розстановка"
 
 
 msgid "Sculpt Set Pivot"
@@ -26526,8 +26570,12 @@ msgid "Propagate"
 msgstr "Поширити"
 
 
-msgid "Names"
-msgstr "Назви"
+msgid "Keying"
+msgstr "Ключування"
+
+
+msgid "Tracking"
+msgstr "Стеження"
 
 
 msgid "Toggle Bone Options"
@@ -26560,54 +26608,6 @@ msgstr "Задати Силу Грані"
 
 msgid "Merge"
 msgstr "Об'єднання"
-
-
-msgid "Sample"
-msgstr "Вибірка"
-
-
-msgid "Primitives"
-msgstr "Примітиви"
-
-
-msgid "Special Characters"
-msgstr "Спеціальні символи"
-
-
-msgid "Kerning"
-msgstr "Кернінг"
-
-
-msgid "Bone Roll"
-msgstr "Прокручення Кістки"
-
-
-msgid "Import"
-msgstr "Імпортувати"
-
-
-msgid "Pivot Point"
-msgstr "Точка Опертя"
-
-
-msgid "UV"
-msgstr "UV"
-
-
-msgid "Proportional Editing Falloff"
-msgstr "Спад Пропорційного Редагування"
-
-
-msgid "Mask Edit"
-msgstr "Редагування Маски"
-
-
-msgid "Automasking"
-msgstr "Автомаскування"
-
-
-msgid "Face Sets Edit"
-msgstr "Редагування Наборів Граней"
 
 
 msgid "Basic"
@@ -55394,10 +55394,6 @@ msgid "Project the geometry onto a plane defined by a line"
 msgstr "Проєктувати геометрію на площину, визначену лінією"
 
 
-msgid "Sample the vertex color of the active vertex"
-msgstr "Відібрати колір вершин з активної вершини"
-
-
 msgctxt "Operator"
 msgid "Sample Detail Size"
 msgstr "Вибірка розміру деталі"
@@ -60931,6 +60927,30 @@ msgid "Panel containing UI elements"
 msgstr "Панель, що містить елементи Інтерфейсу Користувача"
 
 
+msgid "Active Tool"
+msgstr "Активний Засіб"
+
+
+msgid "View Lock"
+msgstr "Блокувати Огляд"
+
+
+msgid "Shadow Settings"
+msgstr "Устави Тіні"
+
+
+msgid "SSAO Settings"
+msgstr "Устави Загороди Оточення Простору Екрану"
+
+
+msgid "Cavity"
+msgstr "Порожнинність"
+
+
+msgid "Render Pass"
+msgstr "Прохід Рендера"
+
+
 msgid "Overlays"
 msgstr "Накладки"
 
@@ -60989,30 +61009,6 @@ msgstr "Авто-Маскування"
 
 msgid "VR"
 msgstr "ВР"
-
-
-msgid "Active Tool"
-msgstr "Активний Засіб"
-
-
-msgid "View Lock"
-msgstr "Блокувати Огляд"
-
-
-msgid "Shadow Settings"
-msgstr "Устави Тіні"
-
-
-msgid "SSAO Settings"
-msgstr "Устави Загороди Оточення Простору Екрану"
-
-
-msgid "Cavity"
-msgstr "Порожнинність"
-
-
-msgid "Render Pass"
-msgstr "Прохід Рендера"
 
 
 msgid "Chain Scaling"
@@ -64164,10 +64160,6 @@ msgstr "При уведенні чисел у ході трансформува�
 
 msgid "Orbit Around Selection"
 msgstr "Обліт Навколо Вибрання"
-
-
-msgid "Use selection as the pivot point"
-msgstr "Використати вибране, як опорну точку"
 
 
 msgid "Zoom to Mouse Position"
@@ -82385,6 +82377,18 @@ msgid "ParticleSettings"
 msgstr "ПараметриЧастинок"
 
 
+msgid "Object was not yet evaluated"
+msgstr "Об'єкт ще не було обчислено"
+
+
+msgid "Mesh has no UV data"
+msgstr "Сіть не має даних UV"
+
+
+msgid "Mesh has no VCol data"
+msgstr "Сіть не має даних про колір вершин"
+
+
 msgid "%i frames found!"
 msgstr "%i кадрів знайдено!"
 
@@ -85793,10 +85797,6 @@ msgid "Videos"
 msgstr "Відео"
 
 
-msgid "Movies"
-msgstr "Фільми"
-
-
 msgid "Cursor X"
 msgstr "Курсор X"
 
@@ -86220,10 +86220,6 @@ msgstr "Потрібно вибрати принаймні дві сусідні
 
 msgid "Cannot swap selected strips as they will not be able to fit in their new places"
 msgstr "Неможливо обміняти вибрані смужки, бо вони не помістяться на нових місцях"
-
-
-msgid "Action '%s' does not specify what data-blocks it can be used on (try setting the 'ID Root Type' setting from the data-blocks editor for this action to avoid future problems)"
-msgstr "Для дії '%s' не визначені блоки даних, з якими воно може використовуватися (спробуйте встановити тип кореневого ID 'ID Root Type' у редакторі блоків даних для цієї дії, щоб уникнути проблем у майбутньому)"
 
 
 msgid "Could not add action '%s' as it cannot be used relative to ID-blocks of type '%s'"
@@ -87814,18 +87810,6 @@ msgstr "Палітра '%s' не містить даного кольору"
 
 msgid "uv_on_emitter() requires a modifier from an evaluated object"
 msgstr "uv_on_emitter() вимагає модифікатор з обчисленого об'єкта"
-
-
-msgid "Mesh has no UV data"
-msgstr "Сіть не має даних UV"
-
-
-msgid "Object was not yet evaluated"
-msgstr "Об'єкт ще не було обчислено"
-
-
-msgid "Mesh has no VCol data"
-msgstr "Сіть не має даних про колір вершин"
 
 
 msgid "Constraint '%s' not found in pose bone '%s'"

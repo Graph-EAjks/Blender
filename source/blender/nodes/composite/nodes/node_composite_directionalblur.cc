@@ -18,7 +18,9 @@
 
 #include "node_composite_util.hh"
 
-namespace blender::nodes::node_composite_directionalblur_cc {
+namespace blender {
+
+namespace nodes::node_composite_directionalblur_cc {
 
 static void cmp_node_directional_blur_declare(NodeDeclarationBuilder &b)
 {
@@ -250,50 +252,49 @@ class DirectionalBlurOperation : public NodeOperation {
 
   int get_samples()
   {
-    return math::clamp(this->get_input("Samples").get_single_value_default(1), 1, 29);
+    return math::clamp(this->get_input("Samples").get_single_value_default<int>(), 1, 29);
   }
 
   float2 get_center()
   {
-    return math::clamp(this->get_input("Center").get_single_value_default(float2(0.5f)),
-                       float2(0.0f),
-                       float2(1.0f));
+    return math::clamp(
+        this->get_input("Center").get_single_value_default<float2>(), float2(0.0f), float2(1.0f));
   }
 
   float get_translation_amount()
   {
     return math::clamp(
-        this->get_input("Translation Amount").get_single_value_default(0.0f), -1.0f, 1.0f);
+        this->get_input("Translation Amount").get_single_value_default<float>(), -1.0f, 1.0f);
   }
 
   float get_translation_direction()
   {
-    return this->get_input("Translation Direction").get_single_value_default(0.0f);
+    return this->get_input("Translation Direction").get_single_value_default<float>();
   }
 
   float get_rotation()
   {
-    return this->get_input("Rotation").get_single_value_default(0.0f);
+    return this->get_input("Rotation").get_single_value_default<float>();
   }
 
   float get_scale()
   {
-    return math::max(10e-6f, this->get_input("Scale").get_single_value_default(1.0f));
+    return math::max(10e-6f, this->get_input("Scale").get_single_value_default<float>());
   }
 };
 
-static NodeOperation *get_compositor_operation(Context &context, DNode node)
+static NodeOperation *get_compositor_operation(Context &context, const bNode &node)
 {
   return new DirectionalBlurOperation(context, node);
 }
 
-}  // namespace blender::nodes::node_composite_directionalblur_cc
+}  // namespace nodes::node_composite_directionalblur_cc
 
 static void register_node_type_cmp_dblur()
 {
-  namespace file_ns = blender::nodes::node_composite_directionalblur_cc;
+  namespace file_ns = nodes::node_composite_directionalblur_cc;
 
-  static blender::bke::bNodeType ntype;
+  static bke::bNodeType ntype;
 
   cmp_node_type_base(&ntype, "CompositorNodeDBlur", CMP_NODE_DBLUR);
   ntype.ui_name = "Directional Blur";
@@ -303,6 +304,8 @@ static void register_node_type_cmp_dblur()
   ntype.declare = file_ns::cmp_node_directional_blur_declare;
   ntype.get_compositor_operation = file_ns::get_compositor_operation;
 
-  blender::bke::node_register_type(ntype);
+  bke::node_register_type(ntype);
 }
 NOD_REGISTER_NODE(register_node_type_cmp_dblur)
+
+}  // namespace blender

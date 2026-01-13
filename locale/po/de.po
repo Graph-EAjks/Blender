@@ -1,9 +1,9 @@
 
 msgid ""
 msgstr ""
-"Project-Id-Version: Blender 5.1.0 Alpha (b'7d4876cf0c11')\n"
+"Project-Id-Version: Blender 5.1.0 Alpha (b'12e628ea43f8')\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-16 11:27+0000\n"
+"POT-Creation-Date: 2026-01-12 15:09+0000\n"
 "PO-Revision-Date: 2025-12-02 20:06+0000\n"
 "Last-Translator: Bastitron <bastitronhd@gmail.com>\n"
 "Language-Team: German <https://translate.blender.org/projects/blender-ui/ui/de/>\n"
@@ -18714,12 +18714,80 @@ msgid "Material slot name"
 msgstr "Materialsteckplatzname"
 
 
-msgid "Mirror"
-msgstr "Spiegeln"
+msgid "Show/Hide"
+msgstr "Zeigen/Verbergen"
+
+
+msgid "Special Characters"
+msgstr "Sonderzeichen"
+
+
+msgid "Kerning"
+msgstr "Kerning"
+
+
+msgid "Math"
+msgstr "Mathematisch"
+
+
+msgid "Metaball"
+msgstr "Metaball"
+
+
+msgid "Names"
+msgstr "Namen"
+
+
+msgid "Clean Up"
+msgstr "Aufräumen"
+
+
+msgid "Read"
+msgstr "Lesen"
+
+
+msgid "Sample"
+msgstr "Beispiel"
+
+
+msgid "Write"
+msgstr "Schreiben"
+
+
+msgid "Pivot Point"
+msgstr "Drehpunkt"
+
+
+msgid "Primitives"
+msgstr "Grundkörper"
 
 
 msgid "Snap"
 msgstr "Einrasten"
+
+
+msgid "Proportional Editing Falloff"
+msgstr "Proportionaler Bearbeitungsabfall"
+
+
+msgid "Mask Edit"
+msgstr "Maskenbearbeitung"
+
+
+msgid "Vertex Group Locks"
+msgstr "Punktgruppen sperren"
+
+
+msgid "Instances"
+msgstr "Instanzen"
+
+
+msgid "Import"
+msgstr "Importieren"
+
+
+msgid "Mirror"
+msgstr "Spiegeln"
 
 
 msgid "Local View"
@@ -18732,6 +18800,10 @@ msgstr "Ansicht"
 
 msgid "Navigation"
 msgstr "Navigation"
+
+
+msgid "UV"
+msgstr "UV"
 
 
 msgid "Align View"
@@ -18770,14 +18842,6 @@ msgid "Assign Material"
 msgstr "Material zuweisen"
 
 
-msgid "Metaball"
-msgstr "Metaball"
-
-
-msgid "Layout"
-msgstr "Layout"
-
-
 msgid "Light"
 msgstr "Licht"
 
@@ -18798,36 +18862,16 @@ msgid "Rigid Body"
 msgstr "Rigid Body"
 
 
-msgid "Keying"
-msgstr "Schlüsselbilder"
-
-
 msgid "Apply"
 msgstr "Anwenden"
-
-
-msgid "Tracking"
-msgstr "Verfolgen"
 
 
 msgid "Track"
 msgstr "Spur"
 
 
-msgid "Math"
-msgstr "Mathematisch"
-
-
 msgid "Quick Effects"
 msgstr "Schnelle Effekte"
-
-
-msgid "Show/Hide"
-msgstr "Zeigen/Verbergen"
-
-
-msgid "Clean Up"
-msgstr "Aufräumen"
 
 
 msgid "Asset"
@@ -18846,8 +18890,8 @@ msgid "Hooks"
 msgstr "Haken"
 
 
-msgid "Vertex Group Locks"
-msgstr "Punktgruppen sperren"
+msgid "Layout"
+msgstr "Layout"
 
 
 msgid "Random Mask"
@@ -18862,8 +18906,12 @@ msgid "In-Betweens"
 msgstr "Dazwischen"
 
 
-msgid "Names"
-msgstr "Namen"
+msgid "Keying"
+msgstr "Schlüsselbilder"
+
+
+msgid "Tracking"
+msgstr "Verfolgen"
 
 
 msgid "Toggle Bone Options"
@@ -18888,54 +18936,6 @@ msgstr "Flächendaten"
 
 msgid "Merge"
 msgstr "Zusammenführen"
-
-
-msgid "Read"
-msgstr "Lesen"
-
-
-msgid "Sample"
-msgstr "Beispiel"
-
-
-msgid "Write"
-msgstr "Schreiben"
-
-
-msgid "Primitives"
-msgstr "Grundkörper"
-
-
-msgid "Special Characters"
-msgstr "Sonderzeichen"
-
-
-msgid "Kerning"
-msgstr "Kerning"
-
-
-msgid "Instances"
-msgstr "Instanzen"
-
-
-msgid "Import"
-msgstr "Importieren"
-
-
-msgid "Pivot Point"
-msgstr "Drehpunkt"
-
-
-msgid "UV"
-msgstr "UV"
-
-
-msgid "Proportional Editing Falloff"
-msgstr "Proportionaler Bearbeitungsabfall"
-
-
-msgid "Mask Edit"
-msgstr "Maskenbearbeitung"
 
 
 msgid "Assets"
@@ -38903,6 +38903,34 @@ msgid "Active Palette Color"
 msgstr "Aktive Farbpalette"
 
 
+msgid "Active Tool"
+msgstr "Aktives Werkzeug"
+
+
+msgid "View Lock"
+msgstr "Ansicht sperren"
+
+
+msgid "Shadow Settings"
+msgstr "Schatteneinstellungen"
+
+
+msgid "SSAO Settings"
+msgstr "SSAO Einstellungen"
+
+
+msgid "Cavity"
+msgstr "Hohlraum"
+
+
+msgid "Render Pass"
+msgstr "Renderdurchgänge"
+
+
+msgid "Compositor"
+msgstr "Setzer"
+
+
 msgid "Overlays"
 msgstr "Überlagerungen"
 
@@ -38953,34 +38981,6 @@ msgstr "Automatisches Maskieren"
 
 msgid "VR"
 msgstr "VR"
-
-
-msgid "Active Tool"
-msgstr "Aktives Werkzeug"
-
-
-msgid "View Lock"
-msgstr "Ansicht sperren"
-
-
-msgid "Shadow Settings"
-msgstr "Schatteneinstellungen"
-
-
-msgid "SSAO Settings"
-msgstr "SSAO Einstellungen"
-
-
-msgid "Cavity"
-msgstr "Hohlraum"
-
-
-msgid "Render Pass"
-msgstr "Renderdurchgänge"
-
-
-msgid "Compositor"
-msgstr "Setzer"
 
 
 msgid "Chain Scaling"
@@ -41242,10 +41242,6 @@ msgstr "Wenn Sie Zahlen während der Transformation eingeben, verwenden Sie stan
 
 msgid "Orbit Around Selection"
 msgstr "Umlaufbahn um die Auswahl"
-
-
-msgid "Use selection as the pivot point"
-msgstr "Auswahl als Drehpunkt verwenden"
 
 
 msgid "Zoom to Mouse Position"
@@ -53737,6 +53733,14 @@ msgid "ParticleSettings"
 msgstr "Partikeleinstellungen"
 
 
+msgid "Mesh has no UV data"
+msgstr "Masche hat keine UV Daten"
+
+
+msgid "Mesh has no VCol data"
+msgstr "Masche hat keine VCol Daten"
+
+
 msgid "%i points found!"
 msgstr "%i Punkte gefunden!"
 
@@ -55980,10 +55984,6 @@ msgid "Videos"
 msgstr "Videos"
 
 
-msgid "Movies"
-msgstr "Filme"
-
-
 msgid "Cursor X"
 msgstr "Cursor X"
 
@@ -57076,14 +57076,6 @@ msgstr "Falscher Knotentindex in der Liste"
 
 msgid "Object %s not in view layer %s"
 msgstr "Objekt %s nicht in Der Ansichtsebene %s"
-
-
-msgid "Mesh has no UV data"
-msgstr "Masche hat keine UV Daten"
-
-
-msgid "Mesh has no VCol data"
-msgstr "Masche hat keine VCol Daten"
 
 
 msgid "Keying set could not be added"

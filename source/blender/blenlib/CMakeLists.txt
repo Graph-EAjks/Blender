@@ -99,6 +99,7 @@ set(SRC
   intern/math_color.cc
   intern/math_color_blend_inline.cc
   intern/math_color_inline.cc
+  intern/math_filter.cc
   intern/math_geom.cc
   intern/math_geom_inline.cc
   intern/math_half.cc
@@ -283,6 +284,7 @@ set(SRC
   BLI_linklist_lockfree.h
   BLI_linklist_stack.h
   BLI_listbase.h
+  BLI_listbase_iterator.hh
   BLI_listbase_wrapper.hh
   BLI_map.hh
   BLI_map_slots.hh
@@ -301,6 +303,7 @@ set(SRC
   BLI_math_constants.h
   BLI_math_euler.hh
   BLI_math_euler_types.hh
+  BLI_math_filter.hh
   BLI_math_geom.h
   BLI_math_half.hh
   BLI_math_inline.h

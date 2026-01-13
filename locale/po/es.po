@@ -1,10 +1,10 @@
 
 msgid ""
 msgstr ""
-"Project-Id-Version: Blender 5.1.0 Alpha (b'7d4876cf0c11')\n"
+"Project-Id-Version: Blender 5.1.0 Alpha (b'12e628ea43f8')\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-16 11:27+0000\n"
-"PO-Revision-Date: 2025-12-10 00:12+0000\n"
+"POT-Creation-Date: 2026-01-12 15:09+0000\n"
+"PO-Revision-Date: 2025-12-24 04:06+0000\n"
 "Last-Translator: Gabriel Gazzán <gabcorreo@gmail.com>\n"
 "Language-Team: Spanish <https://translate.blender.org/projects/blender-ui/ui/es/>\n"
 "Language: es\n"
@@ -13255,6 +13255,22 @@ msgid "Lowest Quality"
 msgstr "Ínfima"
 
 
+msgid "Custom Quality"
+msgstr "Personalizada"
+
+
+msgid "Set a custom Constant Rate Factor (CRF)."
+msgstr "Permite definir una tasa de bits constante personalizada (TBC)."
+
+
+msgid "CRF"
+msgstr "TBC"
+
+
+msgid "A smaller Constant Rate Factor (CRF) results in better video quality but larger file size. The range of allowed CRF values is dependent on the codec."
+msgstr "Una tasa de bits constante (TBC) más pequeña producirá un video de mejor calidad, aunque de mayor tamaño. El rango de TBC permitidas dependerá del compresor escogido."
+
+
 msgid "Encoding Speed"
 msgstr "Velocidad de codificación"
 
@@ -18550,16 +18566,8 @@ msgid "Is Layered Action"
 msgstr "Es acción con capas"
 
 
-msgid "Return whether this is a layered Action. An empty Action is considered as both a 'legacy' and a 'layered' Action."
-msgstr "Indica si esta es una acción con capas. Una acción vacía será considerada tanto 'con capas' como 'sin capas'."
-
-
 msgid "Is Legacy Action"
 msgstr "Es acción antigua"
-
-
-msgid "Return whether this is a legacy Action. Legacy Actions have no layers or slots. An empty Action is considered as both a 'legacy' and a 'layered' Action. Since Blender 4.4 actions are automatically updated to layered actions, and thus this will only return True when the action is empty"
-msgstr "Indica si se trata de una acción antigua o no. Las acciones antiguas no contienen capas ni contenedores. Una acción vacía será considerada tanto una acción 'antigua' como una 'con capas'. A partir de Blender 4.4 las acciones serán actualizadas automáticamente a acciones con capas, por lo tanto esta salida sólo será verdadera cuando la acción se encuentre vacía"
 
 
 msgid "Is Empty"
@@ -19352,7 +19360,7 @@ msgstr "Preajuste de curva de decaimiento"
 
 msgctxt "Curve"
 msgid "Custom"
-msgstr "Personalizada"
+msgstr "Personalizado"
 
 
 msgctxt "Curve"
@@ -20363,18 +20371,6 @@ msgstr "Espaciado entre las marcas del pincel, como porcentaje de su diámetro"
 
 msgid "Stabilize Normal"
 msgstr "Estabilizar normal"
-
-
-msgid "Stabilize the orientation of the brush plane."
-msgstr "Estabiliza la orientación del plano del pincel."
-
-
-msgid "Stabilize Plane"
-msgstr "Estabilizar plano"
-
-
-msgid "Stabilize the center of the brush plane."
-msgstr "Estabiliza el centro del plano del pincel."
 
 
 msgid "Stencil Dimensions"
@@ -34918,12 +34914,104 @@ msgid "Editor menu containing buttons"
 msgstr "Menú del editor que contiene botones"
 
 
-msgid "Mirror"
-msgstr "Simetrizar"
+msgid "Show/Hide"
+msgstr "Mostrar / Ocultar"
+
+
+msgid "Special Characters"
+msgstr "Caracteres especiales"
+
+
+msgid "Kerning"
+msgstr "Espaciado"
+
+
+msgid "Math"
+msgstr "Operar"
+
+
+msgid "Metaball"
+msgstr "Metabola"
+
+
+msgid "Utilities"
+msgstr "Utilitarios"
+
+
+msgid "Names"
+msgstr "Nombres"
+
+
+msgid "Bone Roll"
+msgstr "Giro de huesos"
+
+
+msgid "Clean Up"
+msgstr "Limpiar"
+
+
+msgid "Read"
+msgstr "Lectura"
+
+
+msgid "Sample"
+msgstr "Muestreo"
+
+
+msgid "Write"
+msgstr "Escritura"
+
+
+msgid "Pivot Point"
+msgstr "Punto de pivote"
+
+
+msgid "Primitives"
+msgstr "Primitivas"
 
 
 msgid "Snap"
 msgstr "Adherir"
+
+
+msgid "Proportional Editing Falloff"
+msgstr "Decaimiento de edición proporcional"
+
+
+msgid "Mask Edit"
+msgstr "Edición de máscara"
+
+
+msgid "Automasking"
+msgstr "Autoenmascarar"
+
+
+msgid "Face Sets Edit"
+msgstr "Edición de conjuntos de caras"
+
+
+msgid "Vertex Group Locks"
+msgstr "Bloqueos de grupo de vértices"
+
+
+msgid "Gizmo"
+msgstr "Manipulador"
+
+
+msgid "Instances"
+msgstr "Instancias"
+
+
+msgid "Import"
+msgstr "Importar"
+
+
+msgid "Deprecated"
+msgstr "Obsoleto"
+
+
+msgid "Mirror"
+msgstr "Simetrizar"
 
 
 msgid "UV Mapping"
@@ -34934,12 +35022,20 @@ msgid "Local View"
 msgstr "Vista local"
 
 
+msgid "List"
+msgstr "Lista"
+
+
 msgid "Viewpoint"
 msgstr "Punto de vista"
 
 
 msgid "Navigation"
 msgstr "Navegación"
+
+
+msgid "UV"
+msgstr "UV"
 
 
 msgid "Align View"
@@ -34978,14 +35074,6 @@ msgid "Assign Material"
 msgstr "Asignar material"
 
 
-msgid "Metaball"
-msgstr "Metabola"
-
-
-msgid "Layout"
-msgstr "Organizar"
-
-
 msgid "Light"
 msgstr "Luz"
 
@@ -35002,52 +35090,20 @@ msgid "Relations"
 msgstr "Relaciones"
 
 
-msgid "Adjust"
-msgstr "Ajustar"
-
-
 msgid "Rigid Body"
 msgstr "Cuerpo rígido"
-
-
-msgid "Keying"
-msgstr "Recortar"
 
 
 msgid "Apply"
 msgstr "Aplicar"
 
 
-msgid "Tracking"
-msgstr "Rastreo"
-
-
 msgid "Track"
 msgstr "Rastrear"
 
 
-msgid "Utilities"
-msgstr "Utilitarios"
-
-
-msgid "Math"
-msgstr "Operar"
-
-
 msgid "Quick Effects"
 msgstr "Efectos rápidos"
-
-
-msgid "Creative"
-msgstr "Creatividad"
-
-
-msgid "Show/Hide"
-msgstr "Mostrar / Ocultar"
-
-
-msgid "Clean Up"
-msgstr "Limpiar"
 
 
 msgid "Asset"
@@ -35070,16 +35126,12 @@ msgid "Hooks"
 msgstr "Asignar gancho"
 
 
-msgid "Vertex Group Locks"
-msgstr "Bloqueos de grupo de vértices"
+msgid "Layout"
+msgstr "Organizar"
 
 
 msgid "Trim/Add"
 msgstr "Recortar / Agregar"
-
-
-msgid "Render Preview"
-msgstr "Procesar previsualización"
 
 
 msgid "Sculpt Set Pivot"
@@ -35098,6 +35150,10 @@ msgid "Clear Transform"
 msgstr "Restablecer transformación"
 
 
+msgid "Adjust"
+msgstr "Ajustar"
+
+
 msgid "In-Betweens"
 msgstr "Intermedios"
 
@@ -35110,12 +35166,20 @@ msgid "Bone Collections"
 msgstr "Colecciones de huesos"
 
 
-msgid "Names"
-msgstr "Nombres"
+msgid "Keying"
+msgstr "Recortar"
+
+
+msgid "Tracking"
+msgstr "Rastreo"
 
 
 msgid "Toggle Bone Options"
 msgstr "Alternar opciones de huesos"
+
+
+msgid "Creative"
+msgstr "Creatividad"
 
 
 msgid "Enable Bone Options"
@@ -35142,80 +35206,12 @@ msgid "Set Face Strength"
 msgstr "Definir intensidad de caras"
 
 
+msgid "Render Preview"
+msgstr "Procesar previsualización"
+
+
 msgid "Merge"
 msgstr "Fusionar"
-
-
-msgid "Read"
-msgstr "Lectura"
-
-
-msgid "Sample"
-msgstr "Muestreo"
-
-
-msgid "Write"
-msgstr "Escritura"
-
-
-msgid "Primitives"
-msgstr "Primitivas"
-
-
-msgid "Special Characters"
-msgstr "Caracteres especiales"
-
-
-msgid "Kerning"
-msgstr "Espaciado"
-
-
-msgid "Gizmo"
-msgstr "Manipulador"
-
-
-msgid "Instances"
-msgstr "Instancias"
-
-
-msgid "Bone Roll"
-msgstr "Giro de huesos"
-
-
-msgid "Import"
-msgstr "Importar"
-
-
-msgid "Deprecated"
-msgstr "Obsoleto"
-
-
-msgid "List"
-msgstr "Lista"
-
-
-msgid "Pivot Point"
-msgstr "Punto de pivote"
-
-
-msgid "UV"
-msgstr "UV"
-
-
-msgid "Proportional Editing Falloff"
-msgstr "Decaimiento de edición proporcional"
-
-
-msgid "Mask Edit"
-msgstr "Edición de máscara"
-
-
-msgid "Automasking"
-msgstr "Autoenmascarar"
-
-
-msgid "Face Sets Edit"
-msgstr "Edición de conjuntos de caras"
 
 
 msgid "Keyframe Insert Pie"
@@ -54056,13 +54052,8 @@ msgstr "Importar secuencia de imágenes"
 
 
 msgctxt "Operator"
-msgid "Texture Setup"
-msgstr "Configurar textura"
-
-
-msgctxt "Operator"
-msgid "Principled Texture Setup"
-msgstr "Configurar textura a Principista"
+msgid "Add Texture Setup"
+msgstr "Agregar textura a sombreador"
 
 
 msgid "Align selected nodes in a grid pattern"
@@ -56918,15 +56909,6 @@ msgstr "Sólo no usado"
 
 msgid "Only unused (Fake User only) actions get considered"
 msgstr "Sólo se consideran las acciones no usadas (Usuario ficticio)"
-
-
-msgctxt "Operator"
-msgid "Convert Legacy Action"
-msgstr "Convertir acción antigua"
-
-
-msgid "Convert a legacy Action to a layered Action on the active object"
-msgstr "Convierte una acción antigua en una acción con capas, en el objeto activo"
 
 
 msgctxt "Operator"
@@ -82327,10 +82309,6 @@ msgid "Project the geometry onto a plane defined by a line"
 msgstr "Proyecta la geometría sobre un plano definido mediante una línea"
 
 
-msgid "Sample the vertex color of the active vertex"
-msgstr "Toma una muestra del color del vértice activo"
-
-
 msgctxt "Operator"
 msgid "Sample Detail Size"
 msgstr "Muestrear tamaño del detalle"
@@ -91574,6 +91552,58 @@ msgid "Panel containing UI elements"
 msgstr "Panel que contiene elementos de la interfaz"
 
 
+msgid "glTF Variants"
+msgstr "Variantes glTF"
+
+
+msgid "glTF Material Variants"
+msgstr "Variantes de material glTF"
+
+
+msgid "glTF"
+msgstr "glTF"
+
+
+msgid "glTF Animations"
+msgstr "Animaciones glTF"
+
+
+msgid "Active Tool"
+msgstr "Herramienta activa"
+
+
+msgid "View Lock"
+msgstr "Fijar vista"
+
+
+msgid "Selectability & Visibility"
+msgstr "Seleccionabilidad y visibilidad"
+
+
+msgid "Wireframe Color"
+msgstr "Color de estructuras"
+
+
+msgid "Shadow Settings"
+msgstr "Opciones de sombras"
+
+
+msgid "SSAO Settings"
+msgstr "Opciones OAEP"
+
+
+msgid "Cavity"
+msgstr "Cavidades"
+
+
+msgid "Render Pass"
+msgstr "Pasada de procesamiento"
+
+
+msgid "Compositor"
+msgstr "Nodos de composición"
+
+
 msgid "Overlays"
 msgstr "Sobreimpresos"
 
@@ -91664,58 +91694,6 @@ msgstr "RV"
 
 msgid "VR Info"
 msgstr "Info de RV"
-
-
-msgid "glTF Variants"
-msgstr "Variantes glTF"
-
-
-msgid "glTF Material Variants"
-msgstr "Variantes de material glTF"
-
-
-msgid "glTF"
-msgstr "glTF"
-
-
-msgid "glTF Animations"
-msgstr "Animaciones glTF"
-
-
-msgid "Active Tool"
-msgstr "Herramienta activa"
-
-
-msgid "View Lock"
-msgstr "Fijar vista"
-
-
-msgid "Selectability & Visibility"
-msgstr "Seleccionabilidad y visibilidad"
-
-
-msgid "Wireframe Color"
-msgstr "Color de estructuras"
-
-
-msgid "Shadow Settings"
-msgstr "Opciones de sombras"
-
-
-msgid "SSAO Settings"
-msgstr "Opciones OAEP"
-
-
-msgid "Cavity"
-msgstr "Cavidades"
-
-
-msgid "Render Pass"
-msgstr "Pasada de procesamiento"
-
-
-msgid "Compositor"
-msgstr "Nodos de composición"
 
 
 msgid "Import Settings"
@@ -96042,10 +96020,6 @@ msgid "Orbit Around Selection"
 msgstr "Orbitar en torno a selección"
 
 
-msgid "Use selection as the pivot point"
-msgstr "Usa la selección como punto de pivote"
-
-
 msgid "Zoom to Mouse Position"
 msgstr "Ampliar hacia posición del ratón"
 
@@ -96950,14 +96924,6 @@ msgid "Chinese (Traditional) - 繁體中文"
 msgstr "Chino (tradicional) - 繁體中文"
 
 
-msgid "Croatian - Hrvatski"
-msgstr "Croata - Hrvatski"
-
-
-msgid "Locale code: hr_HR. Translation progress: 0%"
-msgstr "Código de localización: hr_HR. Progreso de la traducción: 0%"
-
-
 msgid "Czech - Čeština"
 msgstr "Checo - Čeština"
 
@@ -97038,14 +97004,6 @@ msgid "Locale code: el_GR. Translation progress: 1%"
 msgstr "Código de localización: el_GR. Progreso de la traducción: 1%"
 
 
-msgid "Hausa - Hausa"
-msgstr "Hausa - Hausa"
-
-
-msgid "Locale code: ha. Translation progress: 0%"
-msgstr "Código de localización: ha. Progreso de la traducción: 0%"
-
-
 msgid "Hebrew - תירִבְעִ"
 msgstr "Hebreo - תירִבְעִ"
 
@@ -97074,16 +97032,8 @@ msgid "Indonesian - Bahasa indonesia"
 msgstr "Indonesio - Bahasa indonesia"
 
 
-msgid "Locale code: id_ID. Translation progress: 21%"
-msgstr "Código de localización: id_ID. Progreso de la traducción: 21%"
-
-
 msgid "Italian - Italiano"
 msgstr "Italiano - Italiano"
-
-
-msgid "Locale code: it_IT. Translation progress: 45%"
-msgstr "Código de localización: it_IT. Progreso de la traducción: 45%"
 
 
 msgid "Japanese - 日本語"
@@ -97092,14 +97042,6 @@ msgstr "Japonés - 日本語"
 
 msgid "Locale code: ja_JP. Translation progress: 99%"
 msgstr "Código de localización: ja_JP. Progreso de la traducción: 99%"
-
-
-msgid "Khmer - ខ្មែរ"
-msgstr "Camboyano - ខ្មែរ"
-
-
-msgid "Locale code: km. Translation progress: 0%"
-msgstr "Código de localización: km. Progreso de la traducción: 0%"
 
 
 msgid "Korean - 한국어"
@@ -97134,14 +97076,6 @@ msgid "Locale code: ml. Translation progress: 0%"
 msgstr "Código de localización: ml. Progreso de la traducción: 0%"
 
 
-msgid "Nepali - नेपाली"
-msgstr "Nepalés - नेपाली"
-
-
-msgid "Locale code: ne_NP. Translation progress: 0%"
-msgstr "Código de localización: ne_NP. Progreso de la traducción: 0%"
-
-
 msgid "Norwegian (Bokmål) - Norsk bokmål"
 msgstr "Noruego (Bokmål) - Norsk bokmål"
 
@@ -97158,20 +97092,12 @@ msgid "Polish - Polski"
 msgstr "Polaco - Polski"
 
 
-msgid "Locale code: pl_PL. Translation progress: 18%"
-msgstr "Código de localización: pl_PL. Progreso de la traducción: 18%"
-
-
 msgid "Portuguese (Brazil) - Português brasileiro"
 msgstr "Portugués (Brasil) - Português (Brazil)"
 
 
 msgid "Portuguese (Portugal) - Português europeu"
 msgstr "Portugués (Portugal) - Português (Portugal)"
-
-
-msgid "Locale code: pt_PT. Translation progress: 73%"
-msgstr "Código de localización: pt_PT. Progreso de la traducción: 73%"
 
 
 msgid "Romanian - Român"
@@ -97242,10 +97168,6 @@ msgid "Swedish - Svenska"
 msgstr "Sueco - Svenska"
 
 
-msgid "Locale code: sv_SE. Translation progress: 22%"
-msgstr "Código de localización: sv_SE. Progreso de la traducción: 22%"
-
-
 msgid "Tamil - தமிழ்"
 msgstr "Tamil - தமிழ்"
 
@@ -97288,10 +97210,6 @@ msgstr "Código de localización: ur. Progreso de la traducción: 87%"
 
 msgid "Vietnamese - Tiếng Việt"
 msgstr "Vietnamita - Tiếng Việt"
-
-
-msgid "Locale code: vi_VN. Translation progress: 95%"
-msgstr "Código de localización: vi_VN. Progreso de la traducción: 95%"
 
 
 msgid "Reference Sphere Size"
@@ -119959,16 +119877,6 @@ msgid "Image Sequence"
 msgstr "Secuencia de imágenes"
 
 
-msgctxt "Operator"
-msgid "Add Texture Setup"
-msgstr "Agregar textura a sombreador"
-
-
-msgctxt "Operator"
-msgid "Add Principled Setup"
-msgstr "Agregar textura a Principista"
-
-
 msgid "(Quick Access: Shift+W)"
 msgstr "(Atajo: Mayús+W)"
 
@@ -121452,10 +121360,6 @@ msgstr "Todas las colecciones de huesos se encuentran en uso"
 
 msgid "An action slot can only be created when an action is assigned"
 msgstr "Sólo será posible crear un contenedor de acción cuando se haya asignado una acción"
-
-
-msgid "Action slots are only supported by layered Actions. Upgrade this Action first"
-msgstr "Los contenedores de acción sólo son soportados por acciones con capas. Actualizar antes esta acción"
 
 
 msgid "Creating a new Slot is not possible on a linked Action"
@@ -129031,11 +128935,6 @@ msgstr "Proyectar desde la vista (hasta límites)"
 
 
 msgctxt "Operator"
-msgid "Frame Last Stroke"
-msgstr "Encuadrar último trazo"
-
-
-msgctxt "Operator"
 msgid "Render Playblast"
 msgstr "Previsualizar animación"
 
@@ -131081,6 +130980,18 @@ msgid "particles"
 msgstr "partículas"
 
 
+msgid "Object was not yet evaluated"
+msgstr "El objeto aún no había sido evaluado"
+
+
+msgid "Mesh has no UV data"
+msgstr "La malla no contiene datos UV"
+
+
+msgid "Mesh has no VCol data"
+msgstr "La malla no contiene datos de colores de vértices"
+
+
 msgid "Unsaved"
 msgstr "No guardado"
 
@@ -131858,18 +131769,6 @@ msgid "color_index is invalid"
 msgstr "color_index es inválido"
 
 
-msgid "Compositor node tree has cyclic links!"
-msgstr "¡El árbol de nodos de composición contiene conexiones cíclicas!"
-
-
-msgid "Compositor node tree has undefined nodes or sockets!"
-msgstr "¡El árbol de nodos de composición contiene nodos o conectores no definidos!"
-
-
-msgid "Compositor node tree has unsupported nodes."
-msgstr "El árbol de nodos del compositor contiene nodos no soportados."
-
-
 msgid "Error: Too many AOVs"
 msgstr "Error: Demasiadas AOV"
 
@@ -132130,10 +132029,6 @@ msgid "No active action to operate on"
 msgstr "Ninguna acción activa sobre la cual operar"
 
 
-msgid "Active action is not layered"
-msgstr "La acción activa no puede contener capas"
-
-
 msgid "No active object"
 msgstr "Ningún objeto activo"
 
@@ -132229,10 +132124,6 @@ msgstr "Error al fusionar animaciones. Nótese que los clips de ANL no pueden se
 
 msgid "Expected an animation area to be active"
 msgstr "Se esperaba que un área de animación estuviera activa"
-
-
-msgid "Action is already layered"
-msgstr "La acción ya contiene capas"
 
 
 msgid "Active object has no action"
@@ -135240,18 +135131,6 @@ msgid "Loop cut does not work well on deformed edit mesh display"
 msgstr "Cortar bucle no funciona bien al visualizar la deformación de mallas en modo Edición"
 
 
-msgid "Create Mesh From Paint Mask"
-msgstr "Crear malla desde máscara de pintura"
-
-
-msgid "Extract"
-msgstr "Extraer"
-
-
-msgid "The geometry cannot be extracted with dyntopo activated"
-msgstr "La geometría no puede ser extraída mientras la topología dinámica se encuentre activa"
-
-
 msgid "Path selection requires two matching elements to be selected"
 msgstr "La selección de trayectoria requiere que se seleccionen dos elementos coincidentes"
 
@@ -138159,6 +138038,18 @@ msgid "Texture mapping not set to 3D, results may be unpredictable"
 msgstr "El mapeo de textura no está definido en 3D, es posible que los resultados sean impredecibles"
 
 
+msgid "Create Mesh From Paint Mask"
+msgstr "Crear malla desde máscara de pintura"
+
+
+msgid "Extract"
+msgstr "Extraer"
+
+
+msgid "The geometry cannot be extracted with dyntopo activated"
+msgstr "La geometría no puede ser extraída mientras la topología dinámica se encuentre activa"
+
+
 msgid "non-triangle face"
 msgstr "cara no triangular"
 
@@ -138782,10 +138673,6 @@ msgstr "Videos"
 
 msgid "OneDrive"
 msgstr "OneDrive"
-
-
-msgid "Movies"
-msgstr "Películas"
 
 
 msgid "Cursor X"
@@ -139453,10 +139340,6 @@ msgstr "No es posible intercambiar los clips seleccionados porque se superpondr�
 
 msgid "Cannot swap selected strips as they will not be able to fit in their new places"
 msgstr "No es posible intercambiar los clips seleccionados porque no entrarán en sus nuevos lugares"
-
-
-msgid "Action '%s' does not specify what data-blocks it can be used on (try setting the 'ID Root Type' setting from the data-blocks editor for this action to avoid future problems)"
-msgstr "La acción '%s' no especifica en qué bloques de datos puede ser usada (intentar especificar la opción 'Tipo de ID base' para esta acción, en el editor de bloques de datos, para evitar futuros problemas)"
 
 
 msgid "Could not add action '%s' as it cannot be used relative to ID-blocks of type '%s'"
@@ -141013,12 +140896,12 @@ msgid "Select movie or image strips"
 msgstr "Seleccionar clips de película o imagen"
 
 
-msgid "Cannot create key inside of speed transition"
-msgstr "No es posible crear un clave dentro de una transición de velocidad"
-
-
 msgid "Cannot create freeze frame"
 msgstr "No es posible crear un congelado"
+
+
+msgid "Cannot create key inside of speed transition"
+msgstr "No es posible crear un clave dentro de una transición de velocidad"
 
 
 msgid "Cannot create transition from first or last key"
@@ -143213,16 +143096,8 @@ msgid "Cannot return channelbag when slot is None"
 msgstr "No es posible obtener la bolsa de canales cuando el contenedor es Ninguno"
 
 
-msgid "Cannot add slots to a legacy Action '%s'. Convert it to a layered Action first."
-msgstr "No es posible agregar contenedores a una acción antigua como '%s'. Convertirla antes en una acción con capas."
-
-
 msgid "Invalid slot name '%s': name must not be empty."
 msgstr "Nombre de contenedor '%s' inválido: el nombre no puede quedar vacío."
-
-
-msgid "Cannot add layers to a legacy Action '%s'. Convert it to a layered Action first."
-msgstr "No es posible agregar capas a una acción antigua como '%s'. Convertirla antes en una acción con capas."
 
 
 msgid "F-Curve '%s[%d]' already exists in this channelbag"
@@ -143375,6 +143250,10 @@ msgstr "Identificador de paleta de colores inválido: %d"
 
 msgid "%s is not supported, pass a Bone, PoseBone, or EditBone"
 msgstr "%s no soportado, proporcionar un hueso, un hueso de pose o un hueso de edición"
+
+
+msgid "Asset metadata from external libraries cannot be edited. Only assets stored in the current file can be edited."
+msgstr "No es posible editar metadatos de un recurso proveniente de una biblioteca de recursos externa. Sólo se pueden editar los recursos almacenados en el archivo actual."
 
 
 msgid "Tag '%s' already present for given asset"
@@ -144357,18 +144236,6 @@ msgstr "¡Objetivo inválido!"
 
 msgid "uv_on_emitter() requires a modifier from an evaluated object"
 msgstr "uv_on_emitter() requiere un modificador de un objeto evaluado"
-
-
-msgid "Mesh has no UV data"
-msgstr "La malla no contiene datos UV"
-
-
-msgid "Object was not yet evaluated"
-msgstr "El objeto aún no había sido evaluado"
-
-
-msgid "Mesh has no VCol data"
-msgstr "La malla no contiene datos de colores de vértices"
 
 
 msgid "Cannot edit bone groups for library overrides"
@@ -146727,54 +146594,6 @@ msgid "The amount of jitter to introduce while computing rays, higher jitter can
 msgstr "La cantidad de alteración a introducir mientras se calculan los rayos, valores más altos serán más rápidos pero podrán producir resultados más granulados o ruidosos"
 
 
-msgid "Wrong Image Input Type"
-msgstr "Tipo de imagen de entrada erróneo"
-
-
-msgid "Wrong Mask Input Type"
-msgstr "Tipo de máscara de entrada erróneo"
-
-
-msgid "Unsupported Inputs"
-msgstr "Entradas no soportadas"
-
-
-msgid "Node group's main Image input should be of type Color"
-msgstr "El tipo de imagen de entrada principal del grupo de nodos debería ser de tipo Color"
-
-
-msgid "Node group's Mask input should be of type Color"
-msgstr "El tipo de máscara de entrada del grupo de nodos debería ser de tipo Color"
-
-
-msgid "Only a main Image and Mask inputs are supported, the rest are unsupported and will return zero"
-msgstr "Sólo se soportan entradas de imagen principal y de máscara, el resto no se soportan y producirán un valor de cero"
-
-
-msgid "No Output"
-msgstr "Sin salida"
-
-
-msgid "Wrong Output Type"
-msgstr "Tipo de salida erróneo"
-
-
-msgid "Ignored Outputs"
-msgstr "Salidas ignoradas"
-
-
-msgid "Node group must have a Color output socket"
-msgstr "El grupo de nodos debe contener un conector de salida de Color"
-
-
-msgid "Node group's first output must be a color output"
-msgstr "La primera salida del grupo de nodos debe ser un Color"
-
-
-msgid "Only the first output is considered while the rest are ignored"
-msgstr "Sólo la primera salida será considerada, ignorándose las demás"
-
-
 msgid "Fac"
 msgstr "Fac"
 
@@ -147136,6 +146955,10 @@ msgstr "Reemplazar alfa"
 
 msgid "Replace the input image's alpha channel by the alpha input value"
 msgstr "Reemplaza el canal alfa de la imagen de entrada por el valor de alfa de entrada"
+
+
+msgid "SDF"
+msgstr "SDF"
 
 
 msgid "Line position where the image should be split"
@@ -148721,10 +148544,6 @@ msgstr "Convertir los vóxeles y celdas inactivas en celdas de fondo inactivas"
 
 msgid "Turn regions where all voxels have the same value and active state (within a tolerance threshold) into inactive background tiles"
 msgstr "Convierte las regiones cuyos vóxeles contengan el mismo valor y estado de actividad (dentro de un cierto umbral de tolerancia) en celdas de fondo inactivas"
-
-
-msgid "SDF"
-msgstr "SDF"
 
 
 msgid "Replace inactive tiles with inactive nodes. Faster than tolerance-based pruning, useful for cases like narrow-band SDF grids with only inside or outside background values."
@@ -150580,8 +150399,56 @@ msgid "Inspection index is out of range"
 msgstr "El índice de inspección está fuera de rango"
 
 
+msgid "Wrong Image Input Type"
+msgstr "Tipo de imagen de entrada erróneo"
+
+
+msgid "Wrong Mask Input Type"
+msgstr "Tipo de máscara de entrada erróneo"
+
+
+msgid "Unsupported Inputs"
+msgstr "Entradas no soportadas"
+
+
+msgid "No Output"
+msgstr "Sin salida"
+
+
+msgid "Wrong Output Type"
+msgstr "Tipo de salida erróneo"
+
+
+msgid "Ignored Outputs"
+msgstr "Salidas ignoradas"
+
+
 msgid "Unused Output"
 msgstr "Salida no usada"
+
+
+msgid "Node group's main Image input should be of type Color"
+msgstr "El tipo de imagen de entrada principal del grupo de nodos debería ser de tipo Color"
+
+
+msgid "Node group's Mask input should be of type Color"
+msgstr "El tipo de máscara de entrada del grupo de nodos debería ser de tipo Color"
+
+
+msgid "Only a main Image and Mask inputs are supported, the rest are unsupported and will return zero"
+msgstr "Sólo se soportan entradas de imagen principal y de máscara, el resto no se soportan y producirán un valor de cero"
+
+
+msgid "Node group must have a Color output socket"
+msgstr "El grupo de nodos debe contener un conector de salida de Color"
+
+
+msgid "Node group's first output must be a color output"
+msgstr "La primera salida del grupo de nodos debe ser un Color"
+
+
+msgid "Only the first output is considered while the rest are ignored"
+msgstr "Sólo la primera salida será considerada, ignorándose las demás"
 
 
 msgid "There are multiple group output nodes and this one is not active"
@@ -153778,6 +153645,10 @@ msgid "The intensity of the aberration effect"
 msgstr "La intensidad del efecto de aberración"
 
 
+msgid "Different styles of aberrations"
+msgstr "Distintos estilos de aberración cromática"
+
+
 msgid "Combine Cylindrical"
 msgstr "Combinar (cilíndricos)"
 
@@ -153848,6 +153719,10 @@ msgstr "Variar el ruido en cada fotograma"
 
 msgid "Chroma Noise"
 msgstr "Ruido de croma"
+
+
+msgid "The amount of color noise"
+msgstr "La intensidad del ruido del color"
 
 
 msgid "Luminance Noise"

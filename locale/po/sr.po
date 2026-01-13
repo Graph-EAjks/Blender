@@ -1,9 +1,9 @@
 
 msgid ""
 msgstr ""
-"Project-Id-Version: Blender 5.1.0 Alpha (b'7d4876cf0c11')\n"
+"Project-Id-Version: Blender 5.1.0 Alpha (b'12e628ea43f8')\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-16 11:27+0000\n"
+"POT-Creation-Date: 2026-01-12 15:09+0000\n"
 "PO-Revision-Date: 2025-07-23 15:10+0000\n"
 "Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: Serbian <https://translate.blender.org/projects/blender-ui/ui/sr/>\n"
@@ -8497,12 +8497,40 @@ msgid "Material slot name"
 msgstr "Назив слота материјала"
 
 
-msgid "Mirror"
-msgstr "Огледало"
+msgid "Show/Hide"
+msgstr "Прикажи/сакриј"
+
+
+msgid "Special Characters"
+msgstr "Специјални знаци"
+
+
+msgid "Math"
+msgstr "Математика"
+
+
+msgid "Metaball"
+msgstr "Мета лопта"
+
+
+msgid "Names"
+msgstr "Имена"
+
+
+msgid "Bone Roll"
+msgstr "Ролна костију"
 
 
 msgid "Snap"
 msgstr "Лепљење"
+
+
+msgid "Import"
+msgstr "Увоз"
+
+
+msgid "Mirror"
+msgstr "Огледало"
 
 
 msgid "UV Mapping"
@@ -8517,16 +8545,16 @@ msgid "Navigation"
 msgstr "Навигација"
 
 
+msgid "UV"
+msgstr "UV"
+
+
 msgid "Align View"
 msgstr "Поравнај поглед"
 
 
 msgid "Select Linked"
 msgstr "Изабери повезано"
-
-
-msgid "Metaball"
-msgstr "Мета лопта"
 
 
 msgid "Light"
@@ -8541,32 +8569,16 @@ msgid "Rigid Body"
 msgstr "Круто тело"
 
 
-msgid "Keying"
-msgstr "Збирка тастера"
-
-
 msgid "Apply"
 msgstr "Примени"
-
-
-msgid "Tracking"
-msgstr "Праћење"
 
 
 msgid "Track"
 msgstr "Стаза"
 
 
-msgid "Math"
-msgstr "Математика"
-
-
 msgid "Quick Effects"
 msgstr "Брзи ефекти"
-
-
-msgid "Show/Hide"
-msgstr "Прикажи/сакриј"
 
 
 msgid "Hooks"
@@ -8585,8 +8597,12 @@ msgid "Propagate"
 msgstr "Пренеси"
 
 
-msgid "Names"
-msgstr "Имена"
+msgid "Keying"
+msgstr "Збирка тастера"
+
+
+msgid "Tracking"
+msgstr "Праћење"
 
 
 msgid "Toggle Bone Options"
@@ -8607,22 +8623,6 @@ msgstr "Мод избора мреже"
 
 msgid "Merge"
 msgstr "Сједини"
-
-
-msgid "Special Characters"
-msgstr "Специјални знаци"
-
-
-msgid "Bone Roll"
-msgstr "Ролна костију"
-
-
-msgid "Import"
-msgstr "Увоз"
-
-
-msgid "UV"
-msgstr "UV"
 
 
 msgid "Basic"
@@ -20080,10 +20080,6 @@ msgstr "Континуално померање"
 
 msgid "Emulate 3 Button Mouse"
 msgstr "Имитирај 3. дугме"
-
-
-msgid "Use selection as the pivot point"
-msgstr "Користи векторе одсјаја као координате текстуре"
 
 
 msgid "Turntable"

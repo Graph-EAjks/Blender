@@ -11,21 +11,32 @@
 #include "BLI_map.hh"
 #include "BLI_span.hh"
 
+namespace blender {
+
 struct Editing;
+struct ReportList;
 struct Scene;
 struct Strip;
 struct SeqRetimingKey;
 
-namespace blender::seq {
+namespace seq {
 
 MutableSpan<SeqRetimingKey> retiming_keys_get(const Strip *strip);
+int left_fake_key_frame_get(const Scene *scene, const Strip *strip);
+int right_fake_key_frame_get(const Scene *scene, const Strip *strip);
 Map<SeqRetimingKey *, Strip *> retiming_selection_get(const Editing *ed);
 int retiming_keys_count(const Strip *strip);
 bool retiming_is_active(const Strip *strip);
 void retiming_data_ensure(Strip *strip);
+SeqRetimingKey *ensure_left_and_right_keys(const Scene *scene, Strip *strip);
 void retiming_data_clear(Strip *strip);
 void retiming_reset(Scene *scene, Strip *strip);
 bool retiming_is_allowed(const Strip *strip);
+
+SeqRetimingKey *retiming_key_add_new_for_strip(const Scene *scene,
+                                               ReportList *reports,
+                                               Strip *strip,
+                                               const int timeline_frame);
 /**
  * Add new retiming key.
  * This function always reallocates memory, so when function is used all stored pointers will
@@ -74,4 +85,5 @@ bool retiming_selection_contains(const Editing *ed, const SeqRetimingKey *key);
 bool retiming_selection_has_whole_transition(const Editing *ed, SeqRetimingKey *key);
 bool retiming_data_is_editable(const Strip *strip);
 
-}  // namespace blender::seq
+}  // namespace seq
+}  // namespace blender

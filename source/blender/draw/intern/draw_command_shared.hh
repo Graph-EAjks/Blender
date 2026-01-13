@@ -11,10 +11,10 @@
 #include "GPU_shader_shared_utils.hh"
 
 #ifndef GPU_SHADER
-#  include "BLI_span.hh"
-
+namespace blender::gpu {
+class Batch;
+}
 namespace blender::draw::command {
-
 #endif
 
 /* -------------------------------------------------------------------- */
@@ -25,7 +25,7 @@ namespace blender::draw::command {
  * A DrawGroup allow to split the command stream into batch-able chunks of commands with
  * the same render state.
  */
-struct [[host_shared, unchecked]] DrawGroup {
+struct [[host_shared]] DrawGroup {
   /** Index of next #DrawGroup from the same header. */
   uint next;
 

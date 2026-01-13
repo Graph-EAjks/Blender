@@ -1,9 +1,9 @@
 
 msgid ""
 msgstr ""
-"Project-Id-Version: Blender 5.1.0 Alpha (b'7d4876cf0c11')\n"
+"Project-Id-Version: Blender 5.1.0 Alpha (b'12e628ea43f8')\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-16 11:27+0000\n"
+"POT-Creation-Date: 2026-01-12 15:09+0000\n"
 "PO-Revision-Date: 2025-07-23 15:20+0000\n"
 "Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: Kyrgyz <https://translate.blender.org/projects/blender-ui/ui/ky/>\n"
@@ -1290,8 +1290,16 @@ msgid "Mask Layers"
 msgstr "Маска каттары"
 
 
+msgid "Import"
+msgstr "Импорттоо"
+
+
 msgid "Mirror"
 msgstr "Чагылтуу"
+
+
+msgid "UV"
+msgstr "UV"
 
 
 msgid "Apply"
@@ -1300,14 +1308,6 @@ msgstr "Колдонуу"
 
 msgid "Tracking"
 msgstr "Трекинг"
-
-
-msgid "Import"
-msgstr "Импорттоо"
-
-
-msgid "UV"
-msgstr "UV"
 
 
 msgctxt "MovieClip"

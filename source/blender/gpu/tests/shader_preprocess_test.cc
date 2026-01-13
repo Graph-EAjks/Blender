@@ -2,7 +2,7 @@
  *
  * SPDX-License-Identifier: Apache-2.0 */
 
-#include "shader_tool/shader_tool.hh"
+#include "shader_tool/processor.hh"
 
 #include "gpu_testing.hh"
 
@@ -11,23 +11,20 @@ namespace blender::gpu::tests {
 static std::string process_test_string(std::string str,
                                        std::string &first_error,
                                        shader::metadata::Source *r_metadata = nullptr,
-                                       shader::Preprocessor::SourceLanguage language =
-                                           shader::Preprocessor::SourceLanguage::BLENDER_GLSL)
+                                       shader::Language language = shader::Language::BLENDER_GLSL)
 {
   using namespace shader;
-  Preprocessor preprocessor;
-  shader::metadata::Source metadata;
-  std::string result = preprocessor.process(
-      language,
+  SourceProcessor processor(
       str,
-      "test.glsl",
-      false,
+      "test.bsl",
+      language,
       [&](int /*err_line*/, int /*err_char*/, const std::string & /*line*/, const char *err_msg) {
         if (first_error.empty()) {
           first_error = err_msg;
         }
-      },
-      metadata);
+      });
+
+  auto [result, metadata] = processor.convert();
 
   if (r_metadata != nullptr) {
     *r_metadata = metadata;
@@ -92,6 +89,33 @@ float2 c[2] = {{0, 1}, {0, 1}};
 }
 GPU_TEST(preprocess_array);
 
+static void test_preprocess_comma_declaration()
+{
+  using namespace shader;
+  using namespace std;
+  {
+    string input = R"(
+struct A {
+  int a, b;
+};
+)";
+    string expect =
+        R"(
+struct A {
+  int a;int b;
+};
+#line 2
+                 A A_ctor_() {A r;r.a=0;r.b=0;return r;}
+#line 5
+)";
+    string error;
+    string output = process_test_string(input, error);
+    EXPECT_EQ(expect, output);
+    EXPECT_EQ(error, "");
+  }
+}
+GPU_TEST(preprocess_comma_declaration);
+
 static void test_preprocess_include()
 {
   using namespace shader;
@@ -133,70 +157,78 @@ static void test_preprocess_union()
   {
     string input = R"(
 struct [[host_shared]] T {
-  float foo;
-  float bar;
-  float baz;
   union {
-    union_t<uint> a;
-    union_t<int> b;
-    union_t<float> c;
+    union_t<uint4> a;
+    union_t<int4> b;
+    union_t<float4> c;
   };
 };
 )";
     string expect =
         R"(
-#line 6
+#line 3
+
+#define T_union0_host_shared_ T_union0
+#define T_union0_host_shared_uniform_ T_union0
+#line 3
 struct                 T_union0 {
-  float data0;
+  float4 data0;
 
 };
+#line 3
+                                        T_union0 T_union0_ctor_() {T_union0 r;r.data0=float4(0);return r;}
+#line 2
+
+#define T_host_shared_ T
+#define T_host_shared_uniform_ T
 #line 2
 struct                 T {
-  float foo;
-  float bar;
-  float baz;
          T_union0 union0;
-#line 41
+#line 38
 };
+
 #ifndef GPU_METAL
-uint _a(const T this_);
-void _a_set_(_ref(T ,this_), uint value);
-int _b(const T this_);
-void _b_set_(_ref(T ,this_), int value);
-float _c(const T this_);
-void _c_set_(_ref(T ,this_), float value);
+T T_ctor_();
+uint4 _a(const T this_);
+void _a_set_(_ref(T ,this_), uint4 value);
+int4 _b(const T this_);
+void _b_set_(_ref(T ,this_), int4 value);
+float4 _c(const T this_);
+void _c_set_(_ref(T ,this_), float4 value);
 #endif
-#line 12
-uint _a(const T this_)       {
-  uint val;
+#line 2
+                                 T T_ctor_() {T r;r.union0=T_union0_ctor_();return r;}
+#line 9
+uint4 _a(const T this_)       {
+  uint4 val;
   val = floatBitsToUint(this_.union0.data0);
   return val;
 }
-#line 18
-void _a_set_(_ref(T ,this_), uint value) {
+#line 15
+void _a_set_(_ref(T ,this_), uint4 value) {
   this_.union0.data0 = uintBitsToFloat(value);
 }
-#line 22
-int _b(const T this_)       {
-  int val;
+#line 19
+int4 _b(const T this_)       {
+  int4 val;
   val = floatBitsToInt(this_.union0.data0);
   return val;
 }
-#line 28
-void _b_set_(_ref(T ,this_), int value) {
+#line 25
+void _b_set_(_ref(T ,this_), int4 value) {
   this_.union0.data0 = intBitsToFloat(value);
 }
-#line 32
-float _c(const T this_)       {
-  float val;
+#line 29
+float4 _c(const T this_)       {
+  float4 val;
   val = this_.union0.data0;
   return val;
 }
-#line 38
-void _c_set_(_ref(T ,this_), float value) {
+#line 35
+void _c_set_(_ref(T ,this_), float4 value) {
   this_.union0.data0 = value;
 }
-#line 42
+#line 39
 )";
     string error;
     string output = process_test_string(input, error);
@@ -206,61 +238,81 @@ void _c_set_(_ref(T ,this_), float value) {
   {
     string input = R"(
 struct [[host_shared]] T {
-  float foo;
-  float bar;
+  float2 foo;
+  float2 bar;
   union {
-    union_t<uint> a;
+    union_t<uint4> a;
   };
   union {
-    union_t<uint> b;
+    union_t<uint4> b;
   };
 };
 )";
     string expect =
         R"(
 #line 5
+
+#define T_union0_host_shared_ T_union0
+#define T_union0_host_shared_uniform_ T_union0
+#line 5
 struct                 T_union0 {
-  float data0;
+  float4 data0;
+
+};
+#line 5
+                                        T_union0 T_union0_ctor_() {T_union0 r;r.data0=float4(0);return r;}
+#line 8
+
+#define T_union1_host_shared_ T_union1
+#define T_union1_host_shared_uniform_ T_union1
+#line 8
+struct                 T_union1 {
+  float4 data0;
 
 };
 #line 8
-struct                 T_union1 {
-  float data0;
+                                        T_union1 T_union1_ctor_() {T_union1 r;r.data0=float4(0);return r;}
+#line 2
 
-};
+#define T_host_shared_ T
+#define T_host_shared_uniform_ T
 #line 2
 struct                 T {
-  float foo;
-  float bar;
+  float2 foo;
+  float2 bar;
          T_union0 union0;
 #line 8
          T_union1 union1;
 #line 31
 };
+
 #ifndef GPU_METAL
-uint _a(const T this_);
-void _a_set_(_ref(T ,this_), uint value);
-uint _b(const T this_);
-void _b_set_(_ref(T ,this_), uint value);
+T T_ctor_();
+uint4 _a(const T this_);
+void _a_set_(_ref(T ,this_), uint4 value);
+uint4 _b(const T this_);
+void _b_set_(_ref(T ,this_), uint4 value);
 #endif
+#line 2
+                                 T T_ctor_() {T r;r.foo=float2(0);r.bar=float2(0);r.union0=T_union0_ctor_();r.union1=T_union1_ctor_();return r;}
 #line 12
-uint _a(const T this_)       {
-  uint val;
+uint4 _a(const T this_)       {
+  uint4 val;
   val = floatBitsToUint(this_.union0.data0);
   return val;
 }
 #line 18
-void _a_set_(_ref(T ,this_), uint value) {
+void _a_set_(_ref(T ,this_), uint4 value) {
   this_.union0.data0 = uintBitsToFloat(value);
 }
 #line 22
-uint _b(const T this_)       {
-  uint val;
+uint4 _b(const T this_)       {
+  uint4 val;
   val = floatBitsToUint(this_.union1.data0);
   return val;
 }
 #line 28
-void _b_set_(_ref(T ,this_), uint value) {
+void _b_set_(_ref(T ,this_), uint4 value) {
   this_.union1.data0 = uintBitsToFloat(value);
 }
 #line 32
@@ -288,28 +340,53 @@ struct [[host_shared]] T {
 };
 )";
     string expect = R"(
+
+#define B_host_shared_ B
+#define B_host_shared_uniform_ B
+#line 2
 struct                 B {
   packed_float3 a;
   float b;
 };
-
+#line 2
+                                 B B_ctor_() {B r;r.a=packed_float3(0);r.b=0.0f;return r;}
+#line 8
+#define A_host_shared_ A
+#define A_host_shared_uniform_ A
+#line 7
 struct                 A {
          B e;
 };
+#line 7
+                                 A A_ctor_() {A r;r.e=B_ctor_();return r;}
+#line 12
+
+#define T_union0_host_shared_ T_union0
+#define T_union0_host_shared_uniform_ T_union0
 #line 12
 struct                 T_union0 {
   float4 data0;
 
 };
+#line 12
+                                        T_union0 T_union0_ctor_() {T_union0 r;r.data0=float4(0);return r;}
+#line 11
+
+#define T_host_shared_ T
+#define T_host_shared_uniform_ T
 #line 11
 struct                 T {
          T_union0 union0;
 #line 27
 };
+
 #ifndef GPU_METAL
+T T_ctor_();
 A _a(const T this_);
 void _a_set_(_ref(T ,this_), A value);
 #endif
+#line 11
+                                 T T_ctor_() {T r;r.union0=T_union0_ctor_();return r;}
 #line 16
 A _a(const T this_)       {
   A val;
@@ -339,6 +416,10 @@ struct [[host_shared]] T {
 )";
     string expect = R"(
 #line 3
+
+#define T_union0_host_shared_ T_union0
+#define T_union0_host_shared_uniform_ T_union0
+#line 3
 struct                 T_union0 {
   float4 data0;
   float4 data1;
@@ -346,15 +427,25 @@ struct                 T_union0 {
   float4 data3;
 
 };
+#line 3
+                                        T_union0 T_union0_ctor_() {T_union0 r;r.data0=float4(0);r.data1=float4(0);r.data2=float4(0);r.data3=float4(0);return r;}
+#line 2
+
+#define T_host_shared_ T
+#define T_host_shared_uniform_ T
 #line 2
 struct                 T {
          T_union0 union0;
 #line 22
 };
+
 #ifndef GPU_METAL
+T T_ctor_();
 float4x4 _a(const T this_);
 void _a_set_(_ref(T ,this_), float4x4 value);
 #endif
+#line 2
+                                 T T_ctor_() {T r;r.union0=T_union0_ctor_();return r;}
 #line 7
 float4x4 _a(const T this_)       {
   float4x4 val;
@@ -372,7 +463,6 @@ void _a_set_(_ref(T ,this_), float4x4 value) {
   this_.union0.data3 = value[3];
 }
 #line 23
-
 )";
     string error;
     string output = process_test_string(input, error);
@@ -402,14 +492,34 @@ static void test_preprocess_unroll()
 
   {
     string input = R"(
-[[gpu::unroll]] for (int i = 2; i < 4; i++) { content += i; })";
+for (int i = 2; i < 4; i++) [[unroll]] { content += i; })";
     string expect = R"(
 
 {
 #line 2
-                                            { content += 2; }
+                                       { content += 2; }
 #line 2
-                                            { content += 3; }
+                                       { content += 3; }
+#line 2
+                                                       })";
+    string error;
+    string output = process_test_string(input, error);
+    EXPECT_EQ(output, expect);
+    EXPECT_EQ(error, "");
+  }
+  {
+    string input = R"(
+for (int i = 2; i < 4; i++, y++) [[unroll]] { content += i; })";
+    string expect = R"(
+    {int i = 2;
+#line 2
+                                            { content += i; }
+#line 2
+                       i++, y++;
+#line 2
+                                            { content += i; }
+#line 2
+                       i++, y++;
 #line 2
                                                             })";
     string error;
@@ -419,19 +529,23 @@ static void test_preprocess_unroll()
   }
   {
     string input = R"(
-[[gpu::unroll]] for (int i = 2; i < 4; i++, y++) { content += i; })";
+for (int i = 2; i < 4 && i < y; i++, y++) [[unroll]] { cont += i; })";
     string expect = R"(
-                    {int i = 2;
+    {int i = 2;
 #line 2
-                                                 { content += i; }
+             if(i < 4 && i < y)
 #line 2
-                                       i++, y++;
+                                                     { cont += i; }
 #line 2
-                                                 { content += i; }
+                                i++, y++;
 #line 2
-                                       i++, y++;
+             if(i < 4 && i < y)
 #line 2
-                                                                 })";
+                                                     { cont += i; }
+#line 2
+                                i++, y++;
+#line 2
+                                                                  })";
     string error;
     string output = process_test_string(input, error);
     EXPECT_EQ(output, expect);
@@ -439,44 +553,20 @@ static void test_preprocess_unroll()
   }
   {
     string input = R"(
-[[gpu::unroll]] for (int i = 2; i < 4 && i < y; i++, y++) { cont += i; })";
-    string expect = R"(
-                    {int i = 2;
-#line 2
-                             if(i < 4 && i < y)
-#line 2
-                                                          { cont += i; }
-#line 2
-                                                i++, y++;
-#line 2
-                             if(i < 4 && i < y)
-#line 2
-                                                          { cont += i; }
-#line 2
-                                                i++, y++;
-#line 2
-                                                                       })";
-    string error;
-    string output = process_test_string(input, error);
-    EXPECT_EQ(output, expect);
-    EXPECT_EQ(error, "");
-  }
-  {
-    string input = R"(
-[[gpu::unroll(2)]] for (; i < j;) { content += i; })";
+for (; i < j;) [[unroll_n(2)]] { content += i; })";
     string expect = R"(
 
 {
 #line 2
-                       if(i < j)
+    if(i < j)
 #line 2
-                                  { content += i; }
+                               { content += i; }
 #line 2
-                       if(i < j)
+    if(i < j)
 #line 2
-                                  { content += i; }
+                               { content += i; }
 #line 2
-                                                  })";
+                                               })";
     string error;
     string output = process_test_string(input, error);
     EXPECT_EQ(output, expect);
@@ -484,106 +574,85 @@ static void test_preprocess_unroll()
   }
   {
     string input = R"(
-[[gpu::unroll(2)]] for (; i < j;) { [[gpu::unroll(2)]] for (; j < k;) {} })";
+for (; i < j;) [[unroll_n(2)]] { for (; j < k;) [[unroll_n(2)]] {} })";
     string expect = R"(
 
 {
 #line 2
-                       if(i < j)
+    if(i < j)
 #line 2
-                                  {
+                               {
 {
 #line 2
-                                                           if(j < k)
+                                     if(j < k)
 #line 2
-                                                                      {}
+                                                                {}
 #line 2
-                                                           if(j < k)
+                                     if(j < k)
 #line 2
-                                                                      {}
+                                                                {}
 #line 2
-                                                                       } }
+                                                                 } }
 #line 2
-                       if(i < j)
+    if(i < j)
 #line 2
-                                  {
+                               {
 {
 #line 2
-                                                           if(j < k)
+                                     if(j < k)
 #line 2
-                                                                      {}
+                                                                {}
 #line 2
-                                                           if(j < k)
+                                     if(j < k)
 #line 2
-                                                                      {}
+                                                                {}
 #line 2
-                                                                       } }
+                                                                 } }
 #line 2
-                                                                         })";
+                                                                   })";
     string error;
     string output = process_test_string(input, error);
     EXPECT_EQ(output, expect);
     EXPECT_EQ(error, "");
   }
   {
-    string input = R"([[gpu::unroll(2)]] for (; i < j;) { break; })";
+    string input = R"(for (; i < j;) [[unroll_n(2)]] { break; })";
     string error;
     string output = process_test_string(input, error);
     EXPECT_EQ(error, "Unrolled loop cannot contain \"break\" statement.");
   }
   {
-    string input = R"([[gpu::unroll(2)]] for (; i < j;) { continue; })";
+    string input = R"(for (; i < j;) [[unroll_n(2)]] { continue; })";
     string error;
     string output = process_test_string(input, error);
     EXPECT_EQ(error, "Unrolled loop cannot contain \"continue\" statement.");
   }
   {
     string input = R"(
-[[gpu::unroll(2)]] for (; i < j;) { for (; j < k;) {break;continue;} })";
+for (; i < j;) [[unroll_n(2)]] { for (; j < k;) {break;continue;} })";
     string expect = R"(
 
 {
 #line 2
-                       if(i < j)
+    if(i < j)
 #line 2
-                                  { for (; j < k;) {break;continue;} }
+                               { for (; j < k;) {break;continue;} }
 #line 2
-                       if(i < j)
+    if(i < j)
 #line 2
-                                  { for (; j < k;) {break;continue;} }
+                               { for (; j < k;) {break;continue;} }
 #line 2
-                                                                     })";
+                                                                  })";
     string error;
     string output = process_test_string(input, error);
     EXPECT_EQ(output, expect);
     EXPECT_EQ(error, "");
   }
   {
-    string input = R"([[gpu::unroll]] for (int i = 3; i > 2; i++) {})";
+    string input = R"(for (int i = 3; i > 2; i++) [[unroll]] {})";
     string error;
     string output = process_test_string(input, error);
     EXPECT_EQ(error, "Unsupported condition in unrolled loop.");
-  }
-  {
-    string input = R"(
-[[gpu::unroll_define(2)]] for (int i = 0; i < DEFINE; i++) { a = i; })";
-    string expect = R"(
-
-{
-#if DEFINE > 0
-#line 2
-                                                           { a = 0; }
-#endif
-#if DEFINE > 1
-#line 2
-                                                           { a = 1; }
-#endif
-#line 2
-                                                                    })";
-    string error;
-    string output = process_test_string(input, error);
-    EXPECT_EQ(output, expect);
-    EXPECT_EQ(error, "");
   }
 }
 GPU_TEST(preprocess_unroll);
@@ -697,7 +766,9 @@ template struct A<float>;
 )";
     string expect = R"(
 #line 3
-struct ATfloat { float a; };
+struct ATfloat {                                                              float a; };
+#line 3
+                       ATfloat ATfloat_ctor_() {ATfloat r;r.a=0.0f;return r;}
 #line 5
 )";
     string error;
@@ -715,6 +786,9 @@ template<> struct A<float>{
            struct ATfloat{
     float a;
 };
+#line 2
+                                 ATfloat ATfloat_ctor_() {ATfloat r;r.a=0.0f;return r;}
+#line 5
 )";
     string error;
     string output = process_test_string(input, error);
@@ -985,9 +1059,13 @@ struct SRT {
                            T  a;
 #line 12
 };
+
 #ifndef GPU_METAL
+SRT SRT_ctor_();
 SRT SRT_new_();
 #endif
+#line 2
+                   SRT SRT_ctor_() {SRT r;r.a=T_ctor_();return r;}
 #line 5
        SRT SRT_new_()
 {
@@ -1074,15 +1152,19 @@ struct SRT {
                            T  a;
 #line 16
 };
+
 #ifndef GPU_METAL
-void _method(_ref(SRT ,this_), int t);
+SRT SRT_ctor_();
+void _method(SRT  this_, int t);
 SRT SRT_new_();
 #endif
+#line 2
+                   SRT SRT_ctor_() {SRT r;r.a=T_ctor_();return r;}
 #line 5
 
 #if defined(CREATE_INFO_SRT)
 #line 5
-  void _method(_ref(SRT ,this_), int t) {
+  void _method(SRT  this_, int t) {
     srt_access(SRT, a);
   }
 #endif
@@ -1141,7 +1223,7 @@ void func([[resource_table]] Resources &srt)
 
 #if defined(CREATE_INFO_Resources)
 #line 2
-void func(_ref(Resources ,srt))
+void func(Resources  srt)
 {
 
 #if SRT_CONSTANT_use_color_band
@@ -1151,9 +1233,9 @@ void func(_ref(Resources ,srt))
   }
 #endif
 
-#if SRT_CONSTANT_use_color_band== 1
+#if SRT_CONSTANT_use_color_band == 1
 #line 8
-                                                                   {
+                                                                    {
     test;
   }
 #else
@@ -1272,7 +1354,9 @@ int func2(int a)
 )";
     string expect = R"(
 
-struct A_S {int _pad;};
+struct A_S {                                                 int _pad;};
+#line 3
+                   A_S A_S_ctor_() {A_S r;r._pad=0;return r;}
 int A_func(int a)
 {
   A_S s;
@@ -1325,17 +1409,26 @@ int A_B_func2(int a)
   {
     string input = R"(
 namespace A {
+void a() {}
 namespace B {
-int func(int a)
-{
-  return a;
+void b() { a(); }
 }
+void f() { B::b(); }
 }
-}
+)";
+    string expect = R"(
+
+void A_a() {}
+
+void A_B_b() { A_a(); }
+
+void A_f() { A_B_b(); }
+
 )";
     string error;
     string output = process_test_string(input, error);
-    EXPECT_EQ(error, "Nested namespaces are unsupported.");
+    EXPECT_EQ(output, expect);
+    EXPECT_EQ(error, "");
   }
   {
     string input = R"(
@@ -1409,7 +1502,9 @@ void test() {
     string expect = R"(
 
 void A_B_func() {}
-struct A_B_S {int _pad;};
+struct A_B_S {                                                       int _pad;};
+#line 4
+                     A_B_S A_B_S_ctor_() {A_B_S r;r._pad=0;return r;}
 #line 9
 void A_B_test() {
   A_B_S s;
@@ -1518,12 +1613,14 @@ struct S {
 struct NS_S {
 #line 11
 int _pad;};
-
+#line 14
 #ifndef GPU_METAL
+NS_S NS_S_ctor_();
 NS_S NS_S_static_method(NS_S s);
 NS_S _other_method(_ref(NS_S ,this_), int s);
 #endif
-#line 4
+#line 3
+                    NS_S NS_S_ctor_() {NS_S r;r._pad=0;return r;}
          NS_S NS_S_static_method(NS_S s) {
     return NS_S(0);
   }
@@ -1569,9 +1666,69 @@ enum class enum_class : int {
 };
 )";
     string expect = R"(
-#define enum_class int
+#line 3
 constant static constexpr int enum_class_VALUE = 0;
-#line 5
+
+#define enum_class int
+#line 2
+
+enum_class enum_class_ctor_() { return enum_class(0); }
+#line 2
+
+
+
+)";
+    string error;
+    string output = process_test_string(input, error);
+    EXPECT_EQ(output, expect);
+    EXPECT_EQ(error, "");
+  }
+
+  {
+    string input = R"(
+enum E : int { A, B = 2, C, D = 1, E };
+)";
+    string expect = R"(
+constant static constexpr int A = 0;
+#line 2
+constant static constexpr int B = 2;
+#line 2
+constant static constexpr int C = B + 1;
+#line 2
+constant static constexpr int D = 1;
+#line 2
+constant static constexpr int E = D + 1;
+
+#define E int
+#line 2
+
+E E_ctor_() { return E(0); }
+#line 2
+
+)";
+    string error;
+    string output = process_test_string(input, error);
+    EXPECT_EQ(output, expect);
+    EXPECT_EQ(error, "");
+  }
+  {
+    string input = R"(
+enum class enum_class : int {
+  VALUE = 0,
+};
+)";
+    string expect = R"(
+#line 3
+constant static constexpr int enum_class_VALUE = 0;
+
+#define enum_class int
+#line 2
+
+enum_class enum_class_ctor_() { return enum_class(0); }
+#line 2
+
+
+
 )";
     string error;
     string output = process_test_string(input, error);
@@ -1601,7 +1758,7 @@ static void test_preprocess_matrix_constructors()
     string input = R"(mat3(a); mat3 a; my_mat4x4(a); mat2x2(a); mat3x2(a);)";
     string expect = R"(__mat3x3(a); mat3 a; my_mat4x4(a); __mat2x2(a); mat3x2(a);)";
     string error;
-    string output = process_test_string(input, error, nullptr, Preprocessor::SourceLanguage::GLSL);
+    string output = process_test_string(input, error, nullptr, Language::GLSL);
     EXPECT_EQ(output, expect);
     EXPECT_EQ(error, "");
   }
@@ -1775,15 +1932,22 @@ struct U {
 };
 )";
     string expect = R"(
-struct S {int _pad;};
-struct T {int _pad;};
+struct S {                                           int _pad;};
+#line 2
+                 S S_ctor_() {S r;r._pad=0;return r;}
+struct T {                                           int _pad;};
+#line 3
+                 T T_ctor_() {T r;r._pad=0;return r;}
 struct U {
 
 int _pad;};
+
 #ifndef GPU_METAL
+U U_ctor_();
 void U_fn();
 #endif
-#line 5
+#line 4
+                 U U_ctor_() {U r;r._pad=0;return r;}
          void U_fn() {}
 #line 7
 )";
@@ -1854,12 +2018,15 @@ struct S {
   int another_member;
 #line 29
 };
-
+#line 32
 #ifndef GPU_METAL
+S S_ctor_();
 S S_construct();
 S _function(_ref(S ,this_), int i);
 int _size(const S this_);
 #endif
+#line 2
+                 S S_ctor_() {S r;r.member=0;r.this_member=0;r.another_member=0;return r;}
 #line 8
          S S_construct()
   {
@@ -1868,15 +2035,14 @@ int _size(const S this_);
     a.this_member = 0;
     return a;
   }
-
-  #line 18
+#line 18
   S _function(_ref(S ,this_), int i)
   {
     this_.member = i;
     this_.this_member++;
     return this_;
   }
-
+#line 25
   int _size(const S this_)
   {
     return this_.member;
@@ -1917,11 +2083,15 @@ struct A {
   uint b;
 #line 8
 };
+
 #ifndef GPU_METAL
+A A_ctor_();
 float _fn1(_ref(A ,this_));
 float _fn2(_ref(A ,this_));
 float A_fn3();
 #endif
+#line 2
+                 A A_ctor_() {A r;r.a=0;r.b=0u;return r;}
 #line 5
   float _fn1(_ref(A ,this_)) { return this_.a; }
   float _fn2(_ref(A ,this_)) { int fn2; return _fn1(this_); }
@@ -1989,7 +2159,7 @@ float fn([[resource_table]] SRT &srt) {
 
 #if defined(CREATE_INFO_SRT)
 #line 2
-float fn(_ref(SRT ,srt)) {
+float fn(SRT  srt) {
   return srt_access(SRT, member);
 }
 
@@ -2022,7 +2192,7 @@ float fn([[resource_table]] SRT &srt) {
 
 #if defined(CREATE_INFO_SRT)
 #line 2
-float fn(_ref(SRT ,srt)) {
+float fn(SRT  srt) {
 
   return srt_access(OtherSRT, member);
 }
@@ -2124,15 +2294,27 @@ template struct VertIn<float>;
 struct ns_VertOut {
              float3 local_pos;
 };
-
+#line 4
+                          ns_VertOut ns_VertOut_ctor_() {ns_VertOut r;r.local_pos=float3(0);return r;}
+#line 8
 struct ns_FragOut {
                     float3 color;
                               uint test;
 };
+#line 8
+                          ns_FragOut ns_FragOut_ctor_() {ns_FragOut r;r.color=float3(0);r.test=0u;return r;}
 #line 14
 struct ns_VertInTfloat {
                    float pos;
 };
+#line 14
+                               ns_VertInTfloat ns_VertInTfloat_ctor_() {ns_VertInTfloat r;r.pos=0.0f;return r;}
+#line 20
+
+#if defined(CREATE_INFO_Resources)
+#line 20
+
+#if defined(ENTRY_POINT_ns_vertex_function)
 #line 20
            void ns_vertex_function(
 #line 28
@@ -2140,7 +2322,7 @@ struct ns_VertInTfloat {
 {
 #if defined(GPU_VERTEX_SHADER)
 #line 29
-  Resources srt;
+  Resources srt = Resources_ctor_();
   gl_BaseInstance;
   gl_PointSize;
   gl_ClipDistance;
@@ -2151,14 +2333,22 @@ struct ns_VertInTfloat {
 #endif
 #line 36
 }
+#endif
+#endif
+#line 38
 
+#if defined(CREATE_INFO_Resources)
+#line 38
+
+#if defined(ENTRY_POINT_ns_fragment_function)
+#line 38
              void ns_fragment_function(
 #line 47
                                                                            )
 {
 #if defined(GPU_FRAGMENT_SHADER)
 #line 48
-  Resources srt;
+  Resources srt = Resources_ctor_();
   gl_Layer;
   gl_ViewportIndex;
   gl_FragDepth;
@@ -2170,14 +2360,22 @@ struct ns_VertInTfloat {
 #endif
 #line 56
 }
+#endif
+#endif
+#line 58
 
+#if defined(CREATE_INFO_Resources)
+#line 58
+
+#if defined(ENTRY_POINT_ns_compute_function)
+#line 58
             void ns_compute_function(
 #line 63
                                                                                   )
 {
 #if defined(GPU_COMPUTE_SHADER)
 #line 64
-  Resources srt;
+  Resources srt = Resources_ctor_();
   gl_GlobalInvocationID;
   gl_LocalInvocationID;
   gl_LocalInvocationIndex;
@@ -2187,10 +2385,11 @@ struct ns_VertInTfloat {
 #endif
 #line 70
 }
-
-
+#endif
+#endif
 )";
     string expect_infos = R"(#pragma once
+
 
 
 GPU_SHADER_CREATE_INFO(ns_VertInTfloat)
@@ -2207,7 +2406,6 @@ GPU_SHADER_CREATE_END()
 GPU_SHADER_INTERFACE_INFO(ns_VertOut_t)
 SMOOTH(float3, ns_VertOut_local_pos)
 GPU_SHADER_INTERFACE_END()
-
 
 
 
@@ -2288,7 +2486,7 @@ PipelineCompute compute_pipe(compute_func, Type{.a = true, .b = 8, .c = 7u});
 
 
 GPU_SHADER_CREATE_INFO(ns_graphic_pipe)
-GRAPHIC_SOURCE("test.glsl")
+GRAPHIC_SOURCE("test.bsl")
 VERTEX_FUNCTION("vertex_func")
 FRAGMENT_FUNCTION("fragment_func")
 ADDITIONAL_INFO(vertex_func_infos_)
@@ -2300,7 +2498,7 @@ DO_STATIC_COMPILATION()
 GPU_SHADER_CREATE_END()
 
 GPU_SHADER_CREATE_INFO(ns_compute_pipe)
-COMPUTE_SOURCE("test.glsl")
+COMPUTE_SOURCE("test.bsl")
 COMPUTE_FUNCTION("compute_func")
 ADDITIONAL_INFO(compute_func_infos_)
 COMPILATION_CONSTANT(bool, a, true)
@@ -2354,20 +2552,20 @@ void fn() {
 T fn1() { return _ctor(T) 1, 2 _rotc() ; }
 T fn2() { return _ctor(T) 1, 2   _rotc() ; }
 T fn3() { {T _tmp ;    _tmp.a=1;  _tmp.b=2;   return T_tmp;}; }
-T fn4() { {T _tmp ;    _tmp.a=1;  _tmp.b=2;     return T_tmp;}; }
+T fn4() { {T _tmp ;    _tmp.a=1;  _tmp.b=2  ;   return T_tmp;}; }
 T fn5() { return _ctor(T) 1, 2 _rotc() ; }
 T fn6() { return _ctor(T) 1, 2   _rotc() ; }
 T fn7() { {T _tmp ;    _tmp.a=1;  _tmp.b=2;   return _tmp;}; }
-T fn8() { {T _tmp ;    _tmp.a=1;  _tmp.b=2;     return _tmp;}; }
+T fn8() { {T _tmp ;    _tmp.a=1;  _tmp.b=2  ;   return _tmp;}; }
 void fn() {
   T t1=_ctor(T) 1, 2 _rotc() ;
   T t2=_ctor(T) 1, 2   _rotc() ;
   T t3;   t3.a=1;  t3.b=2;
-  T t4;   t4.a=1;  t4.b=2;
+  T t4;   t4.a=1;  t4.b=2  ;
   T t5=_ctor(T) 1, 2 _rotc() ;
   T t6=_ctor(T) 1, 2   _rotc() ;
   T t7;   t7.a=1;  t7.b=2;
-  T t8;   t8.a=1;  t8.b=2;
+  T t8;   t8.a=1;  t8.b=2  ;
   T t9;   t9.a=1;  t9.b=_ctor(T) 0, 2 _rotc() .x;
   T t10=_ctor(T) 1, _ctor(T) 0, 2 _rotc() .x _rotc() ;
 }

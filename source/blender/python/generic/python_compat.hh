@@ -14,6 +14,9 @@
 
 #include <Python.h>
 
+/* This code is not placed in the blender namespace, as it is meant to replace Python functions
+ * in the global namespace. */
+
 /* Removes `initialized` member from Python 3.13+. */
 #if PY_VERSION_HEX >= 0x030d0000
 #  define PY_ARG_PARSER_HEAD_COMPAT()

@@ -37,6 +37,7 @@
 #include "IMB_imbuf_enums.h"
 
 #include "SEQ_channels.hh"
+#include "SEQ_retiming.hh"
 #include "WM_api.hh"
 #include "WM_types.hh"
 
@@ -156,7 +157,7 @@ static bool sequencer_add_draw_check_fn(PointerRNA *ptr, PropertyRNA *prop, void
                    "use_sequence_detection");
 }
 
-static void sequencer_add_draw(bContext * /*C*/, wmOperator *op)
+static void sequencer_add_ui(bContext * /*C*/, wmOperator *op)
 {
   ui::Layout &layout = *op->layout;
   SequencerAddData *sad = static_cast<SequencerAddData *>(op->customdata);
@@ -321,7 +322,7 @@ static void sequencer_generic_invoke_path__internal(bContext *C,
 
 static int find_unlocked_unmuted_channel(const Editing *ed, int channel_index)
 {
-  const ListBase *channels = seq::channels_displayed_get(ed);
+  const ListBaseT<SeqTimelineChannel> *channels = seq::channels_displayed_get(ed);
 
   while (channel_index < seq::MAX_CHANNELS) {
     SeqTimelineChannel *channel = seq::channel_get_by_index(channels, channel_index);
@@ -346,12 +347,12 @@ static int sequencer_generic_invoke_xy_guess_channel(bContext *C, int type)
     return 1;
   }
 
-  LISTBASE_FOREACH (Strip *, strip, ed->current_strips()) {
-    const int strip_end = strip->right_handle(scene);
-    if (ELEM(type, -1, strip->type) && (strip_end <= timeline_frame) &&
+  for (Strip &strip : *ed->current_strips()) {
+    const int strip_end = strip.right_handle(scene);
+    if (ELEM(type, -1, strip.type) && (strip_end <= timeline_frame) &&
         (timeline_frame - strip_end < proximity))
     {
-      tgt = strip;
+      tgt = &strip;
       proximity = timeline_frame - strip_end;
     }
   }
@@ -368,14 +369,14 @@ static int sequencer_generic_invoke_xy_guess_channel(bContext *C, int type)
 
 static bool have_free_channels(bContext *C,
                                wmOperator *op,
-                               int need_channels,
+                               const int needed_channels,
                                const char **r_error_msg)
 {
   const int channel = RNA_int_get(op->ptr, "channel");
   const int frame_start = RNA_int_get(op->ptr, "frame_start");
 
   /* First check simple case - strip is added to very top of timeline. */
-  const int max_channel = seq::MAX_CHANNELS - need_channels + 1;
+  const int max_channel = seq::MAX_CHANNELS - needed_channels + 1;
   if (channel > max_channel) {
     *r_error_msg = RPT_("No available channel for the current frame.");
     return false;
@@ -395,7 +396,7 @@ static bool have_free_channels(bContext *C,
     if (!used_channels.contains(i)) {
       free_channels++;
     }
-    if (free_channels == need_channels) {
+    if (free_channels == needed_channels) {
       return true;
     }
   }
@@ -630,6 +631,31 @@ static bool load_data_init_from_operator(seq::LoadData *load_data, bContext *C, 
   return true;
 }
 
+static bool sequencer_add_generic_exec(
+    bContext *C, wmOperator *op, seq::LoadData *load_data, Scene *scene, const int num_strips)
+{
+  Editing *ed = seq::editing_ensure(scene);
+
+  const char *error_msg;
+  if (!have_free_channels(C, op, num_strips, &error_msg)) {
+    BKE_report(op->reports, RPT_ERROR, error_msg);
+    return false;
+  }
+
+  /* Keeping the old selection when moving newly imported strips is unexpected and feels buggy,
+   * so we deselect when `move_strips` is set too. */
+  if (RNA_boolean_get(op->ptr, "move_strips") || RNA_boolean_get(op->ptr, "replace_sel")) {
+    deselect_all_strips(scene);
+    seq::retiming_selection_clear(ed);
+  }
+
+  if (!load_data_init_from_operator(load_data, C, op)) {
+    return false;
+  }
+
+  return true;
+}
+
 static void seq_load_apply_generic_options(bContext *C, wmOperator *op, Strip *strip)
 {
   Scene *scene = CTX_data_sequencer_scene(C);
@@ -657,8 +683,8 @@ static void seq_load_apply_generic_options(bContext *C, wmOperator *op, Strip *s
     strip_col.add(strip);
 
     ScrArea *area = CTX_wm_area(C);
-    const bool use_sync_markers = (((SpaceSeq *)area->spacedata.first)->flag & SEQ_MARKER_TRANS) !=
-                                  0;
+    const bool use_sync_markers = ((static_cast<SpaceSeq *>(area->spacedata.first))->flag &
+                                   SEQ_MARKER_TRANS) != 0;
     seq::transform_handle_overlap(scene, ed->current_strips(), strip_col, use_sync_markers);
   }
   else {
@@ -720,18 +746,10 @@ static wmOperatorStatus sequencer_add_scene_strip_exec(bContext *C, wmOperator *
     return OPERATOR_CANCELLED;
   }
 
-  const char *error_msg;
-  if (!have_free_channels(C, op, 1, &error_msg)) {
-    BKE_report(op->reports, RPT_ERROR, error_msg);
+  seq::LoadData load_data;
+  if (!sequencer_add_generic_exec(C, op, &load_data, scene, 1)) {
     return OPERATOR_CANCELLED;
   }
-
-  if (RNA_boolean_get(op->ptr, "replace_sel")) {
-    deselect_all_strips(scene);
-  }
-
-  seq::LoadData load_data;
-  load_data_init_from_operator(&load_data, C, op);
   load_data.scene = sce_seq;
 
   Strip *strip = seq::add_scene_strip(scene, ed->current_strips(), &load_data);
@@ -814,18 +832,10 @@ static wmOperatorStatus sequencer_add_scene_strip_new_exec(bContext *C, wmOperat
   Scene *scene = CTX_data_sequencer_scene(C);
   const Editing *ed = seq::editing_ensure(scene);
 
-  const char *error_msg;
-  if (!have_free_channels(C, op, 1, &error_msg)) {
-    BKE_report(op->reports, RPT_ERROR, error_msg);
+  seq::LoadData load_data;
+  if (!sequencer_add_generic_exec(C, op, &load_data, scene, 1)) {
     return OPERATOR_CANCELLED;
   }
-
-  if (RNA_boolean_get(op->ptr, "replace_sel")) {
-    deselect_all_strips(scene);
-  }
-
-  seq::LoadData load_data;
-  load_data_init_from_operator(&load_data, C, op);
 
   int type = RNA_enum_get(op->ptr, "type");
   Scene *scene_new = ED_scene_sequencer_add(bmain, C, eSceneCopyMethod(type));
@@ -931,18 +941,10 @@ static wmOperatorStatus sequencer_add_scene_asset_invoke(bContext *C,
     return OPERATOR_CANCELLED;
   }
 
-  const char *error_msg;
-  if (!have_free_channels(C, op, 1, &error_msg)) {
-    BKE_report(op->reports, RPT_ERROR, error_msg);
+  seq::LoadData load_data;
+  if (!sequencer_add_generic_exec(C, op, &load_data, scene, 1)) {
     return OPERATOR_CANCELLED;
   }
-
-  if (RNA_boolean_get(op->ptr, "replace_sel")) {
-    deselect_all_strips(scene);
-  }
-
-  seq::LoadData load_data;
-  load_data_init_from_operator(&load_data, C, op);
   load_data.scene = scene_asset;
 
   Strip *strip = seq::add_scene_strip(scene, ed->current_strips(), &load_data);
@@ -1008,18 +1010,8 @@ static wmOperatorStatus sequencer_add_movieclip_strip_exec(bContext *C, wmOperat
     return OPERATOR_CANCELLED;
   }
 
-  const char *error_msg;
-  if (!have_free_channels(C, op, 1, &error_msg)) {
-    BKE_report(op->reports, RPT_ERROR, error_msg);
-    return OPERATOR_CANCELLED;
-  }
-
-  if (RNA_boolean_get(op->ptr, "replace_sel")) {
-    deselect_all_strips(scene);
-  }
-
   seq::LoadData load_data;
-  if (!load_data_init_from_operator(&load_data, C, op)) {
+  if (!sequencer_add_generic_exec(C, op, &load_data, scene, 1)) {
     return OPERATOR_CANCELLED;
   }
   load_data.clip = clip;
@@ -1089,18 +1081,10 @@ static wmOperatorStatus sequencer_add_mask_strip_exec(bContext *C, wmOperator *o
     return OPERATOR_CANCELLED;
   }
 
-  const char *error_msg;
-  if (!have_free_channels(C, op, 1, &error_msg)) {
-    BKE_report(op->reports, RPT_ERROR, error_msg);
+  seq::LoadData load_data;
+  if (!sequencer_add_generic_exec(C, op, &load_data, scene, 1)) {
     return OPERATOR_CANCELLED;
   }
-
-  if (RNA_boolean_get(op->ptr, "replace_sel")) {
-    deselect_all_strips(scene);
-  }
-
-  seq::LoadData load_data;
-  load_data_init_from_operator(&load_data, C, op);
   load_data.mask = mask;
 
   Strip *strip = seq::add_mask_strip(scene, ed->current_strips(), &load_data);
@@ -1162,11 +1146,11 @@ static IMB_Proxy_Size seq_get_proxy_size_flags(bContext *C)
 {
   bScreen *screen = CTX_wm_screen(C);
   IMB_Proxy_Size proxy_sizes = IMB_PROXY_NONE;
-  LISTBASE_FOREACH (ScrArea *, area, &screen->areabase) {
-    LISTBASE_FOREACH (SpaceLink *, sl, &area->spacedata) {
-      switch (sl->spacetype) {
+  for (ScrArea &area : screen->areabase) {
+    for (SpaceLink &sl : area.spacedata) {
+      switch (sl.spacetype) {
         case SPACE_SEQ: {
-          SpaceSeq *sseq = (SpaceSeq *)sl;
+          SpaceSeq *sseq = reinterpret_cast<SpaceSeq *>(&sl);
           if (!ELEM(sseq->view, SEQ_VIEW_PREVIEW, SEQ_VIEW_SEQUENCE_PREVIEW)) {
             continue;
           }
@@ -1289,7 +1273,7 @@ static void sequencer_add_movie_multiple_strips(bContext *C,
   if (overlap_shuffle_override) {
     if (has_seq_overlap) {
       ScrArea *area = CTX_wm_area(C);
-      const bool use_sync_markers = (((SpaceSeq *)area->spacedata.first)->flag &
+      const bool use_sync_markers = ((static_cast<SpaceSeq *>(area->spacedata.first))->flag &
                                      SEQ_MARKER_TRANS) != 0;
       seq::transform_handle_overlap(scene, ed->current_strips(), added_strips, use_sync_markers);
     }
@@ -1345,7 +1329,7 @@ static bool sequencer_add_movie_single_strip(bContext *C,
 
     if (has_seq_overlap) {
       ScrArea *area = CTX_wm_area(C);
-      const bool use_sync_markers = (((SpaceSeq *)area->spacedata.first)->flag &
+      const bool use_sync_markers = ((static_cast<SpaceSeq *>(area->spacedata.first))->flag &
                                      SEQ_MARKER_TRANS) != 0;
       seq::transform_handle_overlap(scene, ed->current_strips(), added_strips, use_sync_markers);
     }
@@ -1372,22 +1356,10 @@ static wmOperatorStatus sequencer_add_movie_strip_exec(bContext *C, wmOperator *
 
   Main *bmain = CTX_data_main(C);
   Scene *scene = CTX_data_sequencer_scene(C);
+
   seq::LoadData load_data;
-
-  if (!load_data_init_from_operator(&load_data, C, op)) {
+  if (!sequencer_add_generic_exec(C, op, &load_data, scene, 2)) {
     return OPERATOR_CANCELLED;
-  }
-
-  sequencer_generic_invoke_xy__internal(C, op, SEQPROP_NOPATHS, STRIP_TYPE_MOVIE, nullptr);
-
-  const char *error_msg;
-  if (!have_free_channels(C, op, 2, &error_msg)) {
-    BKE_report(op->reports, RPT_ERROR, error_msg);
-    return OPERATOR_CANCELLED;
-  }
-
-  if (RNA_boolean_get(op->ptr, "replace_sel")) {
-    deselect_all_strips(scene);
   }
 
   VectorSet<Strip *> movie_strips;
@@ -1488,7 +1460,7 @@ void SEQUENCER_OT_movie_strip_add(wmOperatorType *ot)
   ot->invoke = sequencer_add_movie_strip_invoke;
   ot->exec = sequencer_add_movie_strip_exec;
   ot->cancel = sequencer_add_free;
-  ot->ui = sequencer_add_draw;
+  ot->ui = sequencer_add_ui;
   ot->poll = ED_operator_sequencer_active_editable;
 
   /* Flags. */
@@ -1571,17 +1543,10 @@ static wmOperatorStatus sequencer_add_sound_strip_exec(bContext *C, wmOperator *
 
   Main *bmain = CTX_data_main(C);
   Scene *scene = CTX_data_sequencer_scene(C);
+
   seq::LoadData load_data;
-  load_data_init_from_operator(&load_data, C, op);
-
-  const char *error_msg;
-  if (!have_free_channels(C, op, 1, &error_msg)) {
-    BKE_report(op->reports, RPT_ERROR, error_msg);
+  if (!sequencer_add_generic_exec(C, op, &load_data, scene, 1)) {
     return OPERATOR_CANCELLED;
-  }
-
-  if (RNA_boolean_get(op->ptr, "replace_sel")) {
-    deselect_all_strips(scene);
   }
 
   const int tot_files = RNA_property_collection_length(op->ptr,
@@ -1645,6 +1610,7 @@ void SEQUENCER_OT_sound_strip_add(wmOperatorType *ot)
   /* API callbacks. */
   ot->invoke = sequencer_add_sound_strip_invoke;
   ot->exec = sequencer_add_sound_strip_exec;
+  ot->ui = sequencer_add_ui;
   ot->poll = ED_operator_sequencer_active_editable;
   ot->cancel = sequencer_add_free;
 
@@ -1765,10 +1731,10 @@ static void sequencer_add_image_strip_load_files(wmOperator *op,
   }
   else {
     size_t strip_frame = 0;
-    LISTBASE_FOREACH (ImageFrame *, frame, &range->frames) {
+    for (ImageFrame &frame : range->frames) {
       char filename[FILE_MAX];
       frame_filename_set(
-          filename, sizeof(filename), filename_stripped, frame->framenr, numdigits, ext);
+          filename, sizeof(filename), filename_stripped, frame.framenr, numdigits, ext);
       seq::add_image_load_file(scene, strip, strip_frame, filename);
       strip_frame++;
     }
@@ -1797,10 +1763,6 @@ static bool sequencer_add_image_sequence_force(bContext *C,
     return false;
   }
 
-  if (RNA_boolean_get(op->ptr, "replace_sel")) {
-    deselect_all_strips(scene);
-  }
-
   Strip *strip = seq::add_image_strip(bmain, scene, ed->current_strips(), &load_data);
   char dirpath[sizeof(strip->data->dirpath)];
   BLI_path_split_dir_part(load_data.path, dirpath, sizeof(dirpath));
@@ -1815,9 +1777,6 @@ static bool sequencer_add_image_sequence_force(bContext *C,
   RNA_END;
 
   seq::add_image_init_alpha_mode(bmain, scene, strip);
-  if (load_data.image.count == 1) {
-    strip->right_handle_set(scene, load_data.start_frame + load_data.image.length);
-  }
   seq_load_apply_generic_options(C, op, strip);
   return true;
 }
@@ -1829,26 +1788,22 @@ static bool sequencer_add_images(bContext *C, wmOperator *op, seq::LoadData &loa
   Editing *ed = seq::editing_ensure(scene);
 
   const char *blendfile_path = BKE_main_blendfile_path(bmain);
-  ListBase ranges = ED_image_filesel_detect_sequences(blendfile_path, blendfile_path, op, false);
+  ListBaseT<ImageFrameRange> ranges = ED_image_filesel_detect_sequences(
+      blendfile_path, blendfile_path, op, false);
   if (BLI_listbase_is_empty(&ranges)) {
     sequencer_add_free(C, op);
     return false;
   }
 
-  if (RNA_boolean_get(op->ptr, "replace_sel")) {
-    deselect_all_strips(scene);
-  }
-
   const bool use_placeholders = RNA_boolean_get(op->ptr, "use_placeholders");
-  LISTBASE_FOREACH (ImageFrameRange *, range, &ranges) {
+  for (ImageFrameRange &range : ranges) {
     /* Populate `load_data` with data from `range`. */
-    load_data.image.count = use_placeholders ? range->max_framenr - range->offset + 1 :
-                                               BLI_listbase_count(&range->frames);
-    STRNCPY(load_data.path, range->filepath);
+    load_data.image.count = use_placeholders ? range.max_framenr - range.offset + 1 :
+                                               BLI_listbase_count(&range.frames);
+    STRNCPY(load_data.path, range.filepath);
     BLI_path_split_file_part(load_data.path, load_data.name, sizeof(load_data.name));
 
     Strip *strip = seq::add_image_strip(bmain, scene, ed->current_strips(), &load_data);
-    const bool is_sequence = !seq::transform_single_image_check(strip);
 
     char dirpath[sizeof(strip->data->dirpath)];
     BLI_path_split_dir_part(load_data.path, dirpath, sizeof(dirpath));
@@ -1856,19 +1811,14 @@ static bool sequencer_add_images(bContext *C, wmOperator *op, seq::LoadData &loa
 
     /* Set `StripElem` filenames, one for each `ImageFrame` in this range, or if `use_placeholders`
      * is set, every frame between `offset` and `max_framenr` . */
-    sequencer_add_image_strip_load_files(op, scene, strip, &load_data, range);
+    sequencer_add_image_strip_load_files(op, scene, strip, &load_data, &range);
 
     seq::add_image_init_alpha_mode(bmain, scene, strip);
 
-    /* Adjust starting length of strip.
-     * Note that this length differs from `strip->len`, which is always 1 for single images. */
-    if (!is_sequence) {
-      strip->right_handle_set(scene, load_data.start_frame + load_data.image.length);
-    }
-
     seq_load_apply_generic_options(C, op, strip);
-    load_data.start_frame += is_sequence ? load_data.image.count : load_data.image.length;
-    BLI_freelistN(&range->frames);
+    load_data.start_frame += seq::transform_single_image_check(strip) ? load_data.image.length :
+                                                                        load_data.image.count;
+    BLI_freelistN(&range.frames);
   }
   BLI_freelistN(&ranges);
   return true;
@@ -1879,13 +1829,7 @@ static wmOperatorStatus sequencer_add_image_strip_exec(bContext *C, wmOperator *
   Scene *scene = CTX_data_sequencer_scene(C);
 
   seq::LoadData load_data;
-  if (!load_data_init_from_operator(&load_data, C, op)) {
-    return OPERATOR_CANCELLED;
-  }
-
-  const char *error_msg;
-  if (!have_free_channels(C, op, 1, &error_msg)) {
-    BKE_report(op->reports, RPT_ERROR, error_msg);
+  if (!sequencer_add_generic_exec(C, op, &load_data, scene, 1)) {
     return OPERATOR_CANCELLED;
   }
 
@@ -1900,7 +1844,8 @@ static wmOperatorStatus sequencer_add_image_strip_exec(bContext *C, wmOperator *
     }
   }
   else {
-    /* Note that `use_sequence_detection` is false for `ImageImport::Individual`.*/
+    /* Note that `use_sequence_detection` is false when import type is `ImageImport::Individual`.
+     * This is used by `ED_image_filesel_detect_sequences`, called from `sequencer_add_images`. */
     RNA_boolean_set(op->ptr, "use_sequence_detection", import_type == ImageImport::Detect);
     if (!sequencer_add_images(C, op, load_data)) {
       return OPERATOR_CANCELLED;
@@ -1972,7 +1917,7 @@ void SEQUENCER_OT_image_strip_add(wmOperatorType *ot)
   ot->invoke = sequencer_add_image_strip_invoke;
   ot->exec = sequencer_add_image_strip_exec;
   ot->cancel = sequencer_add_free;
-  ot->ui = sequencer_add_draw;
+  ot->ui = sequencer_add_ui;
   ot->poll = ED_operator_sequencer_active_editable;
 
   /* Flags. */
@@ -2024,14 +1969,10 @@ static wmOperatorStatus sequencer_add_effect_strip_exec(bContext *C, wmOperator 
   Scene *scene = CTX_data_sequencer_scene(C);
   Editing *ed = seq::editing_ensure(scene);
 
-  const char *error;
-  if (!have_free_channels(C, op, 1, &error)) {
-    BKE_report(op->reports, RPT_ERROR, error);
+  seq::LoadData load_data;
+  if (!sequencer_add_generic_exec(C, op, &load_data, scene, 1)) {
     return OPERATOR_CANCELLED;
   }
-
-  seq::LoadData load_data;
-  load_data_init_from_operator(&load_data, C, op);
   load_data.effect.type = StripType(RNA_enum_get(op->ptr, "type"));
   const int num_inputs = seq::effect_get_num_inputs(load_data.effect.type);
 
@@ -2041,10 +1982,6 @@ static wmOperatorStatus sequencer_add_effect_strip_exec(bContext *C, wmOperator 
   if (!error_msg.is_empty()) {
     BKE_report(op->reports, RPT_ERROR, error_msg.data());
     return OPERATOR_CANCELLED;
-  }
-
-  if (RNA_boolean_get(op->ptr, "replace_sel")) {
-    deselect_all_strips(scene);
   }
 
   Strip *input1 = inputs.size() > 0 ? inputs[0] : nullptr;
@@ -2067,7 +2004,7 @@ static wmOperatorStatus sequencer_add_effect_strip_exec(bContext *C, wmOperator 
   seq_load_apply_generic_options(C, op, strip);
 
   if (strip->type == STRIP_TYPE_COLOR) {
-    SolidColorVars *colvars = (SolidColorVars *)strip->effectdata;
+    SolidColorVars *colvars = static_cast<SolidColorVars *>(strip->effectdata);
     RNA_float_get_array(op->ptr, "color", colvars->col);
   }
 

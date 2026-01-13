@@ -15,7 +15,6 @@
 #include "BLT_translation.hh"
 
 #include "DNA_cachefile_types.h"
-#include "DNA_defaults.h"
 #include "DNA_mesh_types.h"
 #include "DNA_modifier_types.h"
 #include "DNA_object_types.h"
@@ -57,19 +56,13 @@
 #  include "usd.hh"
 #endif
 
-using namespace blender;
+namespace blender {
 
 static void init_data(ModifierData *md)
 {
   MeshSeqCacheModifierData *mcmd = reinterpret_cast<MeshSeqCacheModifierData *>(md);
-
-  BLI_assert(MEMCMP_STRUCT_AFTER_IS_ZERO(mcmd, modifier));
-
-  mcmd->cache_file = nullptr;
-  mcmd->object_path[0] = '\0';
+  INIT_DEFAULT_STRUCT_AFTER(mcmd, modifier);
   mcmd->read_flag = MOD_MESHSEQ_READ_ALL;
-
-  MEMCPY_STRUCT_AFTER(mcmd, DNA_struct_default_get(MeshSeqCacheModifierData), modifier);
 }
 
 static void copy_data(const ModifierData *md, ModifierData *target, const int flag)
@@ -77,7 +70,7 @@ static void copy_data(const ModifierData *md, ModifierData *target, const int fl
 #if 0
   const MeshSeqCacheModifierData *mcmd = (const MeshSeqCacheModifierData *)md;
 #endif
-  MeshSeqCacheModifierData *tmcmd = (MeshSeqCacheModifierData *)target;
+  MeshSeqCacheModifierData *tmcmd = reinterpret_cast<MeshSeqCacheModifierData *>(target);
 
   BKE_modifier_copydata_generic(md, target, flag);
 
@@ -133,7 +126,7 @@ static bool can_use_mesh_for_orco_evaluation(MeshSeqCacheModifierData *mcmd,
       break;
     case CACHEFILE_TYPE_USD:
 #  ifdef WITH_USD
-      if (!blender::io::usd::USD_mesh_topology_changed(
+      if (!io::usd::USD_mesh_topology_changed(
               mcmd->reader, ctx->object, mesh, frame_offset, r_err_str))
       {
         return true;
@@ -205,10 +198,9 @@ static void modify_geometry_set(ModifierData *md,
     }
     case CACHEFILE_TYPE_USD: {
 #  ifdef WITH_USD
-      const blender::io::usd::USDMeshReadParams params = blender::io::usd::create_mesh_read_params(
-          frame_offset, mcmd->read_flag);
-      blender::io::usd::USD_read_geometry(
-          mcmd->reader, ctx->object, *geometry_set, params, &err_str);
+      const io::usd::USDMeshReadParams params = io::usd::create_mesh_read_params(frame_offset,
+                                                                                 mcmd->read_flag);
+      io::usd::USD_read_geometry(mcmd->reader, ctx->object, *geometry_set, params, &err_str);
 #  endif
       break;
     }
@@ -232,7 +224,7 @@ static Mesh *modify_mesh(ModifierData *md, const ModifierEvalContext *ctx, Mesh 
   MeshSeqCacheModifierData *mcmd = reinterpret_cast<MeshSeqCacheModifierData *>(md);
 
   /* Only used to check whether we are operating on org data or not... */
-  Mesh *object_mesh = (ctx->object->type == OB_MESH) ? static_cast<Mesh *>(ctx->object->data) :
+  Mesh *object_mesh = (ctx->object->type == OB_MESH) ? id_cast<Mesh *>(ctx->object->data) :
                                                        nullptr;
   Mesh *org_mesh = mesh;
 
@@ -262,10 +254,10 @@ static Mesh *modify_mesh(ModifierData *md, const ModifierEvalContext *ctx, Mesh 
 
   if (object_mesh != nullptr) {
     const Span<float3> mesh_positions = mesh->vert_positions();
-    const Span<blender::int2> mesh_edges = mesh->edges();
+    const Span<int2> mesh_edges = mesh->edges();
     const OffsetIndices mesh_faces = mesh->faces();
     const Span<float3> me_positions = object_mesh->vert_positions();
-    const Span<blender::int2> me_edges = object_mesh->edges();
+    const Span<int2> me_edges = object_mesh->edges();
     const OffsetIndices me_faces = object_mesh->faces();
 
     /* TODO(sybren+bastien): possibly check relevant custom data layers (UV/color depending on
@@ -367,7 +359,7 @@ static void velocity_panel_draw(const bContext * /*C*/, Panel *panel)
   PointerRNA *ptr = modifier_panel_get_property_pointers(panel, &ob_ptr);
 
   PointerRNA fileptr;
-  if (!blender::ui::template_cache_file_pointer(ptr, "cache_file", &fileptr)) {
+  if (!ui::template_cache_file_pointer(ptr, "cache_file", &fileptr)) {
     return;
   }
 
@@ -384,7 +376,7 @@ static void time_panel_draw(const bContext * /*C*/, Panel *panel)
   PointerRNA *ptr = modifier_panel_get_property_pointers(panel, &ob_ptr);
 
   PointerRNA fileptr;
-  if (!blender::ui::template_cache_file_pointer(ptr, "cache_file", &fileptr)) {
+  if (!ui::template_cache_file_pointer(ptr, "cache_file", &fileptr)) {
     return;
   }
 
@@ -400,7 +392,7 @@ static void override_layers_panel_draw(const bContext *C, Panel *panel)
   PointerRNA *ptr = modifier_panel_get_property_pointers(panel, &ob_ptr);
 
   PointerRNA fileptr;
-  if (!blender::ui::template_cache_file_pointer(ptr, "cache_file", &fileptr)) {
+  if (!ui::template_cache_file_pointer(ptr, "cache_file", &fileptr)) {
     return;
   }
 
@@ -466,3 +458,5 @@ ModifierTypeInfo modifierType_MeshSequenceCache = {
     /*foreach_cache*/ nullptr,
     /*foreach_working_space_color*/ nullptr,
 };
+
+}  // namespace blender

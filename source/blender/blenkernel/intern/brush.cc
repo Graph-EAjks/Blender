@@ -15,7 +15,6 @@
 
 #include "DNA_ID.h"
 #include "DNA_brush_types.h"
-#include "DNA_defaults.h"
 #include "DNA_material_types.h"
 #include "DNA_scene_types.h"
 
@@ -52,12 +51,12 @@
 
 #include "BLO_read_write.hh"
 
+namespace blender {
+
 static void brush_init_data(ID *id)
 {
   Brush *brush = reinterpret_cast<Brush *>(id);
-  BLI_assert(MEMCMP_STRUCT_AFTER_IS_ZERO(brush, id));
-
-  MEMCPY_STRUCT_AFTER(brush, DNA_struct_default_get(Brush), id);
+  INIT_DEFAULT_STRUCT_AFTER(brush, id);
 
   /* enable fake user by default */
   id_fake_user_set(&brush->id);
@@ -104,8 +103,8 @@ static void brush_copy_data(Main * /*bmain*/,
   brush_dst->curve_jitter = BKE_curvemapping_copy(brush_src->curve_jitter);
 
   if (brush_src->gpencil_settings != nullptr) {
-    brush_dst->gpencil_settings = MEM_dupallocN<BrushGpencilSettings>(
-        __func__, *(brush_src->gpencil_settings));
+    brush_dst->gpencil_settings = MEM_new_for_free<BrushGpencilSettings>(
+        __func__, dna::shallow_copy(*(brush_src->gpencil_settings)));
     brush_dst->gpencil_settings->curve_sensitivity = BKE_curvemapping_copy(
         brush_src->gpencil_settings->curve_sensitivity);
     brush_dst->gpencil_settings->curve_strength = BKE_curvemapping_copy(
@@ -127,7 +126,7 @@ static void brush_copy_data(Main * /*bmain*/,
         brush_src->gpencil_settings->curve_rand_value);
   }
   if (brush_src->curves_sculpt_settings != nullptr) {
-    brush_dst->curves_sculpt_settings = MEM_dupallocN<BrushCurvesSculptSettings>(
+    brush_dst->curves_sculpt_settings = MEM_new_for_free<BrushCurvesSculptSettings>(
         __func__, *(brush_src->curves_sculpt_settings));
     brush_dst->curves_sculpt_settings->curve_parameter_falloff = BKE_curvemapping_copy(
         brush_src->curves_sculpt_settings->curve_parameter_falloff);
@@ -275,7 +274,7 @@ static void brush_blend_write(BlendWriter *writer, ID *id, const void *id_addres
   }
 
   if (brush->gpencil_settings) {
-    BLO_write_struct(writer, BrushGpencilSettings, brush->gpencil_settings);
+    writer->write_struct(brush->gpencil_settings);
 
     if (brush->gpencil_settings->curve_sensitivity) {
       BKE_curvemapping_blend_write(writer, brush->gpencil_settings->curve_sensitivity);
@@ -306,11 +305,11 @@ static void brush_blend_write(BlendWriter *writer, ID *id, const void *id_addres
     }
   }
   if (brush->curves_sculpt_settings) {
-    BLO_write_struct(writer, BrushCurvesSculptSettings, brush->curves_sculpt_settings);
+    writer->write_struct(brush->curves_sculpt_settings);
     BKE_curvemapping_blend_write(writer, brush->curves_sculpt_settings->curve_parameter_falloff);
   }
   if (brush->gradient) {
-    BLO_write_struct(writer, ColorBand, brush->gradient);
+    writer->write_struct(brush->gradient);
   }
 
   BKE_previewimg_blend_write(writer, brush->preview);
@@ -472,7 +471,6 @@ static void brush_blend_read_after_liblink(BlendLibReader * /*reader*/, ID *id)
 
 static void brush_asset_metadata_ensure(void *asset_ptr, AssetMetaData *asset_data)
 {
-  using namespace blender;
   using namespace blender::bke;
 
   Brush *brush = reinterpret_cast<Brush *>(asset_ptr);
@@ -570,12 +568,11 @@ void BKE_brush_system_exit()
 
 static void brush_defaults(Brush *brush)
 {
-
-  const Brush *brush_def = DNA_struct_default_get(Brush);
+  const Brush brush_def = {};
 
 #define FROM_DEFAULT(member) \
-  memcpy((void *)&brush->member, (void *)&brush_def->member, sizeof(brush->member))
-#define FROM_DEFAULT_PTR(member) memcpy(brush->member, brush_def->member, sizeof(brush->member))
+  memcpy((void *)&brush->member, (void *)&brush_def.member, sizeof(brush->member))
+#define FROM_DEFAULT_PTR(member) memcpy(brush->member, brush_def.member, sizeof(brush->member))
 
   FROM_DEFAULT(blend);
   FROM_DEFAULT(flag);
@@ -648,7 +645,7 @@ Brush *BKE_brush_add(Main *bmain, const char *name, const eObjectMode ob_mode)
 void BKE_brush_init_gpencil_settings(Brush *brush)
 {
   if (brush->gpencil_settings == nullptr) {
-    brush->gpencil_settings = MEM_callocN<BrushGpencilSettings>("BrushGpencilSettings");
+    brush->gpencil_settings = MEM_new_for_free<BrushGpencilSettings>("BrushGpencilSettings");
   }
 
   brush->gpencil_settings->draw_smoothlvl = 1;
@@ -748,7 +745,7 @@ Brush *BKE_brush_duplicate(Main *bmain,
 void BKE_brush_init_curves_sculpt_settings(Brush *brush)
 {
   if (brush->curves_sculpt_settings == nullptr) {
-    brush->curves_sculpt_settings = MEM_callocN<BrushCurvesSculptSettings>(__func__);
+    brush->curves_sculpt_settings = MEM_new_for_free<BrushCurvesSculptSettings>(__func__);
   }
   BrushCurvesSculptSettings *settings = brush->curves_sculpt_settings;
   settings->flag = BRUSH_CURVES_SCULPT_FLAG_INTERPOLATE_RADIUS;
@@ -770,9 +767,9 @@ void BKE_brush_tag_unsaved_changes(Brush *brush)
 
 Brush *BKE_brush_first_search(Main *bmain, const eObjectMode ob_mode)
 {
-  LISTBASE_FOREACH (Brush *, brush, &bmain->brushes) {
-    if (brush->ob_mode & ob_mode) {
-      return brush;
+  for (Brush &brush : bmain->brushes) {
+    if (brush.ob_mode & ob_mode) {
+      return &brush;
     }
   }
   return nullptr;
@@ -781,7 +778,7 @@ Brush *BKE_brush_first_search(Main *bmain, const eObjectMode ob_mode)
 void BKE_brush_debug_print_state(Brush *br)
 {
   /* create a fake brush and set it to the defaults */
-  Brush def = blender::dna::shallow_zero_initialize();
+  Brush def = dna::shallow_zero_initialize();
   brush_defaults(&def);
 
 #define BR_TEST(field, t) \
@@ -925,7 +922,7 @@ float BKE_brush_sample_tex_3d(const Paint *paint,
                               const int thread,
                               ImagePool *pool)
 {
-  const blender::bke::PaintRuntime *paint_runtime = paint->runtime;
+  const bke::PaintRuntime *paint_runtime = paint->runtime;
   float intensity = 1.0;
   bool hasrgb = false;
 
@@ -1043,7 +1040,7 @@ float BKE_brush_sample_tex_3d(const Paint *paint,
 float BKE_brush_sample_masktex(
     const Paint *paint, Brush *br, const float point[2], const int thread, ImagePool *pool)
 {
-  const blender::bke::PaintRuntime *paint_runtime = paint->runtime;
+  const bke::PaintRuntime *paint_runtime = paint->runtime;
   MTex *mtex = &br->mask_mtex;
   float rgba[4], intensity;
 
@@ -1432,7 +1429,7 @@ void BKE_brush_jitter_pos(const Paint &paint,
 
 void BKE_brush_randomize_texture_coords(Paint *paint, bool mask)
 {
-  blender::bke::PaintRuntime &paint_runtime = *paint->runtime;
+  bke::PaintRuntime &paint_runtime = *paint->runtime;
   /* we multiply with brush radius as an optimization for the brush
    * texture sampling functions */
   if (mask) {
@@ -1445,15 +1442,25 @@ void BKE_brush_randomize_texture_coords(Paint *paint, bool mask)
   }
 }
 
+namespace bke::brush {
+void common_pressure_curves_init(Brush &brush)
+{
+  BKE_curvemapping_init(brush.curve_size);
+  BKE_curvemapping_init(brush.curve_strength);
+  BKE_curvemapping_init(brush.curve_jitter);
+  BKE_curvemapping_init(brush.curve_distance_falloff);
+}
+}  // namespace bke::brush
+
 void BKE_brush_calc_curve_factors(const eBrushCurvePreset preset,
                                   const CurveMapping *cumap,
-                                  const blender::Span<float> distances,
+                                  const Span<float> distances,
                                   const float brush_radius,
-                                  const blender::MutableSpan<float> factors)
+                                  const MutableSpan<float> factors)
 {
   BLI_assert(factors.size() == distances.size());
 
-  const float radius_rcp = blender::math::rcp(brush_radius);
+  const float radius_rcp = math::rcp(brush_radius);
   switch (preset) {
     case BRUSH_CURVE_CUSTOM: {
       for (const int i : distances.index_range()) {
@@ -1676,7 +1683,7 @@ static bool brush_gen_texture(const Brush *br,
 
 ImBuf *BKE_brush_gen_radial_control_imbuf(Brush *br, bool secondary, bool display_gradient)
 {
-  ImBuf *im = MEM_callocN<ImBuf>("radial control texture");
+  ImBuf *im = MEM_new_for_free<ImBuf>("radial control texture");
   int side = 512;
   int half = side / 2;
 
@@ -1732,7 +1739,14 @@ bool BKE_brush_has_cube_tip(const Brush *brush, PaintMode paint_mode)
 /** \name Brush Capabilities
  * \{ */
 
-namespace blender::bke::brush {
+namespace bke::brush {
+static bool is_paint_tool(const Brush &brush)
+{
+  return ELEM(brush.sculpt_brush_type,
+              SCULPT_BRUSH_TYPE_PAINT,
+              SCULPT_BRUSH_TYPE_SMEAR,
+              SCULPT_BRUSH_TYPE_BLUR);
+}
 bool supports_dyntopo(const Brush &brush)
 {
   return !ELEM(brush.sculpt_brush_type,
@@ -1749,13 +1763,12 @@ bool supports_dyntopo(const Brush &brush)
                SCULPT_BRUSH_TYPE_BOUNDARY,
                SCULPT_BRUSH_TYPE_POSE,
                SCULPT_BRUSH_TYPE_DRAW_FACE_SETS,
-               SCULPT_BRUSH_TYPE_PAINT,
-               SCULPT_BRUSH_TYPE_SMEAR,
 
                /* These brushes could handle dynamic topology,
                 * but user feedback indicates it's better not to */
                SCULPT_BRUSH_TYPE_SMOOTH,
-               SCULPT_BRUSH_TYPE_MASK);
+               SCULPT_BRUSH_TYPE_MASK) &&
+         !is_paint_tool(brush);
 }
 bool supports_accumulate(const Brush &brush)
 {
@@ -1786,11 +1799,8 @@ bool supports_topology_rake(const Brush &brush)
 bool supports_auto_smooth(const Brush &brush)
 {
   /* TODO: Should this support face sets...? */
-  return !ELEM(brush.sculpt_brush_type,
-               SCULPT_BRUSH_TYPE_MASK,
-               SCULPT_BRUSH_TYPE_SMOOTH,
-               SCULPT_BRUSH_TYPE_PAINT,
-               SCULPT_BRUSH_TYPE_SMEAR);
+  return !ELEM(brush.sculpt_brush_type, SCULPT_BRUSH_TYPE_MASK, SCULPT_BRUSH_TYPE_SMOOTH) &&
+         !is_paint_tool(brush);
 }
 bool supports_height(const Brush &brush)
 {
@@ -1954,15 +1964,14 @@ bool supports_inverted_direction(const Brush &brush)
 bool supports_gravity(const Brush &brush)
 {
   return !ELEM(brush.sculpt_brush_type,
-               SCULPT_BRUSH_TYPE_PAINT,
-               SCULPT_BRUSH_TYPE_SMEAR,
                SCULPT_BRUSH_TYPE_MASK,
                SCULPT_BRUSH_TYPE_DRAW_FACE_SETS,
                SCULPT_BRUSH_TYPE_BOUNDARY,
                SCULPT_BRUSH_TYPE_SMOOTH,
                SCULPT_BRUSH_TYPE_SIMPLIFY,
                SCULPT_BRUSH_TYPE_DISPLACEMENT_SMEAR,
-               SCULPT_BRUSH_TYPE_DISPLACEMENT_ERASER);
+               SCULPT_BRUSH_TYPE_DISPLACEMENT_ERASER) &&
+         !is_paint_tool(brush);
 }
 bool supports_tilt(const Brush &brush)
 {
@@ -1972,6 +1981,8 @@ bool supports_tilt(const Brush &brush)
               SCULPT_BRUSH_TYPE_PLANE,
               SCULPT_BRUSH_TYPE_CLAY_STRIPS);
 }
-}  // namespace blender::bke::brush
+}  // namespace bke::brush
 
 /** \} */
+
+}  // namespace blender

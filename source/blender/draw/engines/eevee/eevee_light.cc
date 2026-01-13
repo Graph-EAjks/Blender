@@ -14,7 +14,6 @@
 
 #include "eevee_light.hh"
 
-#include "DNA_defaults.h"
 #include "DNA_light_types.h"
 #include "DNA_sdna_type_ids.hh"
 
@@ -58,7 +57,7 @@ static eLightType to_light_type(short blender_light_type,
 void Light::sync(ShadowModule &shadows,
                  float4x4 object_to_world,
                  char visibility_flag,
-                 const ::Light *la,
+                 const blender::Light *la,
                  const LightLinking *light_linking /* = nullptr */,
                  float threshold)
 {
@@ -125,7 +124,7 @@ void Light::sync(ShadowModule &shadows,
   this->initialized = true;
 }
 
-float Light::shadow_lod_min_get(const ::Light *la)
+float Light::shadow_lod_min_get(const blender::Light *la)
 {
   /* Property is in mm. Convert to unit. */
   float max_res_unit = la->shadow_maximum_resolution;
@@ -158,7 +157,9 @@ void Light::shadow_ensure(ShadowModule &shadows)
   }
 }
 
-float Light::attenuation_radius_get(const ::Light *la, float light_threshold, float light_power)
+float Light::attenuation_radius_get(const blender::Light *la,
+                                    float light_threshold,
+                                    float light_power)
 {
   if (la->mode & LA_CUSTOM_ATTENUATION) {
     return la->att_dist;
@@ -169,7 +170,7 @@ float Light::attenuation_radius_get(const ::Light *la, float light_threshold, fl
   return sqrtf(light_power / light_threshold);
 }
 
-void Light::shape_parameters_set(const ::Light *la,
+void Light::shape_parameters_set(const blender::Light *la,
                                  const float3 &scale,
                                  const float3 &z_axis,
                                  const float threshold,
@@ -207,6 +208,8 @@ void Light::shape_parameters_set(const ::Light *la,
     l_sun.shadow_angle = sun_half_angle * trace_scaling_fac;
     /* Clamp to a minimum to distinguish between point lights and area light shadow. */
     l_sun.shadow_angle = (sun_half_angle > 0.0f) ? max_ff(1e-8f, l_sun.shadow_angle) : 0.0f;
+    /* Precompute this cosine on CPU to avoid differences in shadow tracing between platforms. */
+    l_sun.shadow_angle_cos = cosf(l_sun.shadow_angle);
     /* Clamp to minimum value before float imprecision artifacts appear. */
     l_sun.shape_radius = clamp(tanf(sun_half_angle), 0.001f, 20.0f);
     /* Stable shading direction. */
@@ -359,8 +362,7 @@ void LightModule::add_world_sun_light(const ObjectKey &key, bool use_diffuse, bo
 {
   /* Create a placeholder light to be fed by the GPU after sunlight extraction.
    * Sunlight is disabled if power is zero. */
-  ::Light la = blender::dna::shallow_copy(
-      *(const ::Light *)DNA_default_table[dna::sdna_struct_id_get<::Light>()]);
+  blender::Light la = {};
   la.type = LA_SUN;
   /* Set on the GPU. */
   la.r = la.g = la.b = -1.0f; /* Tag as world sun light. */
@@ -421,7 +423,7 @@ void LightModule::begin_sync()
 
 void LightModule::sync_light(const Object *ob, ObjectHandle &handle)
 {
-  const ::Light &la = DRW_object_get_data_for_drawing<const ::Light>(*ob);
+  const blender::Light &la = DRW_object_get_data_for_drawing<const blender::Light>(*ob);
   if (use_scene_lights_ == false) {
     return;
   }

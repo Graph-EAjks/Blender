@@ -1,9 +1,9 @@
 
 msgid ""
 msgstr ""
-"Project-Id-Version: Blender 5.1.0 Alpha (b'7d4876cf0c11')\n"
+"Project-Id-Version: Blender 5.1.0 Alpha (b'12e628ea43f8')\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-16 11:27+0000\n"
+"POT-Creation-Date: 2026-01-12 15:09+0000\n"
 "PO-Revision-Date: 2025-07-23 15:30+0000\n"
 "Last-Translator: Lee YeonJoo <yzoo2@naver.com>\n"
 "Language-Team: Korean <https://translate.blender.org/projects/blender-ui/ui/ko/>\n"
@@ -23636,12 +23636,68 @@ msgid "Material slot name"
 msgstr "매테리얼 슬롯 이름"
 
 
-msgid "Mirror"
-msgstr "미러"
+msgid "Show/Hide"
+msgstr "표시/숨기기"
+
+
+msgid "Special Characters"
+msgstr "특수 문자"
+
+
+msgid "Kerning"
+msgstr "자간"
+
+
+msgid "Math"
+msgstr "수학"
+
+
+msgid "Metaball"
+msgstr "메타볼"
+
+
+msgid "Names"
+msgstr "이름"
+
+
+msgid "Bone Roll"
+msgstr "본 롤"
+
+
+msgid "Clean Up"
+msgstr "정리"
+
+
+msgid "Sample"
+msgstr "샘플"
+
+
+msgid "Pivot Point"
+msgstr "피벗 포인트"
+
+
+msgid "Primitives"
+msgstr "프리미티브"
 
 
 msgid "Snap"
 msgstr "스냅"
+
+
+msgid "Proportional Editing Falloff"
+msgstr "비례 편집 감소"
+
+
+msgid "Mask Edit"
+msgstr "마스크 편집"
+
+
+msgid "Import"
+msgstr "가져오기"
+
+
+msgid "Mirror"
+msgstr "미러"
 
 
 msgid "UV Mapping"
@@ -23658,6 +23714,10 @@ msgstr "뷰포트"
 
 msgid "Navigation"
 msgstr "네비게이션"
+
+
+msgid "UV"
+msgstr "UV"
 
 
 msgid "Align View"
@@ -23696,14 +23756,6 @@ msgid "Assign Material"
 msgstr "매테리얼을 할당"
 
 
-msgid "Metaball"
-msgstr "메타볼"
-
-
-msgid "Layout"
-msgstr "레이아웃"
-
-
 msgid "Light"
 msgstr "라이트"
 
@@ -23724,36 +23776,16 @@ msgid "Rigid Body"
 msgstr "리지드 바디"
 
 
-msgid "Keying"
-msgstr "키잉"
-
-
 msgid "Apply"
 msgstr "적용"
-
-
-msgid "Tracking"
-msgstr "트래킹"
 
 
 msgid "Track"
 msgstr "트랙"
 
 
-msgid "Math"
-msgstr "수학"
-
-
 msgid "Quick Effects"
 msgstr "빠른 이펙트"
-
-
-msgid "Show/Hide"
-msgstr "표시/숨기기"
-
-
-msgid "Clean Up"
-msgstr "정리"
 
 
 msgid "Asset"
@@ -23766,6 +23798,10 @@ msgstr "싱글 유저를 만들기"
 
 msgid "Hooks"
 msgstr "후크"
+
+
+msgid "Layout"
+msgstr "레이아웃"
 
 
 msgid "Sculpt Set Pivot"
@@ -23784,8 +23820,12 @@ msgid "Propagate"
 msgstr "전파"
 
 
-msgid "Names"
-msgstr "이름"
+msgid "Keying"
+msgstr "키잉"
+
+
+msgid "Tracking"
+msgstr "트래킹"
 
 
 msgid "Toggle Bone Options"
@@ -23818,46 +23858,6 @@ msgstr "페이스 강도를 설정"
 
 msgid "Merge"
 msgstr "병합"
-
-
-msgid "Sample"
-msgstr "샘플"
-
-
-msgid "Primitives"
-msgstr "프리미티브"
-
-
-msgid "Special Characters"
-msgstr "특수 문자"
-
-
-msgid "Kerning"
-msgstr "자간"
-
-
-msgid "Bone Roll"
-msgstr "본 롤"
-
-
-msgid "Import"
-msgstr "가져오기"
-
-
-msgid "Pivot Point"
-msgstr "피벗 포인트"
-
-
-msgid "UV"
-msgstr "UV"
-
-
-msgid "Proportional Editing Falloff"
-msgstr "비례 편집 감소"
-
-
-msgid "Mask Edit"
-msgstr "마스크 편집"
 
 
 msgid "Basic"
@@ -53252,6 +53252,30 @@ msgid "Panel containing UI elements"
 msgstr "UI 요소가 포함된 패널"
 
 
+msgid "Active Tool"
+msgstr "활성 도구"
+
+
+msgid "View Lock"
+msgstr "뷰 잠금"
+
+
+msgid "Shadow Settings"
+msgstr "섀도우 설정"
+
+
+msgid "SSAO Settings"
+msgstr "SSAO 설정"
+
+
+msgid "Cavity"
+msgstr "캐비티"
+
+
+msgid "Render Pass"
+msgstr "렌더 패스"
+
+
 msgid "Overlays"
 msgstr "오버레이"
 
@@ -53302,30 +53326,6 @@ msgstr "입체 영상"
 
 msgid "Multi Frame"
 msgstr "다중 프레임"
-
-
-msgid "Active Tool"
-msgstr "활성 도구"
-
-
-msgid "View Lock"
-msgstr "뷰 잠금"
-
-
-msgid "Shadow Settings"
-msgstr "섀도우 설정"
-
-
-msgid "SSAO Settings"
-msgstr "SSAO 설정"
-
-
-msgid "Cavity"
-msgstr "캐비티"
-
-
-msgid "Render Pass"
-msgstr "렌더 패스"
 
 
 msgid "Bone Constraints"
@@ -56212,10 +56212,6 @@ msgstr "변형하는 동안 숫자를 입력 할 때, 전체 수학 표현식 �
 
 msgid "Orbit Around Selection"
 msgstr "선택 주위에 오비트"
-
-
-msgid "Use selection as the pivot point"
-msgstr "피벗 포인트로 선택을 사용"
 
 
 msgid "Zoom to Mouse Position"
@@ -71584,6 +71580,18 @@ msgid "ParticleSettings"
 msgstr "파티클 설정"
 
 
+msgid "Object was not yet evaluated"
+msgstr "오브젝트가 아직 평가되지 않았습니다"
+
+
+msgid "Mesh has no UV data"
+msgstr "메쉬는 UV 데이터가 없음"
+
+
+msgid "Mesh has no VCol data"
+msgstr "메쉬는 버텍스 컬러 데이터가 없음"
+
+
 msgid "%i frames found!"
 msgstr "%i 프레임 발견!"
 
@@ -74911,10 +74919,6 @@ msgid "Cannot swap selected strips as they will not be able to fit in their new 
 msgstr "선택한 스트립을 새 장소에 맞지 않게 바꿀 수는 없습니다"
 
 
-msgid "Action '%s' does not specify what data-blocks it can be used on (try setting the 'ID Root Type' setting from the data-blocks editor for this action to avoid future problems)"
-msgstr "액션 '%s'는 어떤 데이터-블록을 사용할 수 있는지 명시하지 않습니다. (미래의 문제를 피하기 위해 데이터 블록 에디터에서 'ID 루트 유형'설정을 시도해보십시오)"
-
-
 msgid "Could not add action '%s' as it cannot be used relative to ID-blocks of type '%s'"
 msgstr "'%s' 액션을 추가 할 수 없음, '%s' 유형의 ID 블록과 관련하여 사용할 수 없습니다"
 
@@ -76339,18 +76343,6 @@ msgstr "오브젝트 '%s'가 가장 가까운 포인트를 찾기 위한 내부 
 
 msgid "Palette '%s' does not contain color given"
 msgstr "파레트 '%s'에 주어진 컬러가 없습니다"
-
-
-msgid "Mesh has no UV data"
-msgstr "메쉬는 UV 데이터가 없음"
-
-
-msgid "Object was not yet evaluated"
-msgstr "오브젝트가 아직 평가되지 않았습니다"
-
-
-msgid "Mesh has no VCol data"
-msgstr "메쉬는 버텍스 컬러 데이터가 없음"
 
 
 msgid "Constraint '%s' not found in pose bone '%s'"

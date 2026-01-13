@@ -184,6 +184,7 @@ static void import_edges(const ufbx_mesh *fmesh,
 }
 
 static void import_uvs(const ufbx_mesh *fmesh,
+                       Mesh *mesh,
                        bke::MutableAttributeAccessor &attributes,
                        AttributeOwner attr_owner)
 {
@@ -198,6 +199,8 @@ static void import_uvs(const ufbx_mesh *fmesh,
       uvs.span[i] = float2(uv.x, uv.y);
     }
     uvs.finish();
+    mesh->uv_maps_active_set(attr_name);
+    mesh->uv_maps_default_set(attr_name);
   }
 }
 
@@ -467,7 +470,7 @@ void import_meshes(Main &bmain,
     import_face_material_indices(fmesh, attributes);
     import_face_smoothing(fmesh, attributes);
     import_edges(fmesh, mesh, attributes);
-    import_uvs(fmesh, attributes, attr_owner);
+    import_uvs(fmesh, mesh, attributes, attr_owner);
     if (params.vertex_colors != eFBXVertexColorMode::None) {
       import_colors(fmesh, mesh, attributes, attr_owner, params.vertex_colors);
     }
@@ -483,7 +486,7 @@ void import_meshes(Main &bmain,
     /* Add vertex groups to the object. */
     VectorSet<std::string> bone_set = get_skin_bone_name_set(mapping, fmesh);
     for (const std::string &name : bone_set) {
-      bDeformGroup *defgroup = MEM_callocN<bDeformGroup>("bDeformGroup");
+      bDeformGroup *defgroup = MEM_new_for_free<bDeformGroup>("bDeformGroup");
       StringRef(name).copy_utf8_truncated(defgroup->name);
       BLI_addtail(&mesh->vertex_group_names, defgroup);
     }
@@ -542,7 +545,7 @@ void import_meshes(Main &bmain,
         name = get_fbx_name(node->name);
       }
       Object *obj = BKE_object_add_only_object(&bmain, OB_MESH, name.c_str());
-      obj->data = mesh_main;
+      obj->data = id_cast<ID *>(mesh_main);
       if (!node->visible) {
         obj->visibility_flag |= OB_HIDE_VIEWPORT;
       }

@@ -13,6 +13,8 @@
 #include "BLI_compiler_attrs.h"
 #include "BLI_rect.h"
 
+namespace blender {
+
 /* -------------------------------------------------------------------- */
 /** \name Forward Declarations
  * \{ */
@@ -34,7 +36,7 @@ struct wmOperatorType;
 
 /** \} */
 
-namespace blender::ui {
+namespace ui {
 
 /* -------------------------------------------------------------------- */
 /** \name General Defines
@@ -475,7 +477,7 @@ void ED_keymap_view2d(wmKeyConfig *keyconf);
  */
 void view2d_smooth_view(const bContext *C, ARegion *region, const rctf *cur, int smooth_viewtx);
 
-#define UI_MARKER_MARGIN_Y (42 * UI_SCALE_FAC)
+#define UI_MARKER_MARGIN_Y (34 * UI_SCALE_FAC)
 #define UI_TIME_SCRUB_MARGIN_Y (23 * UI_SCALE_FAC)
 #define UI_TIME_CACHE_MARGIN_Y (UI_TIME_SCRUB_MARGIN_Y / 6.0f)
 #define UI_ANIM_MINY (HEADERY * UI_SCALE_FAC * 1.1f)
@@ -596,4 +598,5 @@ void view2d_edge_pan_operator_init(bContext *C, View2DEdgePanData *vpd, wmOperat
 
 /** \} */
 
-}  // namespace blender::ui
+}  // namespace ui
+}  // namespace blender
