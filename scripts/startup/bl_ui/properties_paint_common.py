@@ -1761,7 +1761,7 @@ def brush_basic_grease_pencil_paint_settings(layout, context, brush, props, *, c
     if is_primitive_tool:
         row = layout.row(align=True)
         if context.region.type == 'TOOL_HEADER':
-            row.prop(brush.gpencil_settings, "stroke_mode", expand=True, icon_only=True)
+            row.prop(brush.gpencil_settings, "stroke_mode", expand=True)
         else:
             row.prop(brush.gpencil_settings, "stroke_mode")
 
@@ -1790,7 +1790,7 @@ def brush_basic_grease_pencil_paint_settings(layout, context, brush, props, *, c
     elif grease_pencil_brush_type == 'DRAW':
         row = layout.row(align=True)
         if compact:
-            row.prop(brush.gpencil_settings, "stroke_mode", expand=True, icon_only=True)
+            row.prop(brush.gpencil_settings, "stroke_mode", expand=True)
         else:
             row.prop(brush.gpencil_settings, "stroke_mode")
 
