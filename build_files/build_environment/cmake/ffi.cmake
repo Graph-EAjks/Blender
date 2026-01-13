@@ -4,7 +4,7 @@
 
 if(WIN32)
   if(BLENDER_PLATFORM_WINDOWS_ARM)
-    set(FFI_TARGET_HOST FIXME_FIXEME_FIXME)
+    set(FFI_TARGET_HOST aarch64-w64-mingw32)
     set(FFI_PYTHON_TARGET_ARCH arm64)
     set(FFI_MSVC_SH_FLAGS -marm64)
   else()
