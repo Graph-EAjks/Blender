@@ -140,6 +140,24 @@ else()
     export BZIP2_LIBS=${LIBDIR}/bzip2/lib/${LIBPREFIX}bz2${LIBEXT}
   )
 
+  if(APPLE)
+    # Prevent linking against Homebrew's libmpdec if it exists
+    set(PYTHON_CONFIGURE_EXTRA_ARGS
+      ${PYTHON_CONFIGURE_EXTRA_ARGS}
+      --without-system-libmpdec
+    )
+
+    # Override library paths for SQLite and zlib on macOS (which are normally provided by pkg-config).
+    # Redefining these prevents Python from wrongly dynamically linking zlib in SQLite and various built-in modules.
+    set(PYTHON_CONFIGURE_EXTRA_ENV
+      ${PYTHON_CONFIGURE_EXTRA_ENV}
+      export LIBSQLITE3_CFLAGS=-I${LIBDIR}/sqlite/include
+      export LIBSQLITE3_LIBS=${LIBDIR}/sqlite/lib/${LIBPREFIX}sqlite3${LIBEXT}
+      export ZLIB_CFLAGS=-I${LIBDIR}/zlib/include
+      export ZLIB_LIBS=${LIBDIR}/zlib/lib/${ZLIB_LIBRARY}
+    )
+  endif()
+
   # NOTE: untested on APPLE so far.
   if(NOT APPLE)
     set(PYTHON_CONFIGURE_EXTRA_ARGS
