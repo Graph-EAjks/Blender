@@ -42,6 +42,7 @@
 #include "BKE_node_legacy_types.hh"
 #include "BKE_node_runtime.hh"
 #include "BKE_report.hh"
+#include "BKE_tracking.hh"
 
 #include "SEQ_iterator.hh"
 #include "SEQ_sequencer.hh"
@@ -616,7 +617,7 @@ void do_versions_after_linking_510(FileData *fd, Main *bmain)
     version_clear_unused_strip_flags(*bmain);
   }
 
-  if (!MAIN_VERSION_FILE_ATLEAST(bmain, 501, 17)) {
+  if (!MAIN_VERSION_FILE_ATLEAST(bmain, 501, 18)) {
     convert_grease_pencil_material_stroke_fill_toggle_to_attributes(fd->reports, *bmain);
     /* Set the stroke mode for all brushes. */
     for (Brush &brush : bmain->brushes) {
@@ -776,6 +777,23 @@ void blo_do_versions_510(FileData * /*fd*/, Library * /*lib*/, Main *bmain)
       do_version_light_remove_use_nodes(bmain, &light);
     }
   }
+
+  if (!MAIN_VERSION_FILE_ATLEAST(bmain, 501, 17)) {
+    FOREACH_NODETREE_BEGIN (bmain, node_tree, id) {
+      if (node_tree->type == NTREE_COMPOSIT) {
+        for (bNode &node : node_tree->nodes) {
+          if (node.type_legacy == CMP_NODE_MOVIEDISTORTION) {
+            if (node.storage) {
+              BKE_tracking_distortion_free(static_cast<MovieDistortion *>(node.storage));
+            }
+            node.storage = nullptr;
+          }
+        }
+      }
+    }
+    FOREACH_NODETREE_END;
+  }
+
   /**
    * Always bump subversion in BKE_blender_version.h when adding versioning
    * code here, and wrap it inside a MAIN_VERSION_FILE_ATLEAST check.
