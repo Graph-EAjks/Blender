@@ -5843,6 +5843,11 @@ class VIEW3D_MT_edit_greasepencil_stroke(Menu):
 
         layout.separator()
 
+        # Set stroke mode
+        layout.operator_menu_enum("grease_pencil.set_stroke_mode", "mode", text="Set Stroke Mode")
+
+        layout.separator()
+
         layout.operator("grease_pencil.reset_uvs")
 
         layout.template_node_operator_asset_menu_items(catalog_path=self.bl_label)
@@ -8377,6 +8382,11 @@ class VIEW3D_MT_greasepencil_edit_context_menu(Menu):
 
             col.separator()
 
+            # Set stroke mode
+            col.operator_menu_enum("grease_pencil.set_stroke_mode", "mode", text="Set Stroke Mode")
+
+            col.separator()
+
             # Deform Operators
             col.operator("grease_pencil.stroke_smooth", text="Smooth")
             col.operator("transform.transform", text="Shrink/Fatten").mode = 'CURVE_SHRINKFATTEN'
@@ -8422,6 +8432,11 @@ class VIEW3D_MT_greasepencil_edit_context_menu(Menu):
             col.operator("grease_pencil.stroke_subdivide_smooth", text="Subdivide and Smooth")
             col.operator("grease_pencil.stroke_simplify", text="Simplify")
             col.operator("grease_pencil.outline", text="Outline")
+
+            col.separator()
+
+            # Set stroke mode
+            col.operator_menu_enum("grease_pencil.set_stroke_mode", "mode", text="Set Stroke Mode")
 
             col.separator()
 

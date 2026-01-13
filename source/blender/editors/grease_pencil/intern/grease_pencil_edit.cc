@@ -4915,6 +4915,89 @@ static void GREASE_PENCIL_OT_set_corner_type(wmOperatorType *ot)
 
 /** \} */
 
+/* -------------------------------------------------------------------- */
+/** \name Set Stroke Mode Operator
+ * \{ */
+
+enum class StrokeMode : int8_t { Stroke = 0, Fill = 1, Both = 2 };
+
+static wmOperatorStatus grease_pencil_set_stroke_mode_exec(bContext *C, wmOperator *op)
+{
+  const Scene *scene = CTX_data_scene(C);
+  Object *object = CTX_data_active_object(C);
+  GreasePencil &grease_pencil = *id_cast<GreasePencil *>(object->data);
+
+  const StrokeMode mode = StrokeMode(RNA_enum_get(op->ptr, "mode"));
+  std::atomic<bool> changed = false;
+  const Vector<MutableDrawingInfo> drawings = retrieve_editable_drawings(*scene, grease_pencil);
+  threading::parallel_for_each(drawings, [&](const MutableDrawingInfo &info) {
+    IndexMaskMemory memory;
+    const IndexMask strokes = ed::greasepencil::retrieve_editable_and_selected_strokes(
+        *object, info.drawing, info.layer_index, memory);
+    if (strokes.is_empty()) {
+      return;
+    }
+
+    MutableSpan<bool> is_stroke = info.drawing.is_stroke_for_write();
+    MutableSpan<bool> is_fill = info.drawing.is_fill_for_write();
+    switch (mode) {
+      case StrokeMode::Stroke: {
+        index_mask::masked_fill(is_stroke, true, strokes);
+        index_mask::masked_fill(is_fill, false, strokes);
+        changed.store(true, std::memory_order_relaxed);
+        info.drawing.tag_topology_changed();
+        break;
+      }
+      case StrokeMode::Fill: {
+        index_mask::masked_fill(is_stroke, false, strokes);
+        index_mask::masked_fill(is_fill, true, strokes);
+        changed.store(true, std::memory_order_relaxed);
+        info.drawing.tag_topology_changed();
+        break;
+        break;
+      }
+      case StrokeMode::Both: {
+        index_mask::masked_fill(is_stroke, true, strokes);
+        index_mask::masked_fill(is_fill, true, strokes);
+        changed.store(true, std::memory_order_relaxed);
+        info.drawing.tag_topology_changed();
+        break;
+      }
+    }
+  });
+
+  if (changed) {
+    DEG_id_tag_update(&grease_pencil.id, ID_RECALC_GEOMETRY);
+    WM_event_add_notifier(C, NC_GEOM | ND_DATA, &grease_pencil);
+  }
+
+  return OPERATOR_FINISHED;
+}
+
+static void GREASE_PENCIL_OT_set_stroke_mode(wmOperatorType *ot)
+{
+  static const EnumPropertyItem prop_stroke_mode_types[] = {
+      {int(StrokeMode::Stroke), "STROKE", 0, "Stroke", ""},
+      {int(StrokeMode::Fill), "FILL", 0, "Fill", ""},
+      {int(StrokeMode::Both), "BOTH", 0, "Both", ""},
+      {0, nullptr, 0, nullptr, nullptr},
+  };
+
+  /* Identifiers. */
+  ot->name = "Set Stroke Mode";
+  ot->idname = "GREASE_PENCIL_OT_set_stroke_mode";
+  ot->description = "Set the stroke mode (stroke/fill) of the selected strokes";
+
+  /* Callbacks. */
+  ot->exec = grease_pencil_set_stroke_mode_exec;
+  ot->poll = editable_grease_pencil_poll;
+
+  ot->flag = OPTYPE_REGISTER | OPTYPE_UNDO;
+
+  ot->prop = RNA_def_enum(
+      ot->srna, "mode", prop_stroke_mode_types, int(StrokeMode::Stroke), "Mode", "");
+}
+
 }  // namespace ed::greasepencil
 
 void ED_operatortypes_grease_pencil_edit()
@@ -4959,6 +5042,7 @@ void ED_operatortypes_grease_pencil_edit()
   WM_operatortype_append(GREASE_PENCIL_OT_outline);
   WM_operatortype_append(GREASE_PENCIL_OT_convert_curve_type);
   WM_operatortype_append(GREASE_PENCIL_OT_set_corner_type);
+  WM_operatortype_append(GREASE_PENCIL_OT_set_stroke_mode);
 }
 
 /* -------------------------------------------------------------------- */

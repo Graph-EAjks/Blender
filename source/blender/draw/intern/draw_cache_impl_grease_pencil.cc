@@ -1285,6 +1285,11 @@ static void grease_pencil_geom_batch_ensure(Object &object,
     const VArray<float> fill_opacities = *attributes.lookup_or_default<float>(
         "fill_opacity", bke::AttrDomain::Curve, 1.0f);
 
+    const VArray<bool> is_stroke = *attributes.lookup_or_default<bool>(
+        "is_stroke", bke::AttrDomain::Curve, true);
+    const VArray<bool> is_fill = *attributes.lookup_or_default<bool>(
+        "is_fill", bke::AttrDomain::Curve, false);
+
     const Span<int3> triangles = info.drawing.triangles();
     const Span<float4x2> texture_matrices = info.drawing.texture_matrices();
     const Span<int> verts_start_offsets = verts_start_offsets_per_visible_drawing[drawing_i];
