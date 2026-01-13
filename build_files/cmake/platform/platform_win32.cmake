@@ -45,7 +45,7 @@ else()
   endif()
 endif()
 
-set(WINDOWS_ARM64_MIN_VSCMD_VER 17.12.3)
+set(WINDOWS_ARM64_MIN_VSCMD_VER 17.14.23)
 # We have a minimum version of VSCMD for ARM64 (ie, the version the libs were compiled against)
 # This checks for the version on initial run, and caches it,
 # so users do not have to run the VS CMD window every time
