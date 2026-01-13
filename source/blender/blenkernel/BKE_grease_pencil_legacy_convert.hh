@@ -23,6 +23,8 @@ namespace bke::greasepencil::convert {
 void legacy_main(Main &bmain,
                  BlendfileLinkAppendContext *lapp_context,
                  BlendFileReadReport &reports);
+void grease_pencil_material_stroke_fill_toggle_to_attributes(Main &bmain,
+                                                             BlendFileReadReport &reports);
 
 void lineart_wrap_v3(const LineartGpencilModifierData *lmd_legacy,
                      GreasePencilLineartModifierData *lmd);
