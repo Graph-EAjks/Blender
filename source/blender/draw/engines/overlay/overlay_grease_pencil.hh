@@ -348,10 +348,10 @@ class GreasePencil : Overlay {
       const VArray<bool> cyclic = *attributes.lookup_or_default<bool>(
           "cyclic", bke::AttrDomain::Curve, false);
 
-      const VArray<bool> is_stroke = *attributes.lookup_or_default<bool>(
-          "is_stroke", bke::AttrDomain::Curve, true);
-      const VArray<bool> is_fill = *attributes.lookup_or_default<bool>(
-          "is_fill", bke::AttrDomain::Curve, false);
+      const VArray<bool> hide_stroke = *attributes.lookup_or_default<bool>(
+          "hide_stroke", bke::AttrDomain::Curve, false);
+      const VArray<int> fill_id = *attributes.lookup_or_default<int>(
+          "fill_id", bke::AttrDomain::Curve, 0);
 
       IndexMaskMemory memory;
       const IndexMask visible_strokes = ed::greasepencil::retrieve_visible_strokes(
@@ -377,8 +377,8 @@ class GreasePencil : Overlay {
 
         gpu::Batch *geom = draw::DRW_cache_grease_pencil_get(scene, ob);
 
-        const bool show_stroke = is_stroke[stroke_i];
-        const bool show_fill = (points.size() >= 3) && is_fill[stroke_i];
+        const bool show_stroke = !hide_stroke[stroke_i];
+        const bool show_fill = (points.size() >= 3) && fill_id[stroke_i] != 0;
 
         if (show_fill) {
           int v_first = t_offset * 3;

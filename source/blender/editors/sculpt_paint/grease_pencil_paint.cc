@@ -310,7 +310,8 @@ struct PaintOperationExecutor {
   void process_start_sample(PaintOperation &self,
                             const bContext &C,
                             const InputSample &start_sample,
-                            const int material_index)
+                            const int material_index,
+                            const bool use_fill)
   {
     const float2 start_coords = start_sample.mouse_position;
     const RegionView3D *rv3d = CTX_wm_region_view3d(&C);
@@ -389,8 +390,7 @@ struct PaintOperationExecutor {
       self.drawing_->vertex_colors_for_write()[last_active_point] = vertex_color_;
       point_attributes_to_skip.add("vertex_color");
     }
-
-    if (use_vertex_color_ || attributes.contains("fill_color")) {
+    if (use_fill || attributes.contains("fill_color")) {
       self.drawing_->fill_colors_for_write()[active_curve] = fill_color_;
       curve_attributes_to_skip.add("fill_color");
     }
@@ -439,17 +439,21 @@ struct PaintOperationExecutor {
       aspect_ratio.finish();
     }
 
-    bke::SpanAttributeWriter<bool> use_stroke = attributes.lookup_or_add_for_write_span<bool>(
-        "is_stroke",
-        bke::AttrDomain::Curve,
-        bke::AttributeInitVArray(VArray<bool>::from_single(true, curves.curves_num())));
-    bke::SpanAttributeWriter<bool> use_fill = attributes.lookup_or_add_for_write_span<bool>(
-        "is_fill", bke::AttrDomain::Curve);
-    use_stroke.span[active_curve] = (settings_->flag2 & GP_BRUSH_USE_STROKE) != 0;
-    use_fill.span[active_curve] = (settings_->flag2 & GP_BRUSH_USE_FILL) != 0;
-    curve_attributes_to_skip.add_multiple({"is_stroke", "is_fill"});
-    use_stroke.finish();
-    use_fill.finish();
+    if ((settings_->flag2 & GP_BRUSH_USE_STROKE) == 0) {
+      bke::SpanAttributeWriter<bool> hide_stroke = attributes.lookup_or_add_for_write_span<bool>(
+          "hide_stroke", bke::AttrDomain::Curve);
+      hide_stroke.span[active_curve] = true;
+      curve_attributes_to_skip.add("hide_stroke");
+      hide_stroke.finish();
+    }
+    if (use_fill) {
+      bke::SpanAttributeWriter<int> fill_id = attributes.lookup_or_add_for_write_span<int>(
+          "fill_id", bke::AttrDomain::Curve);
+      /* TODO: Use the first available ID. */
+      fill_id.span[active_curve] = active_curve + 1;
+      curve_attributes_to_skip.add("fill_id");
+      fill_id.finish();
+    }
 
     if (settings_->uv_random > 0.0f || attributes.contains("rotation")) {
       if (bke::SpanAttributeWriter<float> rotations =
@@ -1225,6 +1229,7 @@ void PaintOperation::on_stroke_begin(const bContext &C, const InputSample &start
   Material *material = BKE_grease_pencil_object_material_ensure_from_brush(
       CTX_data_main(&C), object_, brush);
   const int material_index = BKE_object_material_index_get(object_, material);
+  const bool use_fill = (settings->flag2 & GP_BRUSH_USE_FILL) != 0;
 
   frame_number_ = scene_->r.cfra;
   drawing_ = grease_pencil->get_editable_drawing_at(layer, frame_number_);
@@ -1240,7 +1245,7 @@ void PaintOperation::on_stroke_begin(const bContext &C, const InputSample &start
   delta_time_ = 0.0f;
 
   PaintOperationExecutor executor{*scene_};
-  executor.process_start_sample(*this, C, start_sample, material_index);
+  executor.process_start_sample(*this, C, start_sample, material_index, use_fill);
 
   DEG_id_tag_update(&grease_pencil->id, ID_RECALC_GEOMETRY);
   WM_event_add_notifier(&C, NC_GEOM | ND_DATA, grease_pencil);

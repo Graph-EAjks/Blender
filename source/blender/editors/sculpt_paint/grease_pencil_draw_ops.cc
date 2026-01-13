@@ -1448,18 +1448,12 @@ static bool grease_pencil_apply_fill(bContext &C, wmOperator &op, const wmEvent 
       continue;
     }
 
-    bke::SpanAttributeWriter<bool> is_stroke =
-        fill_curves.attributes_for_write().lookup_or_add_for_write_span<bool>(
-            "is_stroke",
+    bke::SpanAttributeWriter<int> fill_id =
+        fill_curves.attributes_for_write().lookup_or_add_for_write_span<int>(
+            "fill_id",
             bke::AttrDomain::Curve,
-            bke::AttributeInitVArray(VArray<bool>::from_single(false, fill_curves.curves_num())));
-    is_stroke.finish();
-    bke::SpanAttributeWriter<bool> is_fill =
-        fill_curves.attributes_for_write().lookup_or_add_for_write_span<bool>(
-            "is_fill",
-            bke::AttrDomain::Curve,
-            bke::AttributeInitVArray(VArray<bool>::from_single(true, fill_curves.curves_num())));
-    is_fill.finish();
+            bke::AttributeInitVArray(VArray<int>::from_single(1, fill_curves.curves_num())));
+    fill_id.finish();
 
     smooth_fill_strokes(fill_curves, fill_curves.curves_range());
 

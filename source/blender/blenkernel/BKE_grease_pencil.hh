@@ -160,12 +160,6 @@ class Drawing : public blender::GreasePencilDrawing {
   VArray<ColorGeometry4f> fill_colors() const;
   MutableSpan<ColorGeometry4f> fill_colors_for_write();
 
-  VArray<bool> is_stroke() const;
-  MutableSpan<bool> is_stroke_for_write();
-
-  VArray<bool> is_fill() const;
-  MutableSpan<bool> is_fill_for_write();
-
   /**
    * Add a user for this drawing. When a drawing has multiple users, both users are allowed to
    * modify this drawings data.

@@ -854,36 +854,6 @@ MutableSpan<ColorGeometry4f> Drawing::fill_colors_for_write()
       ColorGeometry4f(0.0f, 0.0f, 0.0f, 0.0f));
 }
 
-VArray<bool> Drawing::is_stroke() const
-{
-  return *this->strokes().attributes().lookup_or_default<bool>(
-      "is_stroke", AttrDomain::Curve, true);
-}
-
-MutableSpan<bool> Drawing::is_stroke_for_write()
-{
-  return get_mutable_attribute<bool>(this->strokes_for_write().attribute_storage.wrap(),
-                                     AttrDomain::Curve,
-                                     "is_stroke",
-                                     this->strokes().curves_num(),
-                                     true);
-}
-
-VArray<bool> Drawing::is_fill() const
-{
-  return *this->strokes().attributes().lookup_or_default<bool>(
-      "is_fill", AttrDomain::Curve, false);
-}
-
-MutableSpan<bool> Drawing::is_fill_for_write()
-{
-  return get_mutable_attribute<bool>(this->strokes_for_write().attribute_storage.wrap(),
-                                     AttrDomain::Curve,
-                                     "is_fill",
-                                     this->strokes().curves_num(),
-                                     false);
-}
-
 void Drawing::tag_texture_matrices_changed()
 {
   this->runtime->curve_texture_matrices.tag_dirty();

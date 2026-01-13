@@ -467,10 +467,10 @@ tObject *Instance::object_sync_do(Object *ob, ResourceHandleRange res_handle)
     const VArray<bool> is_fill_guide = *attributes.lookup_or_default<bool>(
         ".is_fill_guide", bke::AttrDomain::Curve, false);
 
-    const VArray<bool> is_stroke = *attributes.lookup_or_default<bool>(
-        "is_stroke", bke::AttrDomain::Curve, true);
-    const VArray<bool> is_fill = *attributes.lookup_or_default<bool>(
-        "is_fill", bke::AttrDomain::Curve, false);
+    const VArray<bool> hide_stroke = *attributes.lookup_or_default<bool>(
+        "hide_stroke", bke::AttrDomain::Curve, false);
+    const VArray<int> fill_id = *attributes.lookup_or_default<int>(
+        "fill_id", bke::AttrDomain::Curve, 0);
 
     const bool only_lines = !ELEM(ob->mode,
                                   OB_MODE_PAINT_GREASE_PENCIL,
@@ -491,9 +491,9 @@ tObject *Instance::object_sync_do(Object *ob, ResourceHandleRange res_handle)
       const bool is_fill_guide_stroke = is_fill_guide[stroke_i];
 
       const bool hide_material = (gp_style->flag & GP_MATERIAL_HIDE) != 0;
-      const bool show_stroke = is_stroke[stroke_i] || is_fill_guide_stroke;
-      const bool show_fill = (points.size() >= 3) && is_fill[stroke_i] && (!this->simplify_fill) &&
-                             !is_fill_guide_stroke;
+      const bool show_stroke = !hide_stroke[stroke_i] || is_fill_guide_stroke;
+      const bool show_fill = (points.size() >= 3) && (fill_id[stroke_i] != 0) &&
+                             (!this->simplify_fill) && !is_fill_guide_stroke;
       const bool hide_onion = is_onion && ((gp_style->flag & GP_MATERIAL_HIDE_ONIONSKIN) != 0 ||
                                            (!do_onion && !do_multi_frame));
       const bool skip_stroke = hide_material || (!show_stroke && !show_fill) ||
