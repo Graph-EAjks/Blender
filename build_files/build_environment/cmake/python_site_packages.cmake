@@ -25,7 +25,6 @@ ExternalProject_Add(external_python_site_packages
   # We do not build numpy, cython, or zstandard here as the pip builds are not reproducible.
   INSTALL_COMMAND ${PYTHON_BINARY} -m pip install --no-cache-dir ${SITE_PACKAGES_EXTRA}
   setuptools==${SETUPTOOLS_VERSION}
-  spin==${SPIN_VERSION}
   meson-python==${MESON_PYTHON_VERSION}
   packaging==${PACKAGING_VERSION}
   pyproject-metadata==${PYPROJECT_METADATA_VERSION}

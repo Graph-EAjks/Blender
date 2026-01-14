@@ -127,10 +127,12 @@ else()
   # the "_sqlite" cpython library needs to know where to get it from.
   set(PYTHON_LDFLAGS "-L${LIBDIR}/zlib/lib ${PLATFORM_LDFLAGS} ")
 
-  # Using pkg-config is supported for most libs besides bzip2, so make sure it is on.
   set(PYTHON_CONFIGURE_EXTRA_ARGS
+    # Using pkg-config is supported for most libs besides bzip2, so make sure it is on.
     --with-pkg-config=yes
     --enable-loadable-sqlite-extensions
+    # Don't build or ship the python test suite
+    --disable-test-modules
   )
 
   set(PYTHON_CONFIGURE_PKG_CONFIG_PATH "\

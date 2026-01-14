@@ -473,11 +473,10 @@ set(PYCODESTYLE_VERSION 2.13)
 # Build system for other packages (not used by Blender at run-time).
 set(MESON_VERSION 1.9.0)
 # Build time requirements for numpy and cython
-set(MESON_PYTHON_VERSION 0.18.0)
 set(SETUPTOOLS_VERSION 80.9.0)
-set(SPIN_VERSION 0.15)
-set(PACKAGING_VERSION 25.0)
-set(PYPROJECT_METADATA_VERSION  0.9.1)
+set(MESON_PYTHON_VERSION 0.18.0)
+set(PACKAGING_VERSION 25.0) # meson-python dep
+set(PYPROJECT_METADATA_VERSION  0.9.1) # meson-python dep
 
 
 
@@ -625,7 +624,7 @@ set(OPENJPH_HOMEPAGE https://github.com/aous72/OpenJPH)
 set(OPENJPH_FILE openjph-v${OPENJPH_VERSION}.tar.gz)
 set(OPENJPH_LICENSE SPDX:BSD-2-Clause)
 set(OPENJPH_COPYRIGHT [=[
-Copyright (c) 2019, Aous Naman 
+Copyright (c) 2019, Aous Naman
 Copyright (c) 2019, Kakadu Software Pty Ltd, Australia
 Copyright (c) 2019, The University of New South Wales, Australia
 ]=])
