@@ -31,7 +31,7 @@ void node_tree_shader_default(const bContext *C, Main *bmain, ID *id)
 {
   if (GS(id->name) == ID_MA) {
     /* Materials */
-    Object *ob = CTX_data_active_object(C);
+    Object *ob = (C) ? CTX_data_active_object(C) : nullptr;
     Material *ma = reinterpret_cast<Material *>(id);
     Material *ma_default;
 
@@ -42,6 +42,11 @@ void node_tree_shader_default(const bContext *C, Main *bmain, ID *id)
       ma_default = BKE_material_default_surface();
     }
 
+    if (ma->nodetree) {
+      bke::node_tree_free_embedded_tree(ma->nodetree);
+      MEM_freeN(ma->nodetree);
+      ma->nodetree = nullptr;
+    }
     ma->nodetree = bke::node_tree_copy_tree(bmain, *ma_default->nodetree);
     ma->nodetree->owner_id = &ma->id;
     for (bNode *node_iter : ma->nodetree->all_nodes()) {
