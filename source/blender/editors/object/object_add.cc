@@ -3961,8 +3961,6 @@ static Object *convert_font_to_curves(Base &base, ObjectConversionInfo &info, Ba
   return curve_ob;
 }
 
-/* Currently neither Grease Pencil nor legacy curves supports per-stroke/curve fill attribute, thus
- * the #fill argument applies on all strokes that are converted. */
 static void add_grease_pencil_materials_for_conversion(Main &bmain,
                                                        ID &from_id,
                                                        Object &gp_object,
@@ -3970,10 +3968,12 @@ static void add_grease_pencil_materials_for_conversion(Main &bmain,
 {
   short *len_p = BKE_id_material_len_p(&from_id);
   if (!len_p || *len_p == 0) {
+    BKE_grease_pencil_object_material_new(&bmain, &gp_object, IFACE_("Empty Material"), nullptr);
     return;
   }
   Material ***materials = BKE_id_material_array_p(&from_id);
   if (!materials || !(*materials)) {
+    BKE_grease_pencil_object_material_new(&bmain, &gp_object, IFACE_("Empty Material"), nullptr);
     return;
   }
   for (short i = 0; i < *len_p; i++) {
@@ -3991,10 +3991,25 @@ static void add_grease_pencil_materials_for_conversion(Main &bmain,
     }
 
     copy_v4_v4(gp_material->gp_style->fill_rgba, &orig_material->r);
-
-    SET_FLAG_FROM_TEST(gp_material->gp_style->flag, !use_fill, GP_MATERIAL_STROKE_SHOW);
-    SET_FLAG_FROM_TEST(gp_material->gp_style->flag, use_fill, GP_MATERIAL_FILL_SHOW);
+    if (use_fill) {
+      gp_material->gp_style->fill_rgba[3] = 1.0f;
+    }
   }
+}
+
+static void create_grease_pencil_fills(bke::greasepencil::Drawing &drawing)
+{
+  bke::MutableAttributeAccessor attributes = drawing.strokes_for_write().attributes_for_write();
+  bke::SpanAttributeWriter<int> fill_ids = attributes.lookup_or_add_for_write_only_span<int>(
+      "fill_id", bke::AttrDomain::Curve);
+  bke::SpanAttributeWriter<bool> hide_stroke = attributes.lookup_or_add_for_write_only_span<bool>(
+      "hide_stroke", bke::AttrDomain::Curve);
+  /* Mark all the strokes as part of the same fill. */
+  fill_ids.span.fill(1);
+  /* Hide all the strokes, only show fills. */
+  hide_stroke.span.fill(true);
+  fill_ids.finish();
+  hide_stroke.finish();
 }
 
 static Object *convert_font_to_grease_pencil(Base &base,
@@ -4023,13 +4038,18 @@ static Object *convert_font_to_grease_pencil(Base &base,
   drawing->strokes_for_write() = std::move(curves);
   /* Default radius (1.0 unit) is too thick for converted strokes. */
   drawing->radii_for_write().fill(0.01f);
-  drawing->tag_positions_changed();
+
+  /* Legacy curves don't support per-stroke/curve fill attribute, thus all the strokes that are
+   * converted are filled. */
+  const bool use_fill = (legacy_curve_id->flag & (CU_FRONT | CU_BACK)) != 0;
+  if (use_fill) {
+    create_grease_pencil_fills(*drawing);
+  }
 
   curve_ob->data = id_cast<ID *>(grease_pencil);
   curve_ob->type = OB_GREASE_PENCIL;
   curve_ob->totcol = grease_pencil->material_array_num;
 
-  const bool use_fill = (legacy_curve_id->flag & (CU_FRONT | CU_BACK)) != 0;
   add_grease_pencil_materials_for_conversion(*info.bmain, legacy_curve_id->id, *newob, use_fill);
 
   /* We don't need the intermediate font/curve data ID any more. */
@@ -4135,6 +4155,13 @@ static Object *convert_curves_legacy_to_grease_pencil(Base &base,
   drawing->radii_for_write().fill(0.01f);
   drawing->tag_positions_changed();
 
+  /* Legacy curves don't support per-stroke/curve fill attribute, thus all the strokes that are
+   * converted are filled. */
+  const bool use_fill = (legacy_curve_id->flag & (CU_FRONT | CU_BACK)) != 0;
+  if (use_fill) {
+    create_grease_pencil_fills(*drawing);
+  }
+
   newob->data = id_cast<ID *>(grease_pencil);
   newob->type = OB_GREASE_PENCIL;
 
@@ -4142,7 +4169,6 @@ static Object *convert_curves_legacy_to_grease_pencil(Base &base,
    * sync. */
   newob->totcol = grease_pencil->material_array_num;
 
-  const bool use_fill = (legacy_curve_id->flag & (CU_FRONT | CU_BACK)) != 0;
   add_grease_pencil_materials_for_conversion(*info.bmain, legacy_curve_id->id, *newob, use_fill);
 
   /* For some reason this must be called, otherwise evaluated id_cow will still be the original
