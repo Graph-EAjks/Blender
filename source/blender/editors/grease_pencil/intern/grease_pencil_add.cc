@@ -31,72 +31,72 @@ struct ColorTemplate {
 static const ColorTemplate gp_stroke_material_black = {
     N_("Black"),
     {0.0f, 0.0f, 0.0f, 1.0f},
-    {0.0f, 0.0f, 0.0f, 1.0f},
+    {0.0f, 0.0f, 0.0f, 0.0f},
 };
 
 static const ColorTemplate gp_stroke_material_white = {
     N_("White"),
     {1.0f, 1.0f, 1.0f, 1.0f},
-    {1.0f, 1.0f, 1.0f, 1.0f},
+    {0.0f, 0.0f, 0.0f, 0.0f},
 };
 
 static const ColorTemplate gp_stroke_material_red = {
     N_("Red"),
     {1.0f, 0.0f, 0.0f, 1.0f},
-    {1.0f, 0.0f, 0.0f, 1.0f},
+    {0.0f, 0.0f, 0.0f, 0.0f},
 };
 
 static const ColorTemplate gp_stroke_material_green = {
     N_("Green"),
     {0.0f, 1.0f, 0.0f, 1.0f},
-    {0.0f, 1.0f, 0.0f, 1.0f},
+    {0.0f, 0.0f, 0.0f, 0.0f},
 };
 
 static const ColorTemplate gp_stroke_material_blue = {
     N_("Blue"),
     {0.0f, 0.0f, 1.0f, 1.0f},
-    {0.0f, 0.0f, 1.0f, 1.0f},
+    {0.0f, 0.0f, 0.0f, 0.0f},
 };
 
 static const ColorTemplate gp_fill_material_grey = {
     N_("Grey"),
-    {0.5f, 0.5f, 0.5f, 1.0f},
+    {0.0f, 0.0f, 0.0f, 0.0f},
     {0.5f, 0.5f, 0.5f, 1.0f},
 };
 
 static const ColorTemplate gp_monkey_material_black = {
     N_("Black"),
     {0.0f, 0.0f, 0.0f, 1.0f},
-    {0.0f, 0.0f, 0.0f, 1.0f},
+    {0.0f, 0.0f, 0.0f, 0.0f},
 };
 
 static const ColorTemplate gp_monkey_material_skin = {
     N_("Skin"),
-    {0.745f, 0.502f, 0.278f, 1.0f},
+    {0.0f, 0.0f, 0.0f, 0.0f},
     {0.745f, 0.502f, 0.278f, 1.0f},
 };
 
 static const ColorTemplate gp_monkey_material_skin_light = {
     N_("Skin_light"),
     {0.914f, 0.827f, 0.635f, 1.0f},
-    {0.914f, 0.827f, 0.635f, 1.0f},
+    {0.0f, 0.0f, 0.0f, 0.0f},
 };
 
 static const ColorTemplate gp_monkey_material_skin_shadow = {
     N_("Skin_shadow"),
     {0.322f, 0.29f, 0.224f, 0.5f},
-    {0.32f, 0.29f, 0.223f, 0.3f},
+    {0.0f, 0.0f, 0.0f, 0.0f},
 };
 
 static const ColorTemplate gp_monkey_material_eyes = {
     N_("Eyes"),
-    {0.847f, 0.723f, 0.599f, 1.0f},
+    {0.0f, 0.0f, 0.0f, 0.0f},
     {0.847f, 0.723f, 0.599f, 1.0f},
 };
 
 static const ColorTemplate gp_monkey_material_pupils = {
     N_("Pupils"),
-    {0.0f, 0.0f, 0.0f, 1.0f},
+    {0.0f, 0.0f, 0.0f, 0.0f},
     {0.0f, 0.0f, 0.0f, 1.0f},
 };
 
@@ -1271,7 +1271,7 @@ void create_suzanne(Main &bmain, Object &object, const float4x4 &matrix, const i
   const std::array<int, 15> monkey_line_fill_ids({0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 0, 0});
 
   const std::array<bool, 13> monkey_fill_hide_strokes(
-      {false, false, false, false, false, false, false, false, false, false, false, false, false});
+      {true, false, false, false, false, false, false, false, true, false, true, false, false});
   const std::array<int, 13> monkey_fill_fill_ids({1, 0, 0, 0, 0, 0, 0, 0, 2, 0, 3, 0, 0});
 
   Layer &layer_fills = grease_pencil.add_layer(DATA_("Fills"));
