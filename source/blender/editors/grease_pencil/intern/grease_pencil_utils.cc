@@ -937,21 +937,6 @@ static VectorSet<int> get_hidden_material_indices(Object &object)
   return hidden_material_indices;
 }
 
-static VectorSet<int> get_fill_material_indices(Object &object)
-{
-  BLI_assert(object.type == OB_GREASE_PENCIL);
-  VectorSet<int> fill_material_indices;
-  for (const int mat_i : IndexRange(object.totcol)) {
-    Material *material = BKE_object_material_get(&object, mat_i + 1);
-    if (material != nullptr && material->gp_style != nullptr &&
-        (material->gp_style->flag & GP_MATERIAL_FILL_SHOW) != 0)
-    {
-      fill_material_indices.add_new(mat_i);
-    }
-  }
-  return fill_material_indices;
-}
-
 IndexMask retrieve_editable_strokes(Object &object,
                                     const bke::greasepencil::Drawing &drawing,
                                     int layer_index,
@@ -1010,20 +995,14 @@ IndexMask retrieve_editable_fill_strokes(Object &object,
   const IndexRange curves_range = curves.curves_range();
 
   const bke::AttributeAccessor attributes = curves.attributes();
-  const VArray<int> materials = *attributes.lookup_or_default<int>(
-      "material_index", bke::AttrDomain::Curve, 0);
-  const VectorSet<int> fill_material_indices = get_fill_material_indices(object);
-  if (!materials) {
-    /* If the attribute does not exist then the default is the first material. */
-    if (editable_strokes.contains(0) && fill_material_indices.contains(0)) {
-      return curves_range;
-    }
+  const VArray<int> fill_ids = *attributes.lookup_or_default<int>(
+      "fill_id", bke::AttrDomain::Curve, 0);
+  if (!fill_ids) {
     return {};
   }
   const IndexMask fill_strokes = IndexMask::from_predicate(
       curves_range, GrainSize(4096), memory, [&](const int64_t curve_i) {
-        const int material_index = materials[curve_i];
-        return fill_material_indices.contains(material_index);
+        return fill_ids[curve_i] != 0;
       });
   return IndexMask::from_intersection(editable_strokes, fill_strokes, memory);
 }
