@@ -811,7 +811,7 @@ void do_versions_after_setup(Main *new_bmain,
 
     /* Any versioning that needs to happen on Grease Pencil IDs (ID_GP) also needs to be added
      * here since new IDs might have been added now that are not versioned yet. */
-    if (!MAIN_VERSION_FILE_ATLEAST(new_bmain, 501, 18)) {
+    if (!MAIN_VERSION_FILE_ATLEAST(new_bmain, 501, 19)) {
       bke::greasepencil::convert::grease_pencil_material_stroke_fill_toggle_to_attributes(
           *new_bmain, *reports);
     }
