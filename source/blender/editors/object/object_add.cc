@@ -3381,7 +3381,6 @@ static int mesh_to_grease_pencil_add_material(Main &bmain,
 
   if (stroke_color.has_value()) {
     copy_v4_v4(ma->gp_style->stroke_rgba, stroke_color.value());
-    srgb_to_linearrgb_v4(ma->gp_style->stroke_rgba, ma->gp_style->stroke_rgba);
   }
   else {
     copy_v4_v4(ma->gp_style->stroke_rgba, float4(0.0f));
@@ -3389,7 +3388,6 @@ static int mesh_to_grease_pencil_add_material(Main &bmain,
 
   if (fill_color.has_value()) {
     copy_v4_v4(ma->gp_style->fill_rgba, fill_color.value());
-    srgb_to_linearrgb_v4(ma->gp_style->fill_rgba, ma->gp_style->fill_rgba);
   }
   else {
     copy_v4_v4(ma->gp_style->fill_rgba, float4(0.0f));
