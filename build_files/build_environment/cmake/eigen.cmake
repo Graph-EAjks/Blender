@@ -5,6 +5,7 @@
 set(EIGEN_EXTRA_ARGS
   -DBUILD_TESTING=OFF
   -DEIGEN_BUILD_DOC=OFF
+  -DTBB_DIR=${LIBDIR}/tbb/lib/cmake/TBB
 )
 
 ExternalProject_Add(external_eigen
@@ -13,6 +14,10 @@ ExternalProject_Add(external_eigen
   DOWNLOAD_DIR ${DOWNLOAD_DIR}
   PREFIX ${BUILD_DIR}/eigen
   CMAKE_GENERATOR ${PLATFORM_ALT_GENERATOR}
+
+  PATCH_COMMAND ${PATCH_CMD} -p 1 -d
+    ${BUILD_DIR}/eigen/src/external_eigen <
+    ${PATCH_DIR}/eigen_tbb_support.diff
 
   CMAKE_ARGS
     -DCMAKE_INSTALL_PREFIX=${LIBDIR}/eigen

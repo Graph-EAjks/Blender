@@ -5,6 +5,7 @@
 set(CERES_EXTRA_ARGS
   -Dabsl_DIR=${LIBDIR}/abseil/lib/cmake/absl/
   -DEigen3_DIR=${LIBDIR}/eigen/share/eigen3/cmake/
+  -DTBB_DIR=${LIBDIR}/tbb/lib/cmake/TBB
   -DBUILD_TESTING=OFF
   -DUSE_CUDA=OFF
   -DBUILD_EXAMPLES=OFF
