@@ -10,6 +10,8 @@
 #include "BLI_vector.hh"
 #include "BLI_virtual_array.hh"
 
+#include "BKE_curves.hh"
+#include "BKE_curves_utils.hh"
 #include "BKE_grease_pencil_fills.hh"
 
 namespace blender::bke::greasepencil {
@@ -99,6 +101,92 @@ std::optional<FillCache> fill_cache_from_fill_ids(const int num_curves,
   fill_cache.fill_map = std::move(fill_map);
   fill_cache.fill_offsets = std::move(all_fill_sizes);
   return fill_cache;
+}
+
+IndexMask selected_mask_to_fills(const IndexMask selected_mask,
+                                 const bke::CurvesGeometry &curves,
+                                 const bke::AttrDomain domain,
+                                 IndexMaskMemory &memory)
+{
+  const bke::AttributeAccessor attributes = curves.attributes();
+  const OffsetIndices points_by_curve = curves.points_by_curve();
+  const VArray<int> fill_ids = *attributes.lookup<int>("fill_id", bke::AttrDomain::Curve);
+
+  /* If the attribute does not exist then each curves is its own fill. */
+  if (!fill_ids) {
+    if (domain == AttrDomain::Curve) {
+      return selected_mask;
+    }
+    BLI_assert(domain == AttrDomain::Point);
+
+    Array<bool> selected_points(curves.points_num());
+    selected_mask.to_bools(selected_points);
+
+    const IndexMask selected_curves = IndexMask::from_predicate(
+        curves.curves_range(), GrainSize(512), memory, [&](const int curve_i) {
+          const IndexRange points = points_by_curve[curve_i];
+          for (const int point_i : points) {
+            if (selected_points[point_i]) {
+              return true;
+            }
+          }
+          return false;
+        });
+
+    return bke::curves::curve_to_point_selection(points_by_curve, selected_curves, memory);
+  }
+
+  VectorSet<int> selected_fill_ids;
+  Array<bool> src_selected_curves(curves.curves_num());
+
+  if (domain == AttrDomain::Point) {
+    Array<bool> selected_points(curves.points_num());
+    selected_mask.to_bools(selected_points);
+
+    const IndexMask selected_curves = IndexMask::from_predicate(
+        curves.curves_range(), GrainSize(512), memory, [&](const int curve_i) {
+          const IndexRange points = points_by_curve[curve_i];
+          for (const int point_i : points) {
+            if (selected_points[point_i]) {
+              return true;
+            }
+          }
+          return false;
+        });
+
+    selected_curves.foreach_index([&](const int64_t curve_i) {
+      const int fill_id = fill_ids[curve_i];
+      if (fill_id != 0) {
+        selected_fill_ids.add(fill_id);
+      }
+    });
+    selected_curves.to_bools(src_selected_curves);
+  }
+  else {
+    selected_mask.foreach_index([&](const int64_t curve_i) {
+      const int fill_id = fill_ids[curve_i];
+      if (fill_id != 0) {
+        selected_fill_ids.add(fill_id);
+      }
+    });
+    selected_mask.to_bools(src_selected_curves);
+  }
+
+  const IndexMask selected_curves = IndexMask::from_predicate(
+      curves.curves_range(), GrainSize(4096), memory, [&](const int64_t curve_i) {
+        const int fill_id = fill_ids[curve_i];
+        if (fill_id == 0) {
+          return src_selected_curves[curve_i];
+        }
+        return selected_fill_ids.contains(fill_id);
+      });
+
+  if (domain == AttrDomain::Curve) {
+    return selected_curves;
+  }
+  BLI_assert(domain == AttrDomain::Point);
+
+  return bke::curves::curve_to_point_selection(curves.points_by_curve(), selected_curves, memory);
 }
 
 }  // namespace blender::bke::greasepencil

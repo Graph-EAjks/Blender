@@ -10,6 +10,7 @@
 #include "BKE_context.hh"
 #include "BKE_curves.hh"
 #include "BKE_grease_pencil.hh"
+#include "BKE_grease_pencil_fills.hh"
 #include "BKE_object.hh"
 
 #include "BLI_enumerable_thread_specific.hh"
@@ -253,15 +254,20 @@ bool selection_update(const ViewContext *vc,
           ed::curves::get_curves_selection_attribute_names(curves);
 
       IndexMaskMemory memory;
-      const IndexMask elements = ed::greasepencil::retrieve_editable_elements(
+      IndexMask elements = ed::greasepencil::retrieve_editable_elements(
           *object, info, selection_domain, memory);
       if (elements.is_empty()) {
         continue;
       }
 
       for (const StringRef attribute_name : selection_attribute_names) {
-        const IndexMask changed_element_mask = select_operation(
-            info, elements, attribute_name, memory);
+        IndexMask changed_element_mask = select_operation(info, elements, attribute_name, memory);
+
+        /* Select fills. */
+        if (selection_domain == bke::AttrDomain::Curve) {
+          changed_element_mask = bke::greasepencil::selected_mask_to_fills(
+              changed_element_mask, curves, selection_domain, memory);
+        }
 
         /* Modes that un-set all elements not in the mask. */
         if (ELEM(sel_op, SEL_OP_SET, SEL_OP_AND)) {
@@ -888,19 +894,54 @@ bool ensure_selection_domain(ToolSettings *ts, Object *object)
       continue;
     }
 
-    /* Skip curve when the selection domain already matches, or when there is no selection
-     * at all. */
     bke::MutableAttributeAccessor attributes = curves.attributes_for_write();
     const std::optional<bke::AttributeMetaData> meta_data = attributes.lookup_meta_data(
         ".selection");
-    if ((!meta_data) || (meta_data->domain == domain)) {
-      continue;
-    }
 
-    /* When the new selection domain is 'curve', ensure all curves with a point selection
+    /* When the selection domain is 'curve', ensure all *fills* with a point selection
      * are selected. */
     if (domain == bke::AttrDomain::Curve) {
-      ed::curves::select_linked(curves);
+      IndexMaskMemory memory;
+      if (meta_data->domain == bke::AttrDomain::Point) {
+        const IndexMask selected_points = ed::curves::retrieve_selected_points(curves, memory);
+        const IndexMask selected_mask = bke::greasepencil::selected_mask_to_fills(
+            selected_points, curves, bke::AttrDomain::Point, memory);
+
+        for (const StringRef selection_attribute_name :
+             ed::curves::get_curves_selection_attribute_names(curves))
+        {
+          bke::GSpanAttributeWriter selection_writer = ed::curves::ensure_selection_attribute(
+              curves, bke::AttrDomain::Point, bke::AttrType::Bool, selection_attribute_name);
+          curves::fill_selection_true(selection_writer.span, selected_mask);
+
+          selection_writer.finish();
+        }
+      }
+      else {
+        BLI_assert(meta_data->domain == bke::AttrDomain::Curve);
+
+        const IndexMask selected_curves = ed::curves::retrieve_selected_curves(curves, memory);
+        const IndexMask selected_mask = bke::greasepencil::selected_mask_to_fills(
+            selected_curves, curves, bke::AttrDomain::Curve, memory);
+
+        for (const StringRef selection_attribute_name :
+             ed::curves::get_curves_selection_attribute_names(curves))
+        {
+          bke::GSpanAttributeWriter selection_writer = ed::curves::ensure_selection_attribute(
+              curves, bke::AttrDomain::Curve, bke::AttrType::Bool, selection_attribute_name);
+          curves::fill_selection_true(selection_writer.span, selected_mask);
+
+          selection_writer.finish();
+        }
+      }
+
+      changed |= true;
+    }
+
+    /* Skip curve when the selection domain already matches, or when there is no selection
+     * at all. */
+    if ((!meta_data) || (meta_data->domain == domain)) {
+      continue;
     }
 
     /* Convert selection domain. */
