@@ -873,6 +873,101 @@ static void GREASE_PENCIL_OT_select_ends(wmOperatorType *ot)
               INT32_MAX);
 }
 
+static wmOperatorStatus select_fill_exec(bContext *C, wmOperator * /*op*/)
+{
+  Scene *scene = CTX_data_scene(C);
+  Object *object = CTX_data_active_object(C);
+  GreasePencil &grease_pencil = *blender::id_cast<GreasePencil *>(object->data);
+  const bke::AttrDomain selection_domain = ED_grease_pencil_selection_domain_get(
+      scene->toolsettings, object);
+
+  const Vector<MutableDrawingInfo> drawings = retrieve_editable_drawings(*scene, grease_pencil);
+  threading::parallel_for_each(drawings, [&](const MutableDrawingInfo &info) {
+    IndexMaskMemory memory;
+    const IndexMask selected_strokes = ed::greasepencil::retrieve_editable_and_selected_strokes(
+        *object, info.drawing, info.layer_index, memory);
+    if (selected_strokes.is_empty()) {
+      return;
+    }
+
+    bke::CurvesGeometry &curves = info.drawing.strokes_for_write();
+    bke::MutableAttributeAccessor attributes = curves.attributes_for_write();
+    const VArray<int> fill_ids = *attributes.lookup<int>("fill_id", bke::AttrDomain::Curve);
+
+    /* If the attribute does not exist then each curves is its own fill. */
+    if (!fill_ids) {
+      const IndexMask editable_strokes = ed::greasepencil::retrieve_editable_strokes(
+          *object, info.drawing, info.layer_index, memory);
+      blender::ed::curves::select_linked(curves, editable_strokes);
+      return;
+    }
+
+    VectorSet<int> selected_fill_ids;
+    selected_strokes.foreach_index([&](const int64_t curve_i) {
+      const int fill_id = fill_ids[curve_i];
+      if (fill_id != 0) {
+        selected_fill_ids.add(fill_id);
+      }
+    });
+
+    Array<bool> selected_curves(curves.curves_num());
+    selected_strokes.to_bools(selected_curves);
+
+    const IndexMask strokes = IndexMask::from_predicate(
+        curves.curves_range(), GrainSize(4096), memory, [&](const int64_t curve_i) {
+          const int fill_id = fill_ids[curve_i];
+          if (fill_id == 0) {
+            return selected_curves[curve_i];
+          }
+          return selected_fill_ids.contains(fill_id);
+        });
+
+    const OffsetIndices<int> points_by_curve = curves.points_by_curve();
+    const Span<StringRef> selection_attribute_names =
+        ed::curves::get_curves_selection_attribute_names(curves);
+
+    for (const int i : selection_attribute_names.index_range()) {
+      bke::GSpanAttributeWriter selection = ed::curves::ensure_selection_attribute(
+          curves, selection_domain, bke::AttrType::Bool, selection_attribute_names[i]);
+      switch (selection_domain) {
+        case bke::AttrDomain::Curve: {
+          ed::curves::fill_selection_true(selection.span.typed<bool>(), strokes);
+          break;
+        }
+        case bke::AttrDomain::Point: {
+          strokes.foreach_index([&](const int curve_index) {
+            const IndexRange points = points_by_curve[curve_index];
+            ed::curves::fill_selection_true(selection.span.slice(points));
+          });
+          break;
+        }
+        default:
+          BLI_assert_unreachable();
+      }
+      selection.finish();
+    }
+  });
+
+  /* Use #ID_RECALC_GEOMETRY instead of #ID_RECALC_SELECT because it is handled as a generic
+   * attribute for now. */
+  DEG_id_tag_update(&grease_pencil.id, ID_RECALC_GEOMETRY);
+  WM_event_add_notifier(C, NC_GEOM | ND_DATA, &grease_pencil);
+
+  return OPERATOR_FINISHED;
+}
+
+static void GREASE_PENCIL_OT_select_fill(wmOperatorType *ot)
+{
+  ot->name = "Select Shape";
+  ot->idname = "GREASE_PENCIL_OT_select_fill";
+  ot->description = "Select all curves in a fill";
+
+  ot->exec = select_fill_exec;
+  ot->poll = editable_grease_pencil_poll;
+
+  ot->flag = OPTYPE_REGISTER | OPTYPE_UNDO;
+}
+
 bool ensure_selection_domain(ToolSettings *ts, Object *object)
 {
   bool changed = false;
@@ -1207,6 +1302,7 @@ void ED_operatortypes_grease_pencil_select()
   WM_operatortype_append(GREASE_PENCIL_OT_select_alternate);
   WM_operatortype_append(GREASE_PENCIL_OT_select_similar);
   WM_operatortype_append(GREASE_PENCIL_OT_select_ends);
+  WM_operatortype_append(GREASE_PENCIL_OT_select_fill);
   WM_operatortype_append(GREASE_PENCIL_OT_set_selection_mode);
   WM_operatortype_append(GREASE_PENCIL_OT_material_select);
 }
