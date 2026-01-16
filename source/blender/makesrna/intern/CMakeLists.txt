@@ -273,7 +273,6 @@ set(INC
 )
 
 set(INC_SYS
-  ../../../../extern/fmtlib/include
 )
 
 if(WITH_CYCLES)
@@ -427,6 +426,7 @@ target_link_libraries(makesrna PRIVATE bf::intern::guardedalloc)
 target_link_libraries(makesrna PRIVATE bf_dna_blenlib)
 target_link_libraries(makesrna PRIVATE bf_dna_defaults)
 target_link_libraries(makesrna PRIVATE bf::dependencies::optional::tbb)
+target_link_libraries(makesrna PRIVATE fmt::fmt)
 
 if(WIN32 AND NOT UNIX)
   if(DEFINED PTHREADS_LIBRARIES)
@@ -467,7 +467,7 @@ set(LIB
   PRIVATE bf::dna
   PRIVATE bf::dependencies::optional::openvdb
   PRIVATE bf::dependencies::optional::tbb
-  PRIVATE extern_fmtlib
+  PUBLIC fmt::fmt
   bf_editor_space_api
 
   bf_editor_animation

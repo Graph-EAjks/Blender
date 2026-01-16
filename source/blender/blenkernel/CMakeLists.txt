@@ -592,7 +592,6 @@ set(LIB
   PRIVATE bf::sequencer
   bf_shader_fx
   bf_simulation
-  PRIVATE bf::extern::fmtlib
   PRIVATE bf::extern::xxhash
   PRIVATE bf::intern::atomic
   # For `vfontdata_freetype.c`.

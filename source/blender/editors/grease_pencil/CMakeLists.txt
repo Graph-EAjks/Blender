@@ -58,7 +58,6 @@ set(LIB
   PRIVATE bf::intern::clog
   PRIVATE bf::windowmanager
   extern_curve_fit_nd
-  extern_fmtlib
 )
 
 blender_add_lib(bf_editor_grease_pencil "${SRC}" "${INC}" "${INC_SYS}" "${LIB}")

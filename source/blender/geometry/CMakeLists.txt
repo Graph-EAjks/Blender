@@ -113,7 +113,6 @@ set(LIB
   PRIVATE bf::functions
   PRIVATE bf::intern::atomic
   PRIVATE bf::intern::guardedalloc
-  PRIVATE bf::extern::fmtlib
   PRIVATE bf::extern::curve_fit_nd
   PRIVATE bf::dependencies::optional::manifold
 )

@@ -84,7 +84,6 @@ set(LIB
   PRIVATE bf::imbuf
   PRIVATE bf::intern::guardedalloc
   PRIVATE bf::windowmanager
-  PRIVATE bf::extern::fmtlib
 )
 
 add_node_discovery(

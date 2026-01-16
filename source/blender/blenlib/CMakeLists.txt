@@ -422,13 +422,12 @@ set(SRC
 
 set(LIB
   PUBLIC bf::dna
-  PRIVATE bf::extern::fmtlib
   PRIVATE bf::extern::xxhash
   bf_intern_eigen
   PRIVATE bf::intern::guardedalloc
   extern_wcwidth
   PRIVATE bf::intern::atomic
-  PRIVATE extern_fmtlib
+  PUBLIC fmt::fmt
   PUBLIC bf::dependencies::optional::tbb
   PRIVATE bf::dependencies::eigen
   ${ZLIB_LIBRARIES}

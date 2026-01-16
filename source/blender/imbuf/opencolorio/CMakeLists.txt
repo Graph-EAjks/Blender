@@ -83,7 +83,6 @@ set(LIB
   PRIVATE bf::intern::guardedalloc
   PRIVATE bf::intern::clog
   PUBLIC bf::dependencies::optional::opencolorio
-  PRIVATE bf::extern::fmtlib
 )
 
 blender_add_lib(bf_imbuf_opencolorio "${SRC}" "${INC}" "${INC_SYS}" "${LIB}")

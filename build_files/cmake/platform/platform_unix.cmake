@@ -100,6 +100,7 @@ if(DEFINED LIBDIR)
   set(OPENEXR_ROOT_DIR ${LIBDIR}/openexr)
   set(CLANG_ROOT_DIR ${LIBDIR}/llvm)
   set(MaterialX_DIR ${LIBDIR}/materialx/lib/cmake/MaterialX)
+  set(fmt_ROOT ${LIBDIR}/fmt)
 endif()
 
 # Wrapper to prefer static libraries
@@ -126,6 +127,7 @@ find_package_wrapper(PNG REQUIRED)
 find_package_wrapper(ZLIB REQUIRED)
 find_package_wrapper(Zstd REQUIRED)
 find_package_wrapper(Epoxy REQUIRED)
+find_package_wrapper(fmt REQUIRED)
 
 # XXX Linking errors with debian static tiff :/
 # find_package_wrapper(TIFF REQUIRED)

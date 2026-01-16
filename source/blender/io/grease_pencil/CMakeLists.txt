@@ -13,7 +13,6 @@ set(INC
 )
 
 set(INC_SYS
-  ../../../../extern/fmtlib/include
 )
 
 set(SRC
@@ -37,7 +36,6 @@ set(LIB
   PRIVATE bf::intern::clog
   PRIVATE bf::intern::guardedalloc
   PRIVATE bf::windowmanager
-  PRIVATE extern_fmtlib
   bf_io_common
 )
 

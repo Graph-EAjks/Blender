@@ -20,3 +20,11 @@ ExternalProject_Add(external_fmt
 
   INSTALL_DIR ${LIBDIR}/fmt
 )
+
+if(WIN32)
+  # TODO
+else()
+  harvest(external_fmt fmt/include fmt/include "*.h")
+  harvest(external_fmr fmt/lib/cmake/fmt fmt/lib/cmake/fmt "*.cmake")
+  harvest(external_fmr fmt/lib fmt/lib "*.a")
+endif()
