@@ -1493,8 +1493,8 @@ set(EIGEN_HASH cc28a84fdec496c6777596350ea805519bf10f717d21044ae6ba3dd562183a26)
 set(EIGEN_HASH_TYPE SHA256)
 set(EIGEN_FILE eigen-${EIGEN_VERSION}.tar.gz)
 set(EIGEN_HOMEPAGE http://eigen.tuxfamily.org)
-set(EIGEN_LICENSE SPDX:I-Dont-know)
-set(EIGEN_COPYRIGHT "I-Dont-know")
+set(EIGEN_LICENSE SPDX:MPL-2.0)
+set(EIGEN_COPYRIGHT "Copyright (C) 2008-2010 Gael Guennebaud <gael.guennebaud@inria.fr>. Copyright (C) 2006-2008 Benoit Jacob <jacob.benoit.1@gmail.com")
 
 set(CERES_VERSION 0c70ed3a1a2d6ba47c06c7e8b3b040880bc474db) # Latest main on 2025-12-05
 set(CERES_URI https://github.com/ceres-solver/ceres-solver/archive/${CERES_VERSION}.tar.gz)
