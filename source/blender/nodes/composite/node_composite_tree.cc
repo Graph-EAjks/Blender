@@ -98,41 +98,11 @@ static void foreach_nodeclass(void *calldata, bke::bNodeClassCallback func)
   func(calldata, NODE_CLASS_LAYOUT, N_("Layout"));
 }
 
-/* local tree then owns all compbufs */
-static void localize(bNodeTree *localtree, bNodeTree *ntree)
-{
-
-  bNode *node = static_cast<bNode *>(ntree->nodes.first);
-  bNode *local_node = static_cast<bNode *>(localtree->nodes.first);
-  while (node != nullptr) {
-
-    /* Ensure new user input gets handled ok. */
-    node->runtime->need_exec = 0;
-    local_node->runtime->original = node;
-
-    /* move over the compbufs */
-    /* right after #bke::node_tree_copy_tree() `oldsock` pointers are valid */
-
-    node = node->next;
-    local_node = local_node->next;
-  }
-}
-
 static void update(bNodeTree *ntree)
 {
   bke::node_tree_set_output(*ntree);
 
   ntree_update_reroute_nodes(ntree);
-}
-
-static void composite_node_add_init(bNodeTree * /*bnodetree*/, bNode *bnode)
-{
-  /* Composite node will only show previews for input classes
-   * by default, other will be hidden
-   * but can be made visible with the show_preview option */
-  if (bnode->typeinfo->nclass != NODE_CLASS_INPUT) {
-    bnode->flag &= ~NODE_PREVIEW;
-  }
 }
 
 static bool composite_node_tree_socket_type_valid(bke::bNodeTreeType * /*ntreetype*/,
@@ -178,10 +148,8 @@ void register_node_tree_type_cmp()
   tt->ui_description = N_("Create effects and post-process renders, images, and the 3D Viewport");
 
   tt->foreach_nodeclass = foreach_nodeclass;
-  tt->localize = localize;
   tt->update = update;
   tt->get_from_context = composite_get_from_context;
-  tt->node_add_init = composite_node_add_init;
   tt->validate_link = composite_validate_link;
   tt->valid_socket_type = composite_node_tree_socket_type_valid;
 
