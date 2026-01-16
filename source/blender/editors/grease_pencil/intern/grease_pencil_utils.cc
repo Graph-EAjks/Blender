@@ -1224,6 +1224,37 @@ IndexMask retrieve_visible_bezier_handle_strokes(Object &object,
   return IndexMask::from_intersection(visible_bezier_strokes, selected_strokes, memory);
 }
 
+IndexMask retrieve_visible_fills(Object &object,
+                                 const bke::greasepencil::Drawing &drawing,
+                                 IndexMaskMemory &memory)
+{
+  /* Get all the hidden material indices. */
+  VectorSet<int> hidden_material_indices = get_hidden_material_indices(object);
+
+  const std::optional<GroupedSpan<int>> fills = drawing.fills();
+  if (!fills) {
+    return ed::greasepencil::retrieve_visible_strokes(object, drawing, memory);
+  }
+
+  if (hidden_material_indices.is_empty()) {
+    return (*fills).index_range();
+  }
+
+  const bke::CurvesGeometry &curves = drawing.strokes();
+  const bke::AttributeAccessor attributes = curves.attributes();
+
+  /* Get all the fills that have their first curve's material visible. */
+  const VArray<int> materials = *attributes.lookup_or_default<int>(
+      "material_index", bke::AttrDomain::Curve, 0);
+  return IndexMask::from_predicate(
+      (*fills).index_range(), GrainSize(4096), memory, [&](const int64_t fill_index) {
+        const Span<int> fill = (*fills)[fill_index];
+        const int curve_i = fill.first();
+        const int material_index = materials[curve_i];
+        return !hidden_material_indices.contains(material_index);
+      });
+}
+
 IndexMask retrieve_visible_bezier_handle_points(Object &object,
                                                 const bke::greasepencil::Drawing &drawing,
                                                 const int layer_index,
@@ -1739,6 +1770,7 @@ void add_single_curve(bke::greasepencil::Drawing &drawing, const bool at_end)
 {
   bke::CurvesGeometry &curves = drawing.strokes_for_write();
   if (at_end) {
+    const int num_old_curves = curves.curves_num();
     const int num_old_points = curves.points_num();
     curves.resize(curves.points_num() + 1, curves.curves_num() + 1);
     curves.offsets_for_write().last(1) = num_old_points;
@@ -1752,6 +1784,14 @@ void add_single_curve(bke::greasepencil::Drawing &drawing, const bool at_end)
     drawing.runtime->curve_texture_matrices.update([&](Vector<float4x2> &texture_matrices) {
       texture_matrices.append(float4x2::identity());
     });
+    /* Update the fill cache if it exists. */
+    drawing.runtime->fill_cache.update(
+        [&](std::optional<bke::greasepencil::FillCache> &fill_cache) {
+          if (fill_cache) {
+            (*fill_cache).fill_map.append(num_old_curves);
+            (*fill_cache).fill_offsets.append((*fill_cache).fill_offsets.last() + 1);
+          }
+        });
     return;
   }
 

@@ -396,6 +396,7 @@ tObject *Instance::object_sync_do(Object *ob, ResourceHandleRange res_handle)
   for (const DrawingInfo info : drawings) {
     const Layer &layer = *layers[info.layer_index];
 
+    const GroupedSpan<int3> triangles = info.drawing.triangles();
     const bke::CurvesGeometry &curves = info.drawing.strokes();
     const OffsetIndices<int> points_by_curve = curves.evaluated_points_by_curve();
     const bke::AttributeAccessor attributes = curves.attributes();
@@ -403,25 +404,45 @@ tObject *Instance::object_sync_do(Object *ob, ResourceHandleRange res_handle)
         "cyclic", bke::AttrDomain::Curve, false);
 
     IndexMaskMemory memory;
-    const IndexMask visible_strokes = ed::greasepencil::retrieve_visible_strokes(
+    const IndexMask visible_fills = ed::greasepencil::retrieve_visible_fills(
         *ob, info.drawing, memory);
+    const std::optional<GroupedSpan<int>> fills = info.drawing.fills();
+    const int num_fills = fills.has_value() ? (*fills).size() : curves.curves_num();
 
     /* Precompute all the triangle and vertex counts.
      * In case the drawing should not be rendered, we need to compute the offset where the next
      * drawing begins. */
-    Array<int> num_triangles_per_stroke(visible_strokes.size());
-    Array<int> num_vertices_per_stroke(visible_strokes.size());
+    Array<int> num_triangles_per_fill(num_fills);
+    Array<int> num_vertices_per_stroke(curves.curves_num());
     int total_num_triangles = 0;
     int total_num_vertices = 0;
-    visible_strokes.foreach_index([&](const int stroke_i, const int pos) {
-      const IndexRange points = points_by_curve[stroke_i];
-      const int num_stroke_triangles = (points.size() >= 3) ? (points.size() - 2) : 0;
-      const int num_stroke_vertices = (points.size() +
-                                       int(cyclic[stroke_i] && (points.size() >= 3)));
-      num_triangles_per_stroke[pos] = num_stroke_triangles;
-      num_vertices_per_stroke[pos] = num_stroke_vertices;
+    visible_fills.foreach_index([&](const int fill_index) {
+      const int num_stroke_triangles = triangles[fill_index].size();
+      num_triangles_per_fill[fill_index] = num_stroke_triangles;
       total_num_triangles += num_stroke_triangles;
-      total_num_vertices += num_stroke_vertices;
+
+      if (!fills) {
+        const int curve_i = fill_index;
+
+        const IndexRange points = points_by_curve[curve_i];
+        const int num_stroke_vertices = (points.size() +
+                                         int(cyclic[curve_i] && (points.size() >= 3)));
+        num_vertices_per_stroke[curve_i] = num_stroke_vertices;
+        total_num_vertices += num_stroke_vertices;
+      }
+      else {
+        const Span<int> fill = (*fills)[fill_index];
+
+        for (const int pos : fill.index_range()) {
+          const int curve_i = fill[pos];
+
+          const IndexRange points = points_by_curve[curve_i];
+          const int num_stroke_vertices = (points.size() +
+                                           int(cyclic[curve_i] && (points.size() >= 3)));
+          num_vertices_per_stroke[curve_i] = num_stroke_vertices;
+          total_num_vertices += num_stroke_vertices;
+        }
+      }
     });
 
     bool is_layer_used_as_mask = false;
@@ -480,8 +501,13 @@ tObject *Instance::object_sync_do(Object *ob, ResourceHandleRange res_handle)
                             do_multi_frame;
     const bool is_onion = info.onion_id != 0;
 
-    visible_strokes.foreach_index([&](const int stroke_i, const int pos) {
-      const IndexRange points = points_by_curve[stroke_i];
+    visible_fills.foreach_index([&](const int fill_index) {
+      int stroke_i = fill_index;
+      if (fills) {
+        const Span<int> fill = (*fills)[fill_index];
+        stroke_i = fill.first();
+      }
+
       /* The material index is allowed to be negative as it's stored as a generic attribute. We
        * clamp it here to avoid crashing in the rendering code. Any stroke with a material < 0 will
        * use the first material in the first material slot. */
@@ -492,7 +518,7 @@ tObject *Instance::object_sync_do(Object *ob, ResourceHandleRange res_handle)
 
       const bool hide_material = (gp_style->flag & GP_MATERIAL_HIDE) != 0;
       const bool show_stroke = !hide_stroke[stroke_i] || is_fill_guide_stroke;
-      const bool show_fill = (points.size() >= 3) && (fill_id[stroke_i] != 0) &&
+      const bool show_fill = (!triangles[fill_index].is_empty()) && (fill_id[stroke_i] != 0) &&
                              (!this->simplify_fill) && !is_fill_guide_stroke;
       const bool hide_onion = is_onion && ((gp_style->flag & GP_MATERIAL_HIDE_ONIONSKIN) != 0 ||
                                            (!do_onion && !do_multi_frame));
@@ -500,8 +526,18 @@ tObject *Instance::object_sync_do(Object *ob, ResourceHandleRange res_handle)
                                (only_lines && !do_onion && is_onion) || hide_onion;
 
       if (skip_stroke) {
-        t_offset += num_triangles_per_stroke[pos];
-        t_offset += num_vertices_per_stroke[pos] * 2;
+        t_offset += num_triangles_per_fill[fill_index];
+
+        if (!fills) {
+          t_offset += num_vertices_per_stroke[stroke_i] * 2;
+        }
+        else {
+          const Span<int> fill = (*fills)[fill_index];
+          for (const int pos : fill.index_range()) {
+            const int curve_i = fill[pos];
+            t_offset += num_vertices_per_stroke[curve_i] * 2;
+          }
+        }
         return;
       }
 
@@ -544,19 +580,34 @@ tObject *Instance::object_sync_do(Object *ob, ResourceHandleRange res_handle)
 
       if (show_fill) {
         const int v_first = t_offset * 3;
-        const int v_count = num_triangles_per_stroke[pos] * 3;
+        const int v_count = num_triangles_per_fill[fill_index] * 3;
         drawcall_add(pass, geom, v_first, v_count);
       }
 
-      t_offset += num_triangles_per_stroke[pos];
+      t_offset += num_triangles_per_fill[fill_index];
 
-      if (show_stroke) {
-        const int v_first = t_offset * 3;
-        const int v_count = num_vertices_per_stroke[pos] * 2 * 3;
-        drawcall_add(pass, geom, v_first, v_count);
+      if (!fills) {
+        if (show_stroke) {
+          const int v_first = t_offset * 3;
+          const int v_count = num_vertices_per_stroke[stroke_i] * 2 * 3;
+          drawcall_add(pass, geom, v_first, v_count);
+        }
+
+        t_offset += num_vertices_per_stroke[stroke_i] * 2;
       }
+      else {
+        const Span<int> fill = (*fills)[fill_index];
+        for (const int pos : fill.index_range()) {
+          const int curve_i = fill[pos];
+          if (show_stroke) {
+            const int v_first = t_offset * 3;
+            const int v_count = num_vertices_per_stroke[curve_i] * 2 * 3;
+            drawcall_add(pass, geom, v_first, v_count);
+          }
 
-      t_offset += num_vertices_per_stroke[pos] * 2;
+          t_offset += num_vertices_per_stroke[curve_i] * 2;
+        }
+      }
     });
   }
 
