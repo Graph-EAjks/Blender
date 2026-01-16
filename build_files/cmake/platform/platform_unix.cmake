@@ -264,6 +264,7 @@ if(WITH_IMAGE_OPENEXR)
 endif()
 add_bundled_libraries(openexr/lib)
 add_bundled_libraries(imath/lib)
+add_bundled_libraries(openjph/lib)
 
 if(WITH_IMAGE_OPENJPEG)
   find_package_wrapper(OpenJPEG)
@@ -372,8 +373,6 @@ if(WITH_CYCLES AND WITH_CYCLES_OSL)
   endif()
 endif()
 add_bundled_libraries(osl/lib)
-# OSL dependecy
-add_bundled_libraries(openjph/lib)
 
 if(WITH_CYCLES AND DEFINED LIBDIR)
   set(CYCLES_LEVEL_ZERO ${LIBDIR}/level-zero CACHE PATH "Path to Level Zero installation")
