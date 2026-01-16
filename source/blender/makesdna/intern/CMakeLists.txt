@@ -17,7 +17,7 @@ set(LIB
   PRIVATE bf::intern::atomic
   PRIVATE bf::intern::guardedalloc
   PRIVATE bf::dependencies::optional::tbb
-  fmt::fmt
+  bf::dependencies::fmt
 )
 
 add_definitions(-DWITH_DNA_GHASH)

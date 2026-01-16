@@ -414,7 +414,7 @@ target_link_libraries(makesrna PRIVATE bf_dna_blenlib)
 target_link_libraries(makesrna PRIVATE bf_dna_defaults)
 target_link_libraries(makesrna PRIVATE bf::dependencies::optional::tbb)
 target_link_libraries(makesrna PRIVATE bf::dependencies::pthreads)
-target_link_libraries(makesrna PRIVATE fmt::fmt)
+target_link_libraries(makesrna PRIVATE bf::dependencies::fmt)
 
 # Output `rna_*_gen.cc`.
 # NOTE: (Linux only): with crashes try add this after COMMAND:
@@ -447,7 +447,6 @@ set(SRC
 set(LIB
   PRIVATE bf::animrig
   PRIVATE bf::dna
-  PUBLIC fmt::fmt
   bf_editor_space_api
 
   bf_editor_animation
@@ -472,6 +471,7 @@ set(LIB
   PRIVATE bf::dependencies::optional::openvdb
   PRIVATE bf::dependencies::optional::tbb
   PRIVATE bf::dependencies::optional::audaspace
+  PUBLIC bf::dependencies::fmt
 )
 
 blender_add_lib(bf_rna "${SRC}" "${INC}" "${INC_SYS}" "${LIB}")
