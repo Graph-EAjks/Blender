@@ -45,6 +45,7 @@
 #include "BKE_deform.hh"
 #include "BKE_fcurve_driver.h"
 #include "BKE_grease_pencil.hh"
+#include "BKE_grease_pencil_fills.hh"
 #include "BKE_instances.hh"
 #include "BKE_lib_id.hh"
 #include "BKE_main.hh"
@@ -774,10 +775,14 @@ static wmOperatorStatus grease_pencil_stroke_material_set_exec(bContext *C, wmOp
     }
 
     bke::CurvesGeometry &curves = info.drawing.strokes_for_write();
-    bke::SpanAttributeWriter<int> materials =
-        curves.attributes_for_write().lookup_or_add_for_write_span<int>("material_index",
-                                                                        bke::AttrDomain::Curve);
-    index_mask::masked_fill(materials.span, material_index, strokes);
+    bke::MutableAttributeAccessor attributes = curves.attributes_for_write();
+    bke::SpanAttributeWriter<int> materials = attributes.lookup_or_add_for_write_span<int>(
+        "material_index", bke::AttrDomain::Curve);
+
+    const IndexMask fill_strokes = bke::greasepencil::selected_mask_to_fills(
+        strokes, curves, bke::AttrDomain::Curve, memory);
+
+    index_mask::masked_fill(materials.span, material_index, fill_strokes);
     materials.finish();
   });
 
