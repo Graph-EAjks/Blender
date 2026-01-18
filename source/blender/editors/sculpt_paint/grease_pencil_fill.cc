@@ -752,10 +752,7 @@ static bke::CurvesGeometry process_image(Image &ima,
     erode(buffer, -dilate_pixels);
   }
 
-  /* In regular mode create only the outline of the filled area.
-   * In inverted mode create a boundary for every filled area. */
-  const bool fill_holes = invert;
-  const FillBoundary boundary = build_fill_boundary(buffer, fill_holes);
+  const FillBoundary boundary = build_fill_boundary(buffer, true);
 
   return boundary_to_curves(scene,
                             view_context,
