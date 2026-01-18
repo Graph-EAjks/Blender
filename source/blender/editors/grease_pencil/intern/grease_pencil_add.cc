@@ -31,72 +31,72 @@ struct ColorTemplate {
 static const ColorTemplate gp_stroke_material_black = {
     N_("Black"),
     {0.0f, 0.0f, 0.0f, 1.0f},
-    {0.0f, 0.0f, 0.0f, 0.0f},
+    {0.0f, 0.0f, 0.0f, 1.0f},
 };
 
 static const ColorTemplate gp_stroke_material_white = {
     N_("White"),
     {1.0f, 1.0f, 1.0f, 1.0f},
-    {0.0f, 0.0f, 0.0f, 0.0f},
+    {1.0f, 1.0f, 1.0f, 1.0f},
 };
 
 static const ColorTemplate gp_stroke_material_red = {
     N_("Red"),
     {1.0f, 0.0f, 0.0f, 1.0f},
-    {0.0f, 0.0f, 0.0f, 0.0f},
+    {1.0f, 0.0f, 0.0f, 1.0f},
 };
 
 static const ColorTemplate gp_stroke_material_green = {
     N_("Green"),
     {0.0f, 1.0f, 0.0f, 1.0f},
-    {0.0f, 0.0f, 0.0f, 0.0f},
+    {0.0f, 1.0f, 0.0f, 1.0f},
 };
 
 static const ColorTemplate gp_stroke_material_blue = {
     N_("Blue"),
     {0.0f, 0.0f, 1.0f, 1.0f},
-    {0.0f, 0.0f, 0.0f, 0.0f},
+    {0.0f, 0.0f, 1.0f, 1.0f},
 };
 
 static const ColorTemplate gp_fill_material_grey = {
     N_("Grey"),
-    {0.0f, 0.0f, 0.0f, 0.0f},
+    {0.5f, 0.5f, 0.5f, 1.0f},
     {0.5f, 0.5f, 0.5f, 1.0f},
 };
 
 static const ColorTemplate gp_monkey_material_black = {
     N_("Black"),
     {0.0f, 0.0f, 0.0f, 1.0f},
-    {0.0f, 0.0f, 0.0f, 0.0f},
+    {0.0f, 0.0f, 0.0f, 1.0f},
 };
 
 static const ColorTemplate gp_monkey_material_skin = {
     N_("Skin"),
-    {0.0f, 0.0f, 0.0f, 0.0f},
+    {0.745f, 0.502f, 0.278f, 1.0f},
     {0.745f, 0.502f, 0.278f, 1.0f},
 };
 
 static const ColorTemplate gp_monkey_material_skin_light = {
     N_("Skin_light"),
     {0.914f, 0.827f, 0.635f, 1.0f},
-    {0.0f, 0.0f, 0.0f, 0.0f},
+    {0.914f, 0.827f, 0.635f, 1.0f},
 };
 
 static const ColorTemplate gp_monkey_material_skin_shadow = {
     N_("Skin_shadow"),
     {0.322f, 0.29f, 0.224f, 0.5f},
-    {0.0f, 0.0f, 0.0f, 0.0f},
+    {0.322f, 0.29f, 0.224f, 0.5f},
 };
 
 static const ColorTemplate gp_monkey_material_eyes = {
     N_("Eyes"),
-    {0.0f, 0.0f, 0.0f, 0.0f},
+    {0.847f, 0.723f, 0.599f, 1.0f},
     {0.847f, 0.723f, 0.599f, 1.0f},
 };
 
 static const ColorTemplate gp_monkey_material_pupils = {
     N_("Pupils"),
-    {0.0f, 0.0f, 0.0f, 0.0f},
+    {0.0f, 0.0f, 0.0f, 1.0f},
     {0.0f, 0.0f, 0.0f, 1.0f},
 };
 
