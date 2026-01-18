@@ -4150,6 +4150,9 @@ def km_grease_pencil_edit_mode(params):
         # Set Handle Type
         ("grease_pencil.set_handle_type", {"type": 'V', "value": 'PRESS'}, None),
 
+        # Join Fills
+        ("grease_pencil.join_fills", {"type": 'J', "value": 'PRESS', "shift": True}, None),
+
         op_tool_optional(
             ("grease_pencil.interpolate", {"type": 'E', "value": 'PRESS',
              "ctrl": True}, {"properties": [("use_selection", True)]}),
