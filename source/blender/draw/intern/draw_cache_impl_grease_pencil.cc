@@ -12,6 +12,7 @@
 #include "BKE_curves.hh"
 #include "BKE_grease_pencil.h"
 #include "BKE_grease_pencil.hh"
+#include "BKE_grease_pencil_fills.hh"
 
 #include "BLI_array_utils.hh"
 #include "BLI_listbase.h"
@@ -669,10 +670,13 @@ static void index_buf_add_points(Object &object,
       ed::greasepencil::retrieve_editable_and_selected_strokes(
           object, drawing, layer_index, memory);
 
+  const IndexMask selected_editable_fill_strokes = bke::greasepencil::selected_mask_to_fills(
+      selected_editable_strokes, curves, bke::AttrDomain::Curve, memory);
+
   const int offset = *r_drawing_start_offset;
   int ibo_index = *r_drawing_point_index;
 
-  selected_editable_strokes.foreach_index([&](const int curve_i) {
+  selected_editable_fill_strokes.foreach_index([&](const int curve_i) {
     const IndexRange points = points_by_curve[curve_i];
     for (const int point : points) {
       points_data[ibo_index++] = point + offset;
@@ -913,9 +917,12 @@ static void grease_pencil_edit_batch_ensure(Object &object,
         ed::greasepencil::retrieve_editable_and_selected_strokes(
             object, info.drawing, info.layer_index, memory);
 
+    const IndexMask selected_editable_fill_strokes = bke::greasepencil::selected_mask_to_fills(
+        selected_editable_strokes, curves, bke::AttrDomain::Curve, memory);
+
     /* Add one id for every point in a selected curve. */
     visible_points_num += offset_indices::sum_group_sizes(points_by_curve,
-                                                          selected_editable_strokes);
+                                                          selected_editable_fill_strokes);
 
     const VArray<float> selected_point = *curves.attributes().lookup_or_default<float>(
         ".selection", bke::AttrDomain::Point, true);
