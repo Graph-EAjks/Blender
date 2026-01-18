@@ -4152,6 +4152,8 @@ def km_grease_pencil_edit_mode(params):
 
         # Join Fills
         ("grease_pencil.join_fills", {"type": 'J', "value": 'PRESS', "shift": True}, None),
+        # Separate Fills
+        ("grease_pencil.separate_fills", {"type": 'P', "value": 'PRESS', "alt": True}, None),
 
         op_tool_optional(
             ("grease_pencil.interpolate", {"type": 'E', "value": 'PRESS',
