@@ -197,10 +197,11 @@ static bke::CurvesGeometry grease_pencil_trace_image(TraceJob &trace_job, const 
   material_indices.span.fill(trace_job.material_index);
   material_indices.finish();
 
+  /* Combine strokes into a single fill with the same fill ID. */
   bke::SpanAttributeWriter<int> fill_ids = attributes.lookup_or_add_for_write_span<int>(
-      "fill_id", bke::AttrDomain::Curve);
-  /* Create a single fill from all curves. */
-  fill_ids.span.fill(1);
+      "fill_id",
+      bke::AttrDomain::Curve,
+      bke::AttributeInitVArray(VArray<int>::from_single(1, trace_curves.curves_num())));
   fill_ids.finish();
 
   /* Uniform radius for all trace curves. */
