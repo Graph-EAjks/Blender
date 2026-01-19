@@ -241,6 +241,9 @@ find_package(JPEG REQUIRED)
 set(TIFF_ROOT ${LIBDIR}/tiff)
 find_package(TIFF REQUIRED)
 
+set(fmt_ROOT ${LIBDIR}/fmt)
+find_package(fmt REQUIRED)
+
 if(WITH_IMAGE_WEBP)
   set(WEBP_ROOT_DIR ${LIBDIR}/webp)
   find_package(WebP REQUIRED)
