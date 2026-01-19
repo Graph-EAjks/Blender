@@ -157,12 +157,13 @@ void paint_stroke_operator_properties(wmOperatorType *ot)
        0,
        "Erase",
        "Switch brush to erase mode for duration of stroke"},
+      {BRUSH_STROKE_MASK, "MASK", 0, "Mask", "Switch brush to mask mode for duration of stroke"},
       {0},
   };
 
   PropertyRNA *prop;
 
-  prop = RNA_def_collection_runtime(ot->srna, "stroke", &RNA_OperatorStrokeElement, "Stroke", "");
+  prop = RNA_def_collection_runtime(ot->srna, "stroke", RNA_OperatorStrokeElement, "Stroke", "");
   RNA_def_property_flag(prop, PROP_HIDDEN | PROP_SKIP_SAVE);
 
   prop = RNA_def_enum(ot->srna,

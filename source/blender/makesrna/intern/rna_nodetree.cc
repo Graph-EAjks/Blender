@@ -690,20 +690,20 @@ using nodes::RepeatItemsAccessor;
 using nodes::SeparateBundleItemsAccessor;
 using nodes::SimulationItemsAccessor;
 
-extern FunctionRNA rna_NodeTree_poll_func;
-extern FunctionRNA rna_NodeTree_update_func;
-extern FunctionRNA rna_NodeTree_get_from_context_func;
-extern FunctionRNA rna_NodeTree_valid_socket_type_func;
-extern FunctionRNA rna_Node_poll_func;
-extern FunctionRNA rna_Node_poll_instance_func;
-extern FunctionRNA rna_Node_update_func;
-extern FunctionRNA rna_Node_insert_link_func;
-extern FunctionRNA rna_Node_init_func;
-extern FunctionRNA rna_Node_copy_func;
-extern FunctionRNA rna_Node_free_func;
-extern FunctionRNA rna_Node_draw_buttons_func;
-extern FunctionRNA rna_Node_draw_buttons_ext_func;
-extern FunctionRNA rna_Node_draw_label_func;
+extern FunctionRNA *rna_NodeTree_poll_func;
+extern FunctionRNA *rna_NodeTree_update_func;
+extern FunctionRNA *rna_NodeTree_get_from_context_func;
+extern FunctionRNA *rna_NodeTree_valid_socket_type_func;
+extern FunctionRNA *rna_Node_poll_func;
+extern FunctionRNA *rna_Node_poll_instance_func;
+extern FunctionRNA *rna_Node_update_func;
+extern FunctionRNA *rna_Node_insert_link_func;
+extern FunctionRNA *rna_Node_init_func;
+extern FunctionRNA *rna_Node_copy_func;
+extern FunctionRNA *rna_Node_free_func;
+extern FunctionRNA *rna_Node_draw_buttons_func;
+extern FunctionRNA *rna_Node_draw_buttons_ext_func;
+extern FunctionRNA *rna_Node_draw_label_func;
 
 void rna_Node_socket_update(Main *bmain, Scene * /*scene*/, PointerRNA *ptr);
 
@@ -960,7 +960,7 @@ static StructRNA *rna_NodeTree_refine(PointerRNA *ptr)
     return ntree->typeinfo->rna_ext.srna;
   }
   else {
-    return &RNA_NodeTree;
+    return RNA_NodeTree;
   }
 }
 
@@ -973,7 +973,7 @@ static bool rna_NodeTree_poll(const bContext *C, bke::bNodeTreeType *ntreetype)
 
   PointerRNA ptr = RNA_pointer_create_discrete(
       nullptr, ntreetype->rna_ext.srna, nullptr); /* dummy */
-  func = &rna_NodeTree_poll_func;                 /* RNA_struct_find_function(&ptr, "poll"); */
+  func = rna_NodeTree_poll_func;                  /* RNA_struct_find_function(&ptr, "poll"); */
 
   RNA_parameter_list_create(&list, &ptr, func);
   RNA_parameter_set_lookup(&list, "context", &C);
@@ -993,7 +993,7 @@ static void rna_NodeTree_update_reg(bNodeTree *ntree)
   FunctionRNA *func;
 
   PointerRNA ptr = RNA_id_pointer_create(&ntree->id);
-  func = &rna_NodeTree_update_func; /* RNA_struct_find_function(&ptr, "update"); */
+  func = rna_NodeTree_update_func; /* RNA_struct_find_function(&ptr, "update"); */
 
   RNA_parameter_list_create(&list, &ptr, func);
   ntree->typeinfo->rna_ext.call(nullptr, &ptr, func, &list);
@@ -1011,7 +1011,7 @@ static void rna_NodeTree_get_from_context(
   PointerRNA ptr = RNA_pointer_create_discrete(
       nullptr, ntreetype->rna_ext.srna, nullptr); /* dummy */
   // RNA_struct_find_function(&ptr, "get_from_context");
-  func = &rna_NodeTree_get_from_context_func;
+  func = rna_NodeTree_get_from_context_func;
 
   RNA_parameter_list_create(&list, &ptr, func);
   RNA_parameter_set_lookup(&list, "context", &C);
@@ -1037,7 +1037,7 @@ static bool rna_NodeTree_valid_socket_type(bke::bNodeTreeType *ntreetype,
 
   PointerRNA ptr = RNA_pointer_create_discrete(
       nullptr, ntreetype->rna_ext.srna, nullptr); /* dummy */
-  func = &rna_NodeTree_valid_socket_type_func;
+  func = rna_NodeTree_valid_socket_type_func;
 
   RNA_parameter_list_create(&list, &ptr, func);
   RNA_parameter_set_lookup(&list, "idname", socket_type->idname.c_str());
@@ -1085,7 +1085,7 @@ static StructRNA *rna_NodeTree_register(Main *bmain,
   /* setup dummy tree & tree type to store static properties in */
   bke::bNodeTreeType dummy_nt = {};
   dummy_ntree.typeinfo = &dummy_nt;
-  PointerRNA dummy_ntree_ptr = RNA_pointer_create_discrete(nullptr, &RNA_NodeTree, &dummy_ntree);
+  PointerRNA dummy_ntree_ptr = RNA_pointer_create_discrete(nullptr, RNA_NodeTree, &dummy_ntree);
 
   /* validate the python class */
   if (validate(&dummy_ntree_ptr, data, have_function) != 0) {
@@ -1127,7 +1127,7 @@ static StructRNA *rna_NodeTree_register(Main *bmain,
 
   nt->type = NTREE_CUSTOM;
 
-  nt->rna_ext.srna = RNA_def_struct_ptr(&RNA_blender_rna_get(), nt->idname.c_str(), &RNA_NodeTree);
+  nt->rna_ext.srna = RNA_def_struct_ptr(&RNA_blender_rna_get(), nt->idname.c_str(), RNA_NodeTree);
   nt->rna_ext.data = data;
   nt->rna_ext.call = call;
   nt->rna_ext.free = free;
@@ -1339,7 +1339,7 @@ static PointerRNA rna_NodeTree_active_node_get(PointerRNA *ptr)
 {
   bNodeTree *ntree = ptr->data_as<bNodeTree>();
   bNode *node = bke::node_get_active(*ntree);
-  return RNA_pointer_create_with_parent(*ptr, &RNA_Node, node);
+  return RNA_pointer_create_with_parent(*ptr, RNA_Node, node);
 }
 
 static void rna_NodeTree_active_node_set(PointerRNA *ptr,
@@ -1771,7 +1771,7 @@ static bool rna_Node_poll(const bke::bNodeType *ntype,
   bool visible;
 
   PointerRNA ptr = RNA_pointer_create_discrete(nullptr, ntype->rna_ext.srna, nullptr); /* dummy */
-  func = &rna_Node_poll_func; /* RNA_struct_find_function(&ptr, "poll"); */
+  func = rna_Node_poll_func; /* RNA_struct_find_function(&ptr, "poll"); */
 
   RNA_parameter_list_create(&list, &ptr, func);
   RNA_parameter_set_lookup(&list, "node_tree", &ntree);
@@ -1796,7 +1796,7 @@ static bool rna_Node_poll_instance(const bNode *node,
 
   PointerRNA ptr = RNA_pointer_create_discrete(
       nullptr, node->typeinfo->rna_ext.srna, const_cast<bNode *>(node)); /* dummy */
-  func = &rna_Node_poll_instance_func; /* RNA_struct_find_function(&ptr, "poll_instance"); */
+  func = rna_Node_poll_instance_func; /* RNA_struct_find_function(&ptr, "poll_instance"); */
 
   RNA_parameter_list_create(&list, &ptr, func);
   RNA_parameter_set_lookup(&list, "node_tree", &ntree);
@@ -1825,7 +1825,7 @@ static void rna_Node_update_reg(bNodeTree *ntree, bNode *node)
 
   PointerRNA ptr = RNA_pointer_create_discrete(
       reinterpret_cast<ID *>(ntree), node->typeinfo->rna_ext.srna, node);
-  func = &rna_Node_update_func; /* RNA_struct_find_function(&ptr, "update"); */
+  func = rna_Node_update_func; /* RNA_struct_find_function(&ptr, "update"); */
 
   RNA_parameter_list_create(&list, &ptr, func);
   node->typeinfo->rna_ext.call(nullptr, &ptr, func, &list);
@@ -1840,7 +1840,7 @@ static bool rna_Node_insert_link(bke::NodeInsertLinkParams &params)
 
   PointerRNA ptr = RNA_pointer_create_discrete(
       reinterpret_cast<ID *>(&params.ntree), params.node.typeinfo->rna_ext.srna, &params.node);
-  func = &rna_Node_insert_link_func;
+  func = rna_Node_insert_link_func;
 
   RNA_parameter_list_create(&list, &ptr, func);
   bNodeLink *link = &params.link;
@@ -1857,7 +1857,7 @@ static void rna_Node_init(const bContext *C, PointerRNA *ptr)
   ParameterList list;
   FunctionRNA *func;
 
-  func = &rna_Node_init_func; /* RNA_struct_find_function(&ptr, "init"); */
+  func = rna_Node_init_func; /* RNA_struct_find_function(&ptr, "init"); */
 
   RNA_parameter_list_create(&list, ptr, func);
   node->typeinfo->rna_ext.call(const_cast<bContext *>(C), ptr, func, &list);
@@ -1871,7 +1871,7 @@ static void rna_Node_copy(PointerRNA *ptr, const bNode *copynode)
   ParameterList list;
   FunctionRNA *func;
 
-  func = &rna_Node_copy_func; /* RNA_struct_find_function(&ptr, "copy"); */
+  func = rna_Node_copy_func; /* RNA_struct_find_function(&ptr, "copy"); */
 
   RNA_parameter_list_create(&list, ptr, func);
   RNA_parameter_set_lookup(&list, "node", &copynode);
@@ -1886,7 +1886,7 @@ static void rna_Node_free(PointerRNA *ptr)
   ParameterList list;
   FunctionRNA *func;
 
-  func = &rna_Node_free_func; /* RNA_struct_find_function(&ptr, "free"); */
+  func = rna_Node_free_func; /* RNA_struct_find_function(&ptr, "free"); */
 
   RNA_parameter_list_create(&list, ptr, func);
   node->typeinfo->rna_ext.call(nullptr, ptr, func, &list);
@@ -1900,7 +1900,7 @@ static void rna_Node_draw_buttons(ui::Layout &layout, bContext *C, PointerRNA *p
   ParameterList list;
   FunctionRNA *func;
 
-  func = &rna_Node_draw_buttons_func; /* RNA_struct_find_function(&ptr, "draw_buttons"); */
+  func = rna_Node_draw_buttons_func; /* RNA_struct_find_function(&ptr, "draw_buttons"); */
 
   RNA_parameter_list_create(&list, ptr, func);
   RNA_parameter_set_lookup(&list, "context", &C);
@@ -1917,7 +1917,7 @@ static void rna_Node_draw_buttons_ext(ui::Layout &layout, bContext *C, PointerRN
   ParameterList list;
   FunctionRNA *func;
 
-  func = &rna_Node_draw_buttons_ext_func; /* RNA_struct_find_function(&ptr,
+  func = rna_Node_draw_buttons_ext_func; /* RNA_struct_find_function(&ptr,
                                                 "draw_buttons_ext"); */
 
   RNA_parameter_list_create(&list, ptr, func);
@@ -1939,10 +1939,10 @@ static void rna_Node_draw_label(const bNodeTree *ntree,
   void *ret;
   char *rlabel;
 
-  func = &rna_Node_draw_label_func; /* RNA_struct_find_function(&ptr, "draw_label"); */
+  func = rna_Node_draw_label_func; /* RNA_struct_find_function(&ptr, "draw_label"); */
 
   PointerRNA ptr = RNA_pointer_create_discrete(
-      const_cast<ID *>(&ntree->id), &RNA_Node, const_cast<bNode *>(node));
+      const_cast<ID *>(&ntree->id), RNA_Node, const_cast<bNode *>(node));
   RNA_parameter_list_create(&list, &ptr, func);
   node->typeinfo->rna_ext.call(nullptr, &ptr, func, &list);
 
@@ -2123,7 +2123,7 @@ static StructRNA *rna_Node_register(Main *bmain,
                                     StructFreeFunc free)
 {
   bke::bNodeType *nt = rna_Node_register_base(
-      bmain, reports, &RNA_Node, data, identifier, validate, call, free);
+      bmain, reports, RNA_Node, data, identifier, validate, call, free);
   if (!nt) {
     return nullptr;
   }
@@ -2387,7 +2387,7 @@ static StructRNA *rna_ShaderNode_register(Main *bmain,
                                           StructFreeFunc free)
 {
   bke::bNodeType *nt = rna_Node_register_base(
-      bmain, reports, &RNA_ShaderNode, data, identifier, validate, call, free);
+      bmain, reports, RNA_ShaderNode, data, identifier, validate, call, free);
   if (!nt) {
     return nullptr;
   }
@@ -2409,7 +2409,7 @@ static StructRNA *rna_CompositorNode_register(Main *bmain,
                                               StructFreeFunc free)
 {
   bke::bNodeType *nt = rna_Node_register_base(
-      bmain, reports, &RNA_CompositorNode, data, identifier, validate, call, free);
+      bmain, reports, RNA_CompositorNode, data, identifier, validate, call, free);
   if (!nt) {
     return nullptr;
   }
@@ -2431,7 +2431,7 @@ static StructRNA *rna_TextureNode_register(Main *bmain,
                                            StructFreeFunc free)
 {
   bke::bNodeType *nt = rna_Node_register_base(
-      bmain, reports, &RNA_TextureNode, data, identifier, validate, call, free);
+      bmain, reports, RNA_TextureNode, data, identifier, validate, call, free);
   if (!nt) {
     return nullptr;
   }
@@ -2453,7 +2453,7 @@ static StructRNA *rna_GeometryNode_register(Main *bmain,
                                             StructFreeFunc free)
 {
   bke::bNodeType *nt = rna_Node_register_base(
-      bmain, reports, &RNA_GeometryNode, data, identifier, validate, call, free);
+      bmain, reports, RNA_GeometryNode, data, identifier, validate, call, free);
   if (!nt) {
     return nullptr;
   }
@@ -2475,7 +2475,7 @@ static StructRNA *rna_FunctionNode_register(Main *bmain,
                                             StructFreeFunc free)
 {
   bke::bNodeType *nt = rna_Node_register_base(
-      bmain, reports, &RNA_FunctionNode, data, identifier, validate, call, free);
+      bmain, reports, RNA_FunctionNode, data, identifier, validate, call, free);
   if (!nt) {
     return nullptr;
   }
@@ -2586,7 +2586,7 @@ static bool rna_NodeInputs_lookup_string(PointerRNA *ptr, const char *key, Point
 {
   bNode *node = ptr->data_as<bNode>();
   if (bNodeSocket *socket = find_socket_by_key(*node, SOCK_IN, key)) {
-    rna_pointer_create_with_ancestors(*ptr, &RNA_NodeSocket, socket, *r_ptr);
+    rna_pointer_create_with_ancestors(*ptr, RNA_NodeSocket, socket, *r_ptr);
     return true;
   }
   return false;
@@ -2596,7 +2596,7 @@ static bool rna_NodeOutputs_lookup_string(PointerRNA *ptr, const char *key, Poin
 {
   bNode *node = ptr->data_as<bNode>();
   if (bNodeSocket *socket = find_socket_by_key(*node, SOCK_OUT, key)) {
-    rna_pointer_create_with_ancestors(*ptr, &RNA_NodeSocket, socket, *r_ptr);
+    rna_pointer_create_with_ancestors(*ptr, RNA_NodeSocket, socket, *r_ptr);
     return true;
   }
   return false;
@@ -2965,8 +2965,7 @@ static PointerRNA rna_NodeInternal_input_template(StructRNA *srna, int index)
       stemp++;
     }
     if (i == index && stemp->type >= 0) {
-      PointerRNA ptr = RNA_pointer_create_discrete(
-          nullptr, &RNA_NodeInternalSocketTemplate, stemp);
+      PointerRNA ptr = RNA_pointer_create_discrete(nullptr, RNA_NodeInternalSocketTemplate, stemp);
       return ptr;
     }
   }
@@ -2984,8 +2983,7 @@ static PointerRNA rna_NodeInternal_output_template(StructRNA *srna, int index)
       stemp++;
     }
     if (i == index && stemp->type >= 0) {
-      PointerRNA ptr = RNA_pointer_create_discrete(
-          nullptr, &RNA_NodeInternalSocketTemplate, stemp);
+      PointerRNA ptr = RNA_pointer_create_discrete(nullptr, RNA_NodeInternalSocketTemplate, stemp);
       return ptr;
     }
   }
@@ -3022,7 +3020,7 @@ static void rna_NodeInternal_update(ID *id, bNode *node, Main *bmain)
 static void rna_NodeInternal_draw_buttons(ID *id, bNode *node, bContext *C, ui::Layout *layout)
 {
   if (node->typeinfo->draw_buttons) {
-    PointerRNA ptr = RNA_pointer_create_discrete(id, &RNA_Node, node);
+    PointerRNA ptr = RNA_pointer_create_discrete(id, RNA_Node, node);
     node->typeinfo->draw_buttons(*layout, C, &ptr);
   }
 }
@@ -3030,11 +3028,11 @@ static void rna_NodeInternal_draw_buttons(ID *id, bNode *node, bContext *C, ui::
 static void rna_NodeInternal_draw_buttons_ext(ID *id, bNode *node, bContext *C, ui::Layout *layout)
 {
   if (node->typeinfo->draw_buttons_ex) {
-    PointerRNA ptr = RNA_pointer_create_discrete(id, &RNA_Node, node);
+    PointerRNA ptr = RNA_pointer_create_discrete(id, RNA_Node, node);
     node->typeinfo->draw_buttons_ex(*layout, C, &ptr);
   }
   else if (node->typeinfo->draw_buttons) {
-    PointerRNA ptr = RNA_pointer_create_discrete(id, &RNA_Node, node);
+    PointerRNA ptr = RNA_pointer_create_discrete(id, RNA_Node, node);
     node->typeinfo->draw_buttons(*layout, C, &ptr);
   }
 }
@@ -3048,7 +3046,7 @@ static StructRNA *rna_NodeCustomGroup_register(Main *bmain,
                                                StructFreeFunc free)
 {
   bke::bNodeType *nt = rna_Node_register_base(
-      bmain, reports, &RNA_NodeCustomGroup, data, identifier, validate, call, free);
+      bmain, reports, RNA_NodeCustomGroup, data, identifier, validate, call, free);
   if (!nt) {
     return nullptr;
   }
@@ -3070,7 +3068,7 @@ static StructRNA *rna_GeometryNodeCustomGroup_register(Main *bmain,
                                                        StructFreeFunc free)
 {
   bke::bNodeType *nt = rna_Node_register_base(
-      bmain, reports, &RNA_GeometryNodeCustomGroup, data, identifier, validate, call, free);
+      bmain, reports, RNA_GeometryNodeCustomGroup, data, identifier, validate, call, free);
 
   if (!nt) {
     return nullptr;
@@ -3099,7 +3097,7 @@ static StructRNA *rna_ShaderNodeCustomGroup_register(Main *bmain,
                                                      StructFreeFunc free)
 {
   bke::bNodeType *nt = rna_Node_register_base(
-      bmain, reports, &RNA_ShaderNodeCustomGroup, data, identifier, validate, call, free);
+      bmain, reports, RNA_ShaderNodeCustomGroup, data, identifier, validate, call, free);
 
   if (!nt) {
     return nullptr;
@@ -3126,7 +3124,7 @@ static StructRNA *rna_CompositorNodeCustomGroup_register(Main *bmain,
                                                          StructFreeFunc free)
 {
   bke::bNodeType *nt = rna_Node_register_base(
-      bmain, reports, &RNA_CompositorNodeCustomGroup, data, identifier, validate, call, free);
+      bmain, reports, RNA_CompositorNodeCustomGroup, data, identifier, validate, call, free);
   if (!nt) {
     return nullptr;
   }
@@ -3631,7 +3629,7 @@ static PointerRNA rna_Node_paired_output_get(PointerRNA *ptr)
   bNode *node = ptr->data_as<bNode>();
   const bke::bNodeZoneType &zone_type = *bke::zone_type_by_node_type(node->type_legacy);
   bNode *output_node = zone_type.get_corresponding_output(*ntree, *node);
-  PointerRNA ptr_result = RNA_pointer_create_discrete(&ntree->id, &RNA_Node, output_node);
+  PointerRNA ptr_result = RNA_pointer_create_discrete(&ntree->id, RNA_Node, output_node);
   return ptr_result;
 }
 
@@ -3739,7 +3737,7 @@ template<typename Accessor> static PointerRNA rna_Node_ItemArray_active_get(Poin
   if (active_index >= 0 && active_index < items_num) {
     active_item = &(*ref.items)[active_index];
   }
-  return RNA_pointer_create_discrete(ptr->owner_id, Accessor::item_srna, active_item);
+  return RNA_pointer_create_discrete(ptr->owner_id, *Accessor::item_srna, active_item);
 }
 template<typename Accessor>
 static void rna_Node_ItemArray_active_set(PointerRNA *ptr,
