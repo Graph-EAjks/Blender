@@ -4987,6 +4987,9 @@ static wmOperatorStatus grease_pencil_set_stroke_mode_exec(bContext *C, wmOperat
       });
     }
 
+    hide_stroke.finish();
+    fill_ids.finish();
+
     info.drawing.tag_topology_changed();
     changed.store(true, std::memory_order_relaxed);
   });
