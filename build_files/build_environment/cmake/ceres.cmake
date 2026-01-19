@@ -17,7 +17,7 @@ ExternalProject_Add(external_ceres
   URL_HASH ${CERES_HASH_TYPE}=${CERES_HASH}
   DOWNLOAD_DIR ${DOWNLOAD_DIR}
   PREFIX ${BUILD_DIR}/ceres
-  CMAKE_GENERATOR ${PLATFORM_ALT_GENERATOR}  
+  CMAKE_GENERATOR ${PLATFORM_ALT_GENERATOR}
 
   CMAKE_ARGS
     -DCMAKE_INSTALL_PREFIX=${LIBDIR}/ceres
@@ -33,12 +33,9 @@ add_dependencies(
   external_eigen
 )
 
-if(WIN32)
-  ExternalProject_Add_Step(external_ceres after_install
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-    ${LIBDIR}/ceres
-    ${HARVEST_TARGET}/ceres
-    DEPENDEES install
-  )
-endif()
-
+ExternalProject_Add_Step(external_ceres after_install
+  COMMAND ${CMAKE_COMMAND} -E copy_directory
+  ${LIBDIR}/ceres
+  ${HARVEST_TARGET}/ceres
+  DEPENDEES install
+)
