@@ -32,6 +32,6 @@ if(WIN32)
 
 else()
   harvest(external_fmt fmt/include fmt/include "*.h")
-  harvest(external_fmr fmt/lib/cmake/fmt fmt/lib/cmake/fmt "*.cmake")
-  harvest(external_fmr fmt/lib fmt/lib "*.a")
+  harvest(external_fmt fmt/lib/cmake/fmt fmt/lib/cmake/fmt "*.cmake")
+  harvest(external_fmt fmt/lib fmt/lib "*.a")
 endif()
