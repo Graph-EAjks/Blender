@@ -3200,7 +3200,7 @@ static void convert_grease_pencil_drawing_material_stroke_fill_toggle_to_attribu
           RPT_WARNING,
           RPT_("Renamed attribute '%s' to '%s' in object '%s' on layer '%s' on frame %d!"),
           hide_stroke_name,
-          unique_name,
+          unique_name.c_str(),
           object->id.name + 2,
           layer_name,
           frame_number);
@@ -3229,7 +3229,7 @@ static void convert_grease_pencil_drawing_material_stroke_fill_toggle_to_attribu
           RPT_WARNING,
           RPT_("Renamed attribute '%s' to '%s' in object '%s' on layer '%s' on frame %d!"),
           fill_id_name,
-          unique_name,
+          unique_name.c_str(),
           object->id.name + 2,
           layer_name,
           frame_number);
