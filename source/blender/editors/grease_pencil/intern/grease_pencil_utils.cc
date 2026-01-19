@@ -1788,8 +1788,8 @@ void add_single_curve(bke::greasepencil::Drawing &drawing, const bool at_end)
     drawing.runtime->fill_cache.update(
         [&](std::optional<bke::greasepencil::FillCache> &fill_cache) {
           if (fill_cache) {
-            (*fill_cache).fill_map.append(num_old_curves);
-            (*fill_cache).fill_offsets.append((*fill_cache).fill_offsets.last() + 1);
+            fill_cache->fill_map.append(num_old_curves);
+            fill_cache->fill_offsets.append(fill_cache->fill_offsets.last() + 1);
           }
         });
     return;
