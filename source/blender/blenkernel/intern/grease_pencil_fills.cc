@@ -218,6 +218,9 @@ void separate_fill_ids(CurvesGeometry &curves, const IndexMask &strokes_to_keep)
       [&](const int curve_i) { fill_indexing.add(fill_ids.span[curve_i]); });
 
   strokes_to_change.foreach_index(GrainSize(1024), [&](const int curve_i) {
+    if (fill_ids.span[curve_i] == 0) {
+      return;
+    }
     fill_ids.span[curve_i] = fill_indexing.index_of(fill_ids.span[curve_i]) + max_id + 1;
   });
 
