@@ -5226,20 +5226,22 @@ static wmOperatorStatus grease_pencil_separate_fills_exec(bContext *C, wmOperato
       return;
     }
 
+    /* Get the first id that does not already exist. */
+    int new_fill_id = *std::max_element(fill_ids.span.begin(), fill_ids.span.end()) + 1;
+
+    if (new_fill_id == 0) {
+      new_fill_id++;
+    }
+
     if (individual) {
       /* Each selected stroke becomes a new fill. */
-      index_mask::masked_fill(fill_ids.span, 0, strokes);
+      strokes.foreach_index_optimized<int>(
+          GrainSize(4096),
+          [&](const int64_t i, const int64_t pos) { fill_ids.span[i] = pos + new_fill_id; });
     }
     else {
-      /* Get the first id that does not already exist. */
-      int fill_id_to_set = *std::max_element(fill_ids.span.begin(), fill_ids.span.end()) + 1;
-
-      if (fill_id_to_set == 0) {
-        fill_id_to_set++;
-      }
-
       /* All selected strokes become a new fill. */
-      index_mask::masked_fill(fill_ids.span, fill_id_to_set, strokes);
+      index_mask::masked_fill(fill_ids.span, new_fill_id, strokes);
     }
 
     fill_ids.finish();
