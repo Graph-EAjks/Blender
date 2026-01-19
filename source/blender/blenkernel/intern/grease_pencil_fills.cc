@@ -189,4 +189,41 @@ IndexMask selected_mask_to_fills(const IndexMask selected_mask,
   return bke::curves::curve_to_point_selection(curves.points_by_curve(), selected_curves, memory);
 }
 
+void separate_fill_ids(CurvesGeometry &curves, const IndexMask &strokes_to_keep)
+{
+  IndexMaskMemory memory;
+  const IndexMask strokes_to_change = strokes_to_keep.complement(curves.curves_range(), memory);
+
+  if (strokes_to_change.is_empty() || strokes_to_keep.is_empty()) {
+    return;
+  }
+
+  bke::MutableAttributeAccessor attributes = curves.attributes_for_write();
+  bke::SpanAttributeWriter<int> fill_ids = attributes.lookup_for_write_span<int>("fill_id");
+
+  if (!fill_ids) {
+    return;
+  }
+
+  int max_id = 0;
+  strokes_to_keep.foreach_index(
+      [&](const int curve_i) { max_id = math::max(max_id, fill_ids.span[curve_i]); });
+
+  if (max_id == 0) {
+    return;
+  }
+
+  VectorSet<int> fill_indexing;
+  strokes_to_change.foreach_index(
+      [&](const int curve_i) { fill_indexing.add(fill_ids.span[curve_i]); });
+
+  strokes_to_change.foreach_index(GrainSize(1024), [&](const int curve_i) {
+    fill_ids.span[curve_i] = fill_indexing.index_of(fill_ids.span[curve_i]) + max_id + 1;
+  });
+
+  fill_ids.finish();
+
+  return;
+}
+
 }  // namespace blender::bke::greasepencil

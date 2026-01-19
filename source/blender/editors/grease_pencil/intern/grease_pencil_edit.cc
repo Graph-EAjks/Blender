@@ -1508,6 +1508,7 @@ static wmOperatorStatus grease_pencil_duplicate_exec(bContext *C, wmOperator * /
     IndexMaskMemory memory;
 
     bke::CurvesGeometry &curves = info.drawing.strokes_for_write();
+    const int num_old_curves = curves.curves_num();
     if (selection_domain == bke::AttrDomain::Curve) {
       const IndexMask strokes = retrieve_editable_and_selected_strokes(
           *object, info.drawing, info.layer_index, memory);
@@ -1524,6 +1525,8 @@ static wmOperatorStatus grease_pencil_duplicate_exec(bContext *C, wmOperator * /
       }
       curves::duplicate_points(curves, points);
     }
+
+    bke::greasepencil::separate_fill_ids(curves, IndexRange(num_old_curves));
     info.drawing.tag_topology_changed();
     changed.store(true, std::memory_order_relaxed);
   });

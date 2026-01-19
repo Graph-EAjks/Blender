@@ -21,5 +21,6 @@ IndexMask selected_mask_to_fills(const IndexMask selected_mask,
                                  const bke::CurvesGeometry &curves,
                                  const bke::AttrDomain selection_domain,
                                  IndexMaskMemory &memory);
+void separate_fill_ids(CurvesGeometry &curves, const IndexMask &strokes_to_keep);
 
 }  // namespace blender::bke::greasepencil
