@@ -3961,19 +3961,20 @@ static Object *convert_font_to_curves(Base &base, ObjectConversionInfo &info, Ba
   return curve_ob;
 }
 
-static void add_grease_pencil_materials_for_conversion(Main &bmain,
-                                                       ID &from_id,
-                                                       Object &gp_object,
-                                                       const bool use_fill)
+static void add_grease_pencil_materials_for_conversion(Main &bmain, ID &from_id, Object &gp_object)
 {
   short *len_p = BKE_id_material_len_p(&from_id);
   if (!len_p || *len_p == 0) {
-    BKE_grease_pencil_object_material_new(&bmain, &gp_object, IFACE_("Empty Material"), nullptr);
+    Material *gp_material = BKE_grease_pencil_object_material_new(
+        &bmain, &gp_object, IFACE_("Empty Material"), nullptr);
+    gp_material->gp_style->fill_rgba[3] = 1.0f;
     return;
   }
   Material ***materials = BKE_id_material_array_p(&from_id);
   if (!materials || !(*materials)) {
-    BKE_grease_pencil_object_material_new(&bmain, &gp_object, IFACE_("Empty Material"), nullptr);
+    Material *gp_material = BKE_grease_pencil_object_material_new(
+        &bmain, &gp_object, IFACE_("Empty Material"), nullptr);
+    gp_material->gp_style->fill_rgba[3] = 1.0f;
     return;
   }
   for (short i = 0; i < *len_p; i++) {
@@ -3987,27 +3988,35 @@ static void add_grease_pencil_materials_for_conversion(Main &bmain,
      * have anything to copy color information from. In those cases we still added an empty
      * material to keep the material index matching. */
     if (!orig_material) {
+      gp_material->gp_style->fill_rgba[3] = 1.0f;
       continue;
     }
 
+    copy_v4_v4(gp_material->gp_style->stroke_rgba, &orig_material->r);
     copy_v4_v4(gp_material->gp_style->fill_rgba, &orig_material->r);
-    if (use_fill) {
-      gp_material->gp_style->fill_rgba[3] = 1.0f;
-    }
   }
 }
 
 static void create_grease_pencil_fills(bke::greasepencil::Drawing &drawing)
 {
-  bke::MutableAttributeAccessor attributes = drawing.strokes_for_write().attributes_for_write();
+  bke::CurvesGeometry &curves = drawing.strokes_for_write();
+  bke::MutableAttributeAccessor attributes = curves.attributes_for_write();
+
+  VArray<int> materials = *attributes.lookup_or_default(
+      "material_index", bke::AttrDomain::Curve, 0);
   bke::SpanAttributeWriter<int> fill_ids = attributes.lookup_or_add_for_write_only_span<int>(
       "fill_id", bke::AttrDomain::Curve);
   bke::SpanAttributeWriter<bool> hide_stroke = attributes.lookup_or_add_for_write_only_span<bool>(
       "hide_stroke", bke::AttrDomain::Curve);
-  /* Mark all the strokes as part of the same fill. */
-  fill_ids.span.fill(1);
+
   /* Hide all the strokes, only show fills. */
   hide_stroke.span.fill(true);
+
+  /* Mark all the strokes in the same material as the same fill. */
+  for (const int curve_i : curves.curves_range()) {
+    fill_ids.span[curve_i] = materials[curve_i] + 1;
+  }
+
   fill_ids.finish();
   hide_stroke.finish();
 }
@@ -4039,8 +4048,6 @@ static Object *convert_font_to_grease_pencil(Base &base,
   /* Default radius (1.0 unit) is too thick for converted strokes. */
   drawing->radii_for_write().fill(0.01f);
 
-  /* Legacy curves don't support per-stroke/curve fill attribute, thus all the strokes that are
-   * converted are filled. */
   const bool use_fill = (legacy_curve_id->flag & (CU_FRONT | CU_BACK)) != 0;
   if (use_fill) {
     create_grease_pencil_fills(*drawing);
@@ -4050,7 +4057,7 @@ static Object *convert_font_to_grease_pencil(Base &base,
   curve_ob->type = OB_GREASE_PENCIL;
   curve_ob->totcol = grease_pencil->material_array_num;
 
-  add_grease_pencil_materials_for_conversion(*info.bmain, legacy_curve_id->id, *newob, use_fill);
+  add_grease_pencil_materials_for_conversion(*info.bmain, legacy_curve_id->id, *newob);
 
   /* We don't need the intermediate font/curve data ID any more. */
   BKE_id_delete(info.bmain, legacy_curve_id);
@@ -4155,8 +4162,6 @@ static Object *convert_curves_legacy_to_grease_pencil(Base &base,
   drawing->radii_for_write().fill(0.01f);
   drawing->tag_positions_changed();
 
-  /* Legacy curves don't support per-stroke/curve fill attribute, thus all the strokes that are
-   * converted are filled. */
   const bool use_fill = (legacy_curve_id->flag & (CU_FRONT | CU_BACK)) != 0;
   if (use_fill) {
     create_grease_pencil_fills(*drawing);
@@ -4169,7 +4174,7 @@ static Object *convert_curves_legacy_to_grease_pencil(Base &base,
    * sync. */
   newob->totcol = grease_pencil->material_array_num;
 
-  add_grease_pencil_materials_for_conversion(*info.bmain, legacy_curve_id->id, *newob, use_fill);
+  add_grease_pencil_materials_for_conversion(*info.bmain, legacy_curve_id->id, *newob);
 
   /* For some reason this must be called, otherwise evaluated id_cow will still be the original
    * curves id (and that seems to only happen if "Keep Original" is enabled, and only with this
