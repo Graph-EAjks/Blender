@@ -443,40 +443,137 @@ static void GREASE_PENCIL_OT_stroke_simplify(wmOperatorType *ot)
 /** \name Delete Operator
  * \{ */
 
-static wmOperatorStatus grease_pencil_delete_exec(bContext *C, wmOperator * /*op*/)
+enum class DeleteMode {
+  All = 0,
+  OnlyStrokes = 1,
+  OnlyFills = 2,
+};
+
+static bool remove_curves_based_on_mode(Object &object,
+                                        bke::greasepencil::Drawing &drawing,
+                                        const int layer_index,
+                                        const DeleteMode mode,
+                                        IndexMaskMemory &memory)
+{
+  const IndexMask editable_strokes = retrieve_editable_and_selected_strokes(
+      object, drawing, layer_index, memory);
+  if (editable_strokes.is_empty()) {
+    return false;
+  }
+  bke::CurvesGeometry &curves = drawing.strokes_for_write();
+  const bke::AttributeAccessor attributes = curves.attributes();
+  const VArray<int> fill_ids = *attributes.lookup_or_default<int>(
+      "fill_id", bke::AttrDomain::Curve, 0);
+  const VArray<bool> hidden_strokes = *attributes.lookup_or_default<bool>(
+      "hide_stroke", bke::AttrDomain::Curve, false);
+  const IndexMask strokes_to_delete = [&]() -> IndexMask {
+    if (mode == DeleteMode::OnlyStrokes) {
+      /* Only curves that are unfilled and have the stroke set. */
+      return IndexMask::from_predicate(
+          editable_strokes, GrainSize(1024), memory, [&](const int index) {
+            return fill_ids[index] == 0 && !hidden_strokes[index];
+          });
+    }
+    else if (mode == DeleteMode::OnlyFills) {
+      /* Only curves that don't have the stroke set and are filled. */
+      return IndexMask::from_predicate(
+          editable_strokes, GrainSize(1024), memory, [&](const int index) {
+            return hidden_strokes[index] && fill_ids[index] != 0;
+          });
+    }
+    BLI_assert_unreachable();
+    return {};
+  }();
+  if (!strokes_to_delete.is_empty()) {
+    curves.remove_curves(strokes_to_delete, {});
+    drawing.tag_topology_changed();
+    return true;
+  }
+  return false;
+}
+
+static bool remove_stroke_or_fill_based_on_mode(Object &object,
+                                                bke::greasepencil::Drawing &drawing,
+                                                const int layer_index,
+                                                const DeleteMode mode,
+                                                IndexMaskMemory &memory)
+{
+  bke::CurvesGeometry &curves = drawing.strokes_for_write();
+  bke::MutableAttributeAccessor attributes = curves.attributes_for_write();
+  if (!attributes.contains("fill_id")) {
+    return false;
+  }
+  const IndexMask editable_strokes = retrieve_editable_and_selected_strokes(
+      object, drawing, layer_index, memory);
+  const VArray<int> fill_ids = *attributes.lookup<int>("fill_id", bke::AttrDomain::Curve);
+  const VArray<bool> hidden_strokes = *attributes.lookup_or_default<bool>(
+      "hide_stroke", bke::AttrDomain::Curve, false);
+  const IndexMask fills_with_stroke = IndexMask::from_predicate(
+      editable_strokes, GrainSize(1024), memory, [&](const int index) {
+        return fill_ids[index] != 0 && !hidden_strokes[index];
+      });
+  if (fills_with_stroke.is_empty()) {
+    return false;
+  }
+  if (mode == DeleteMode::OnlyStrokes) {
+    bke::SpanAttributeWriter<bool> hide_strokes = attributes.lookup_or_add_for_write_span<bool>(
+        "hide_stroke",
+        bke::AttrDomain::Curve,
+        bke::AttributeInitVArray(VArray<bool>::from_single(false, curves.curves_num())));
+    index_mask::masked_fill(hide_strokes.span, true, fills_with_stroke);
+    hide_strokes.finish();
+  }
+  else if (mode == DeleteMode::OnlyFills) {
+    bke::SpanAttributeWriter<int> fill_ids = attributes.lookup_for_write_span<int>("fill_id");
+    index_mask::masked_fill(fill_ids.span, 0, fills_with_stroke);
+    fill_ids.finish();
+    /* TODO: tag triangle cache! */
+  }
+  return true;
+}
+
+static wmOperatorStatus grease_pencil_delete_exec(bContext *C, wmOperator *op)
 {
   const Scene *scene = CTX_data_scene(C);
   Object *object = CTX_data_active_object(C);
-  View3D *v3d = CTX_wm_view3d(C);
   GreasePencil &grease_pencil = *id_cast<GreasePencil *>(object->data);
 
+  const auto mode = DeleteMode(RNA_enum_get(op->ptr, "mode"));
   const bke::AttrDomain selection_domain = ED_grease_pencil_edit_selection_domain_get(
       scene->toolsettings);
 
-  bool changed = false;
+  std::atomic<bool> changed = false;
   const Vector<MutableDrawingInfo> drawings = retrieve_editable_drawings(*scene, grease_pencil);
   threading::parallel_for_each(drawings, [&](const MutableDrawingInfo &info) {
-    bke::CurvesGeometry &curves = info.drawing.strokes_for_write();
-
     IndexMaskMemory memory;
-    if (selection_domain == bke::AttrDomain::Curve) {
-      const IndexMask strokes = ed::greasepencil::retrieve_editable_and_selected_strokes(
-          *object, info.drawing, info.layer_index, memory);
-      if (strokes.is_empty()) {
+    if (mode == DeleteMode::All) {
+      const IndexMask elements_to_delete = retrieve_editable_and_selected_elements(
+          *object, info.drawing, info.layer_index, selection_domain, memory);
+      if (elements_to_delete.is_empty()) {
         return;
       }
-      curves.remove_curves(strokes, {});
-    }
-    else if (selection_domain == bke::AttrDomain::Point) {
-      const IndexMask points = ed::greasepencil::retrieve_editable_and_all_selected_points(
-          *object, info.drawing, info.layer_index, v3d->overlay.handle_display, memory);
-      if (points.is_empty()) {
-        return;
+      bke::CurvesGeometry &curves = info.drawing.strokes_for_write();
+      if (selection_domain == bke::AttrDomain::Curve) {
+        curves.remove_curves(elements_to_delete, {});
+        info.drawing.tag_topology_changed();
+        changed.store(true, std::memory_order_relaxed);
       }
-      curves = geometry::remove_points_and_split(curves, points);
+      else if (selection_domain == bke::AttrDomain::Point) {
+        curves = geometry::remove_points_and_split(curves, elements_to_delete);
+        info.drawing.tag_topology_changed();
+        changed.store(true, std::memory_order_relaxed);
+      }
+      return;
     }
-    info.drawing.tag_topology_changed();
-    changed = true;
+
+    if (remove_curves_based_on_mode(*object, info.drawing, info.layer_index, mode, memory)) {
+      changed.store(true, std::memory_order_relaxed);
+    }
+
+    if (remove_stroke_or_fill_based_on_mode(*object, info.drawing, info.layer_index, mode, memory))
+    {
+      changed.store(true, std::memory_order_relaxed);
+    }
   });
 
   if (changed) {
@@ -488,6 +585,17 @@ static wmOperatorStatus grease_pencil_delete_exec(bContext *C, wmOperator * /*op
 
 static void GREASE_PENCIL_OT_delete(wmOperatorType *ot)
 {
+  static const EnumPropertyItem prop_delete_modes[] = {
+      {int(DeleteMode::All), "ALL", 0, "All", "Delete all selected strokes or points"},
+      {int(DeleteMode::OnlyStrokes),
+       "STROKES",
+       0,
+       "Only Strokes",
+       "Delete only strokes and not fills"},
+      {int(DeleteMode::OnlyFills), "FILLS", 0, "Only Fills", "Delte only fills and not strokes"},
+      {0, nullptr, 0, nullptr, nullptr},
+  };
+
   ot->name = "Delete";
   ot->idname = "GREASE_PENCIL_OT_delete";
   ot->description = "Delete selected strokes or points";
@@ -496,6 +604,10 @@ static void GREASE_PENCIL_OT_delete(wmOperatorType *ot)
   ot->poll = editable_grease_pencil_poll;
 
   ot->flag = OPTYPE_REGISTER | OPTYPE_UNDO;
+
+  ot->prop = RNA_def_enum(
+      ot->srna, "mode", prop_delete_modes, 0, "Mode", "The kind of strokes or fills to delete");
+  RNA_def_property_flag(ot->prop, PROP_SKIP_SAVE);
 }
 
 /** \} */

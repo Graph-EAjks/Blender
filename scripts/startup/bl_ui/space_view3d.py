@@ -5148,10 +5148,14 @@ class VIEW3D_MT_edit_mesh_showhide(ShowHideMenu, Menu):
 class VIEW3D_MT_edit_greasepencil_delete(Menu):
     bl_label = "Delete"
 
-    def draw(self, _context):
+    def draw(self, context):
         layout = self.layout
 
-        layout.operator("grease_pencil.delete")
+        tool_settings = context.tool_settings
+        is_stroke_selection = tool_settings.gpencil_selectmode_edit == 'STROKE'
+        layout.operator("grease_pencil.delete", text="Strokes" if is_stroke_selection else "Points").mode = 'ALL'
+        layout.operator("grease_pencil.delete", text="Only Strokes").mode = 'STROKES'
+        layout.operator("grease_pencil.delete", text="Only Fills").mode = 'FILLS'
 
         layout.separator()
 
