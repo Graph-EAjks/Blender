@@ -5354,19 +5354,13 @@ static wmOperatorStatus grease_pencil_separate_fills_exec(bContext *C, wmOperato
     bke::CurvesGeometry &curves = info.drawing.strokes_for_write();
     bke::MutableAttributeAccessor attributes = curves.attributes_for_write();
     bke::SpanAttributeWriter<int> fill_ids = attributes.lookup_for_write_span<int>("fill_id");
-
-    /* If the attribute does not exist then every fill is already separate. */
     if (!fill_ids) {
       return;
     }
 
-    /* Get the first id that does not already exist. */
-    int new_fill_id = *std::max_element(fill_ids.span.begin(), fill_ids.span.end()) + 1;
-
-    if (new_fill_id == 0) {
-      new_fill_id++;
-    }
-
+    /* Get the first id that does not already exist. Start at ID 1. */
+    const int new_fill_id = std::max(
+        *std::max_element(fill_ids.span.begin(), fill_ids.span.end()) + 1, 1);
     if (individual) {
       /* Each selected stroke becomes a new fill. */
       strokes.foreach_index_optimized<int>(
@@ -5381,7 +5375,7 @@ static wmOperatorStatus grease_pencil_separate_fills_exec(bContext *C, wmOperato
     fill_ids.finish();
     info.drawing.tag_topology_changed();
 
-    changed = true;
+    changed.store(true, std::memory_order_relaxed);
   });
 
   if (changed) {
@@ -5403,8 +5397,11 @@ static void GREASE_PENCIL_OT_separate_fills(wmOperatorType *ot)
 
   ot->flag = OPTYPE_REGISTER | OPTYPE_UNDO;
 
-  RNA_def_boolean(
-      ot->srna, "individual", true, "Individual", "Create a separate fill for each stroke");
+  RNA_def_boolean(ot->srna,
+                  "individual",
+                  true,
+                  "Individual",
+                  "Create a separate fill for each individual stroke");
 }
 
 /** \} */
