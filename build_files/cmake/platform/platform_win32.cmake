@@ -49,7 +49,7 @@ if(CMAKE_SYSTEM_PROCESSOR STREQUAL "ARM64")
     if(VSCMD_VER VERSION_LESS WINDOWS_ARM64_MIN_VSCMD_VER)
       message(FATAL_ERROR
         "Windows ARM64 requires VS2022 version ${WINDOWS_ARM64_MIN_VSCMD_VER} or greater - "
-        "please update your VS2022 install!"
+        "detected ${VSCMD_VER}, please update your VS2022 install!"
       )
     endif()
   else()
