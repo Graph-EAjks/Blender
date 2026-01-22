@@ -3250,8 +3250,7 @@ static void convert_grease_pencil_drawing_material_stroke_fill_toggle_to_attribu
   }
 }
 
-void grease_pencil_material_stroke_fill_toggle_to_attributes(Main &bmain,
-                                                             BlendFileReadReport &reports)
+void material_stroke_fill_toggles_to_attributes(Main &bmain, BlendFileReadReport &reports)
 {
   using namespace blender;
   using namespace bke::greasepencil;
