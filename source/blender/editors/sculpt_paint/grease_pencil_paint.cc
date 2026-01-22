@@ -11,6 +11,7 @@
 #include "BKE_deform.hh"
 #include "BKE_geometry_set.hh"
 #include "BKE_grease_pencil.hh"
+#include "BKE_grease_pencil_fills.hh"
 #include "BKE_grease_pencil_vertex_groups.hh"
 #include "BKE_lib_id.hh"
 #include "BKE_material.hh"
@@ -449,8 +450,8 @@ struct PaintOperationExecutor {
     if (use_fill) {
       bke::SpanAttributeWriter<int> fill_id = attributes.lookup_or_add_for_write_span<int>(
           "fill_id", bke::AttrDomain::Curve);
-      /* TODO: Use the first available ID. */
-      fill_id.span[active_curve] = active_curve + 1;
+      bke::greasepencil::next_available_fill_ids(
+          fill_id.span.varray(), fill_id.span.slice(IndexRange::from_single(active_curve)));
       curve_attributes_to_skip.add("fill_id");
       fill_id.finish();
     }
