@@ -65,9 +65,9 @@ struct FillCache {
    *
    * curve index:  0 1 2 3 4 5 6 7 8
    * fill_id:      0 0 1 0 1 4 1 3 3
-   * fill_map:     0 1 2 4 6 3 5 7 8
-   * fill_offsets: 0 1 2     5 6 7   9
-   * fills:        x x _____ x x ___
+   * fill_map:         2 4 6 5   7 8
+   * fill_offsets:     0     3   4   6
+   * fills:            _____ _   ___
    */
   Vector<int> fill_map;
   Vector<int> fill_offsets;

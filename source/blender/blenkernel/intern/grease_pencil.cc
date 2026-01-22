@@ -465,79 +465,6 @@ std::optional<GroupedSpan<int>> Drawing::fills() const
   return std::nullopt;
 }
 
-/* Used when there are no fill ids. */
-static void update_triangle_and_offsets_cache_isolated(const Span<float3> positions,
-                                                       const Span<float3> normals,
-                                                       const OffsetIndices<int> points_by_curve,
-                                                       const IndexMask &curve_mask,
-                                                       Vector<int3> &r_triangles,
-                                                       MutableSpan<int> r_triangle_offsets)
-{
-  struct LocalMemArena {
-    MemArena *pf_arena = nullptr;
-    LocalMemArena() : pf_arena(BLI_memarena_new(BLI_MEMARENA_STD_BUFSIZE, "Drawing::triangles")) {}
-
-    ~LocalMemArena()
-    {
-      if (pf_arena != nullptr) {
-        BLI_memarena_free(pf_arena);
-      }
-    }
-  };
-
-  curve_mask.foreach_index([&](const int64_t curve_i, const int64_t pos) {
-    const IndexRange points = points_by_curve[curve_i];
-    if (points.size() < 3) {
-      r_triangle_offsets[pos] = 0;
-      return;
-    }
-    r_triangle_offsets[pos] = points.size() - 2;
-  });
-
-  const OffsetIndices<int> triangle_offsets = offset_indices::accumulate_counts_to_offsets(
-      r_triangle_offsets);
-
-  r_triangles.resize(triangle_offsets.total_size());
-
-  threading::EnumerableThreadSpecific<LocalMemArena> all_local_mem_arenas;
-  curve_mask.foreach_segment(
-      GrainSize(32), [&](const IndexMaskSegment mask_segment, const int segment_pos) {
-        MemArena *pf_arena = all_local_mem_arenas.local().pf_arena;
-        for (const int index : mask_segment.index_range()) {
-          const int curve_i = mask_segment[index];
-          const int pos = segment_pos + index;
-          const IndexRange points = points_by_curve[curve_i];
-
-          if (points.size() < 3) {
-            continue;
-          }
-
-          float3x3 axis_mat;
-          axis_dominant_v3_to_m3(axis_mat.ptr(), normals[curve_i]);
-
-          float (*projverts)[2] = static_cast<float (*)[2]>(
-              BLI_memarena_alloc(pf_arena, sizeof(*projverts) * size_t(points.size())));
-
-          threading::parallel_for(points.index_range(), 512, [&](const IndexRange range) {
-            for (const int i : range) {
-              const int curve_p = points[i];
-              mul_v2_m3v3(projverts[i], axis_mat.ptr(), positions[curve_p]);
-            }
-          });
-
-          MutableSpan<int3> r_tris = r_triangles.as_mutable_span().slice(triangle_offsets[pos]);
-
-          BLI_polyfill_calc_arena(projverts,
-                                  points.size(),
-                                  0,
-                                  reinterpret_cast<uint32_t (*)[3]>(r_tris.data()),
-                                  pf_arena);
-
-          BLI_memarena_clear(pf_arena);
-        }
-      });
-}
-
 static void update_triangle_and_offsets_cache(const Span<float3> positions,
                                               const Span<float3> normals,
                                               const OffsetIndices<int> points_by_curve,
@@ -709,21 +636,12 @@ static void ensure_triangle_and_offset_cache(const Drawing &drawing)
   drawing.runtime->triangle_cache.ensure([&](TriangleCache &r_triangle_cache) {
     const CurvesGeometry &curves = drawing.strokes();
     const std::optional<GroupedSpan<int>> fills = drawing.fills();
-    const int num_fills = fills.has_value() ? fills->size() : curves.curves_num();
+    const int num_fills = fills.has_value() ? fills->size() : 0;
 
     r_triangle_cache.triangles.clear();
     r_triangle_cache.triangle_offsets.resize(num_fills + 1);
 
-    if (!fills) {
-      update_triangle_and_offsets_cache_isolated(
-          curves.evaluated_positions(),
-          drawing.curve_plane_normals(),
-          curves.evaluated_points_by_curve(),
-          curves.curves_range(),
-          r_triangle_cache.triangles,
-          r_triangle_cache.triangle_offsets.as_mutable_span());
-    }
-    else {
+    if (fills) {
       update_triangle_and_offsets_cache(curves.evaluated_positions(),
                                         drawing.curve_plane_normals(),
                                         curves.evaluated_points_by_curve(),
@@ -1114,7 +1032,7 @@ static void update_triangle_and_offsets_changed(const Span<float3> positions,
                                                 Vector<int3> &r_triangles,
                                                 MutableSpan<int> r_triangle_offsets)
 {
-  const int num_fills = fills.has_value() ? fills->size() : dst_points_by_curve.size();
+  const int num_fills = fills.has_value() ? fills->size() : 0;
 
   IndexMaskMemory memory;
   const IndexMask changed_fills = curves_to_fills_mask(
@@ -1124,15 +1042,7 @@ static void update_triangle_and_offsets_changed(const Span<float3> positions,
   Array<int> changed_triangle_offsets_data(changed_fills.size() + 1);
   Vector<int3> changed_triangles;
 
-  if (!fills) {
-    update_triangle_and_offsets_cache_isolated(positions,
-                                               normals,
-                                               dst_points_by_curve,
-                                               changed_fills,
-                                               changed_triangles,
-                                               changed_triangle_offsets_data.as_mutable_span());
-  }
-  else {
+  if (fills) {
     update_triangle_and_offsets_cache(positions,
                                       normals,
                                       dst_points_by_curve,
@@ -1212,7 +1122,7 @@ void Drawing::tag_positions_changed(const IndexMask &changed_curves)
 
   this->runtime->triangle_cache.update([&](TriangleCache &r_triangle_cache) {
     const std::optional<GroupedSpan<int>> fills = this->fills();
-    const int num_fills = fills.has_value() ? fills->size() : this->strokes().curves_num();
+    const int num_fills = fills.has_value() ? fills->size() : 0;
 
     r_triangle_cache.triangles.clear();
     r_triangle_cache.triangle_offsets.resize(num_fills + 1);
@@ -1265,7 +1175,7 @@ void Drawing::tag_topology_changed(const IndexMask &changed_curves)
   });
 
   const std::optional<GroupedSpan<int>> fills = this->fills();
-  const int num_fills = fills.has_value() ? fills->size() : this->strokes().curves_num();
+  const int num_fills = fills.has_value() ? fills->size() : 0;
 
   /* Make sure the number of fills has not changed. */
   if (num_fills == this->triangles().size()) {
@@ -1276,7 +1186,7 @@ void Drawing::tag_topology_changed(const IndexMask &changed_curves)
 
     this->runtime->triangle_cache.update([&](TriangleCache &r_triangle_cache) {
       const std::optional<GroupedSpan<int>> fills = this->fills();
-      const int num_fills = fills.has_value() ? fills->size() : this->strokes().curves_num();
+      const int num_fills = fills.has_value() ? fills->size() : 0;
 
       r_triangle_cache.triangles.clear();
       r_triangle_cache.triangle_offsets.resize(num_fills + 1);

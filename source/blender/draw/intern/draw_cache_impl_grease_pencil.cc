@@ -1177,6 +1177,8 @@ static void grease_pencil_geom_batch_ensure(Object &object,
     IndexMaskMemory memory;
     const IndexMask visible_fills = ed::greasepencil::retrieve_visible_fills(
         object, info.drawing, memory);
+    const IndexMask visible_strokes = ed::greasepencil::retrieve_visible_strokes(
+        object, info.drawing, memory);
     const std::optional<GroupedSpan<int>> fills = info.drawing.fills();
     const GroupedSpan<int3> triangles = info.drawing.triangles();
 
@@ -1184,7 +1186,11 @@ static void grease_pencil_geom_batch_ensure(Object &object,
 
     int num_cyclic = 0;
     int num_points = 0;
-    auto add_curve = [&](const int curve_i) {
+
+    total_triangles_num += sum_group_sizes(triangles.offsets, visible_fills);
+
+    /* Calculate the vertex offsets for all the visible curves. */
+    visible_strokes.foreach_index([&](const int curve_i) {
       IndexRange points = points_by_curve[curve_i];
       const bool is_cyclic = cyclic[curve_i] && (points.size() > 2);
 
@@ -1198,23 +1204,7 @@ static void grease_pencil_geom_batch_ensure(Object &object,
       /* Cyclic strokes have one extra vertex. */
       total_verts_num += (is_cyclic ? 1 : 0);
       num_points += points.size();
-    };
-
-    total_triangles_num += sum_group_sizes(triangles.offsets, visible_fills);
-
-    /* Calculate the vertex offsets for all the visible curves. */
-    if (!fills) {
-      visible_fills.foreach_index([&](const int curve_i) { add_curve(curve_i); });
-    }
-    else {
-      visible_fills.foreach_index([&](const int fill_index) {
-        const Span<int> fill = (*fills)[fill_index];
-        for (const int pos : fill.index_range()) {
-          const int curve_i = fill[pos];
-          add_curve(curve_i);
-        }
-      });
-    }
+    });
 
     total_triangles_num += (num_points + num_cyclic) * 2;
 
@@ -1287,12 +1277,16 @@ static void grease_pencil_geom_batch_ensure(Object &object,
         "u_scale", bke::AttrDomain::Curve, 1.0f);
     const VArray<float> fill_opacities = *attributes.lookup_or_default<float>(
         "fill_opacity", bke::AttrDomain::Curve, 1.0f);
+    const VArray<int> fill_ids = *attributes.lookup_or_default<int>(
+        "fill_id", bke::AttrDomain::Curve, 0);
 
     const GroupedSpan<int3> triangles = info.drawing.triangles();
     const Span<float4x2> texture_matrices = info.drawing.texture_matrices();
     const Span<int> verts_start_offsets = verts_start_offsets_per_visible_drawing[drawing_i];
     IndexMaskMemory memory;
     const IndexMask visible_fills = ed::greasepencil::retrieve_visible_fills(
+        object, info.drawing, memory);
+    const IndexMask visible_strokes = ed::greasepencil::retrieve_visible_strokes(
         object, info.drawing, memory);
     const std::optional<GroupedSpan<int>> fills = info.drawing.fills();
 
@@ -1408,74 +1402,72 @@ static void grease_pencil_geom_batch_ensure(Object &object,
 
     if (!fills) {
       threading::parallel_for(
-          visible_fills.index_range(),
+          visible_strokes.index_range(),
           1024,
           [&](const IndexRange range) {
-            visible_fills.slice(range).foreach_index([&](const int64_t fill_index) {
-              const int first_curve = fill_index;
+            visible_strokes.slice(range).foreach_index([&](const int64_t curve_i) {
+              const int first_curve = curve_i;
               const int first_vert = verts_start_offsets[first_curve];
               const float4x2 texture_matrix = texture_matrices[first_curve] *
                                               object_space_to_layer_space;
 
-              const int curve_i = first_curve;
               populate_curve(curve_i, first_curve, first_vert, texture_matrix);
             });
           },
           threading::accumulated_task_sizes([&](const IndexRange range) {
-            return offset_indices::sum_group_sizes(points_by_curve, visible_fills.slice(range));
+            return offset_indices::sum_group_sizes(points_by_curve, visible_strokes.slice(range));
           }));
     }
     else {
+      Array<int> first_curves(curves.curves_num());
+      array_utils::fill_index_range<int>(first_curves);
+
+      int fill_index = 0;
+      Array<bool> added_fill_drawcalls(curves.curves_num(), false);
+      for (const int curve_i : curves.curves_range()) {
+        const bool is_filled = fill_ids[curve_i] != 0;
+        const bool active_filled = is_filled && !added_fill_drawcalls[curve_i];
+
+        /* Keep track of already rendered fills. */
+        if (active_filled) {
+          const Span<int> fill = (*fills)[fill_index];
+          const int first_curve = fill.first();
+          for (const int pos : fill.index_range()) {
+            const int curve_i = fill[pos];
+            added_fill_drawcalls[curve_i] = true;
+            first_curves[curve_i] = first_curve;
+          }
+
+          fill_index++;
+        }
+      }
+
       threading::parallel_for(
-          visible_fills.index_range(),
+          visible_strokes.index_range(),
           1024,
           [&](const IndexRange range) {
-            visible_fills.slice(range).foreach_index([&](const int64_t fill_index) {
-              const Span<int> fill = (*fills)[fill_index];
-
-              const int first_curve = fill.first();
+            visible_strokes.slice(range).foreach_index([&](const int64_t curve_i) {
+              const int first_curve = first_curves[curve_i];
               const int first_vert = verts_start_offsets[first_curve];
               const float4x2 texture_matrix = texture_matrices[first_curve] *
                                               object_space_to_layer_space;
 
-              for (const int pos : fill.index_range()) {
-                const int curve_i = fill[pos];
-                populate_curve(curve_i, first_curve, first_vert, texture_matrix);
-              }
+              populate_curve(curve_i, first_curve, first_vert, texture_matrix);
             });
           },
           threading::accumulated_task_sizes([&](const IndexRange range) {
-            int value = 0;
-            visible_fills.slice(range).foreach_index([&](const int64_t fill_index) {
-              const Span<int> fill = (*fills)[fill_index];
-              value += offset_indices::sum_group_sizes(points_by_curve, fill);
-            });
-            return value;
+            return offset_indices::sum_group_sizes(points_by_curve, visible_strokes.slice(range));
           }));
     }
 
     /* Fill in IBO in series. */
     if (!fills) {
-      visible_fills.foreach_index([&](const int fill_index, const int pos) {
-        const Span<int3> tris_slice = triangles[fill_index];
-        const int first_curve = fill_index;
-
-        const IndexRange points = points_by_curve[first_curve];
-        const bool is_cyclic = cyclic[first_curve] && (points.size() > 2);
+      visible_strokes.foreach_index([&](const int curve_i, const int pos) {
+        const IndexRange points = points_by_curve[curve_i];
+        const bool is_cyclic = cyclic[curve_i] && (points.size() > 2);
         const int verts_start_offset = verts_start_offsets[pos];
         const int num_verts = 1 + points.size() + (is_cyclic ? 1 : 0) + 1;
         const IndexRange verts_range = IndexRange(verts_start_offset, num_verts);
-
-        const int first_vert = verts_start_offsets[first_curve];
-
-        auto point_to_id = [&](int32_t p) { return (1 + p + first_vert) << GP_VERTEX_ID_SHIFT; };
-
-        /* Add all triangle indices to the index buffer. */
-        for (const int3 tri : tris_slice) {
-          triangle_ibo_data[triangle_ibo_index] = uint3(
-              point_to_id(tri.x), point_to_id(tri.y), point_to_id(tri.z));
-          triangle_ibo_index++;
-        }
 
         for (const int i : points.index_range()) {
           const int idx = i + 1;
@@ -1498,69 +1490,98 @@ static void grease_pencil_geom_batch_ensure(Object &object,
       });
     }
     else {
-      visible_fills.foreach_index([&](const int fill_index) {
-        const Span<int3> tris_slice = triangles[fill_index];
+      int fill_index = 0;
 
-        const Span<int> fill = (*fills)[fill_index];
+      Array<int> fill_index_by_curves(curves.curves_num(), -1);
+      Array<int> first_curves(curves.curves_num());
+      array_utils::fill_index_range<int>(first_curves);
 
-        int fill_points_index = 0;
-        Array<int> fill_point_offset_data(fill.size() + 1);
+      for (const int curve_i : curves.curves_range()) {
+        const bool is_filled = fill_ids[curve_i] != 0;
+        const bool active_filled = is_filled && (fill_index_by_curves[curve_i] == -1);
 
-        for (const int pos : fill.index_range()) {
-          const int curve_i = fill[pos];
-          const IndexRange points = points_by_curve[curve_i];
-          fill_point_offset_data[pos] = fill_points_index;
-          fill_points_index += points.size();
+        /* Keep track of already rendered fills. */
+        if (active_filled) {
+          const Span<int> fill = (*fills)[fill_index];
+          const int first_curve = fill.first();
+          for (const int pos : fill.index_range()) {
+            const int curve_i = fill[pos];
+            fill_index_by_curves[curve_i] = fill_index;
+            first_curves[curve_i] = first_curve;
+          }
+
+          fill_index++;
+        }
+      }
+
+      visible_strokes.foreach_index([&](const int curve_i) {
+        /* Will be `-1` if not a fill. */
+        const int fill_index = fill_index_by_curves[curve_i];
+
+        const bool is_filled = fill_index != -1;
+        const bool active_filled = is_filled && (first_curves[curve_i] == curve_i);
+
+        if (active_filled) {
+          const int fill_index = fill_index_by_curves[curve_i];
+          const Span<int3> tris_slice = triangles[fill_index];
+          const Span<int> fill = (*fills)[fill_index];
+
+          int fill_points_index = 0;
+          Array<int> fill_point_offset_data(fill.size() + 1);
+
+          for (const int pos : fill.index_range()) {
+            const int curve_i = fill[pos];
+            const IndexRange points = points_by_curve[curve_i];
+            fill_point_offset_data[pos] = fill_points_index;
+            fill_points_index += points.size();
+          }
+
+          fill_point_offset_data.last() = fill_points_index;
+          OffsetIndices<int> fill_point_offset = OffsetIndices<int>(fill_point_offset_data);
+
+          Array<int> fill_point_to_pos_map(fill_points_index);
+          for (const int pos : fill.index_range()) {
+            fill_point_to_pos_map.as_mutable_span().slice(fill_point_offset[pos]).fill(pos);
+          }
+
+          auto point_to_id = [&](int32_t p) {
+            const int pos_ = fill_point_to_pos_map[p];
+            const int curve_ = fill[pos_];
+            const int fill_offset = fill_point_offset[pos_].first();
+            return (1 + p - fill_offset + verts_start_offsets[curve_]) << GP_VERTEX_ID_SHIFT;
+          };
+
+          /* Add all triangle indices to the index buffer. */
+          for (const int3 tri : tris_slice) {
+            triangle_ibo_data[triangle_ibo_index] = uint3(
+                point_to_id(tri.x), point_to_id(tri.y), point_to_id(tri.z));
+            triangle_ibo_index++;
+          }
         }
 
-        fill_point_offset_data.last() = fill_points_index;
-        OffsetIndices<int> fill_point_offset = OffsetIndices<int>(fill_point_offset_data);
+        const IndexRange points = points_by_curve[curve_i];
+        const bool is_cyclic = cyclic[curve_i] && (points.size() > 2);
+        const int verts_start_offset = verts_start_offsets[curve_i];
+        const int num_verts = 1 + points.size() + (is_cyclic ? 1 : 0) + 1;
+        const IndexRange verts_range = IndexRange(verts_start_offset, num_verts);
 
-        Array<int> fill_point_to_pos_map(fill_points_index);
-        for (const int pos : fill.index_range()) {
-          fill_point_to_pos_map.as_mutable_span().slice(fill_point_offset[pos]).fill(pos);
-        }
-
-        auto point_to_id = [&](int32_t p) {
-          const int pos_ = fill_point_to_pos_map[p];
-          const int curve_ = fill[pos_];
-          const int fill_offset = fill_point_offset[pos_].first();
-          return (1 + p - fill_offset + verts_start_offsets[curve_]) << GP_VERTEX_ID_SHIFT;
-        };
-
-        /* Add all triangle indices to the index buffer. */
-        for (const int3 tri : tris_slice) {
-          triangle_ibo_data[triangle_ibo_index] = uint3(
-              point_to_id(tri.x), point_to_id(tri.y), point_to_id(tri.z));
+        for (const int i : points.index_range()) {
+          const int idx = i + 1;
+          int v_mat = (verts_range[idx] << GP_VERTEX_ID_SHIFT) | GP_IS_STROKE_VERTEX_BIT;
+          triangle_ibo_data[triangle_ibo_index] = uint3(v_mat + 0, v_mat + 1, v_mat + 2);
+          triangle_ibo_index++;
+          triangle_ibo_data[triangle_ibo_index] = uint3(v_mat + 2, v_mat + 1, v_mat + 3);
           triangle_ibo_index++;
         }
 
-        for (const int pos : fill.index_range()) {
-          const int curve_i = fill[pos];
-          const IndexRange points = points_by_curve[curve_i];
-          const bool is_cyclic = cyclic[curve_i] && (points.size() > 2);
-          const int verts_start_offset = verts_start_offsets[curve_i];
-          const int num_verts = 1 + points.size() + (is_cyclic ? 1 : 0) + 1;
-          const IndexRange verts_range = IndexRange(verts_start_offset, num_verts);
+        if (is_cyclic) {
+          const int idx = points.size() + 1;
 
-          for (const int i : points.index_range()) {
-            const int idx = i + 1;
-            int v_mat = (verts_range[idx] << GP_VERTEX_ID_SHIFT) | GP_IS_STROKE_VERTEX_BIT;
-            triangle_ibo_data[triangle_ibo_index] = uint3(v_mat + 0, v_mat + 1, v_mat + 2);
-            triangle_ibo_index++;
-            triangle_ibo_data[triangle_ibo_index] = uint3(v_mat + 2, v_mat + 1, v_mat + 3);
-            triangle_ibo_index++;
-          }
-
-          if (is_cyclic) {
-            const int idx = points.size() + 1;
-
-            int v_mat = (verts_range[idx] << GP_VERTEX_ID_SHIFT) | GP_IS_STROKE_VERTEX_BIT;
-            triangle_ibo_data[triangle_ibo_index] = uint3(v_mat + 0, v_mat + 1, v_mat + 2);
-            triangle_ibo_index++;
-            triangle_ibo_data[triangle_ibo_index] = uint3(v_mat + 2, v_mat + 1, v_mat + 3);
-            triangle_ibo_index++;
-          }
+          int v_mat = (verts_range[idx] << GP_VERTEX_ID_SHIFT) | GP_IS_STROKE_VERTEX_BIT;
+          triangle_ibo_data[triangle_ibo_index] = uint3(v_mat + 0, v_mat + 1, v_mat + 2);
+          triangle_ibo_index++;
+          triangle_ibo_data[triangle_ibo_index] = uint3(v_mat + 2, v_mat + 1, v_mat + 3);
+          triangle_ibo_index++;
         }
       });
     }

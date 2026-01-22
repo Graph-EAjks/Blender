@@ -589,7 +589,26 @@ TEST(greasepencil, fill_cache)
     Array<int> fill_ids({1, 2, 3});
     std::optional<FillCache> fill_cache = fill_cache_from_fill_ids(
         fill_ids.size(), VArray<int>::from_span(fill_ids.as_span()));
-    EXPECT_FALSE(fill_cache.has_value());
+    EXPECT_TRUE(fill_cache.has_value());
+
+    Array<int> expected_fill_map({0, 1, 2});
+    Array<int> expected_fill_offsets({0, 1, 2, 3});
+
+    EXPECT_EQ_SPAN<int>(expected_fill_map, fill_cache->fill_map);
+    EXPECT_EQ_SPAN<int>(expected_fill_offsets, fill_cache->fill_offsets);
+  }
+
+  {
+    Array<int> fill_ids({3, 2, 1});
+    std::optional<FillCache> fill_cache = fill_cache_from_fill_ids(
+        fill_ids.size(), VArray<int>::from_span(fill_ids.as_span()));
+    EXPECT_TRUE(fill_cache.has_value());
+
+    Array<int> expected_fill_map({0, 1, 2});
+    Array<int> expected_fill_offsets({0, 1, 2, 3});
+
+    EXPECT_EQ_SPAN<int>(expected_fill_map, fill_cache->fill_map);
+    EXPECT_EQ_SPAN<int>(expected_fill_offsets, fill_cache->fill_offsets);
   }
 
   {
@@ -611,8 +630,8 @@ TEST(greasepencil, fill_cache)
         fill_ids.size(), VArray<int>::from_span(fill_ids.as_span()));
     EXPECT_TRUE(fill_cache.has_value());
 
-    Array<int> expected_fill_map({0, 1, 2, 4, 6, 3, 5, 7, 8});
-    Array<int> expected_fill_offsets({0, 1, 2, 5, 6, 7, 9});
+    Array<int> expected_fill_map({2, 4, 6, 5, 7, 8});
+    Array<int> expected_fill_offsets({0, 3, 4, 6});
 
     EXPECT_EQ_SPAN<int>(expected_fill_map, fill_cache->fill_map);
     EXPECT_EQ_SPAN<int>(expected_fill_offsets, fill_cache->fill_offsets);
@@ -624,8 +643,8 @@ TEST(greasepencil, fill_cache)
         fill_ids.size(), VArray<int>::from_span(fill_ids.as_span()));
     EXPECT_TRUE(fill_cache.has_value());
 
-    Array<int> expected_fill_map({0, 1, 5, 2, 3, 8, 4, 6, 7});
-    Array<int> expected_fill_offsets({0, 3, 4, 6, 7, 8, 9});
+    Array<int> expected_fill_map({0, 1, 5, 3, 8, 6});
+    Array<int> expected_fill_offsets({0, 3, 5, 6});
 
     EXPECT_EQ_SPAN<int>(expected_fill_map, fill_cache->fill_map);
     EXPECT_EQ_SPAN<int>(expected_fill_offsets, fill_cache->fill_offsets);

@@ -1233,11 +1233,11 @@ IndexMask retrieve_visible_fills(Object &object,
 
   const std::optional<GroupedSpan<int>> fills = drawing.fills();
   if (!fills) {
-    return ed::greasepencil::retrieve_visible_strokes(object, drawing, memory);
+    return {};
   }
 
   if (hidden_material_indices.is_empty()) {
-    return (*fills).index_range();
+    return fills->index_range();
   }
 
   const bke::CurvesGeometry &curves = drawing.strokes();
@@ -1247,7 +1247,7 @@ IndexMask retrieve_visible_fills(Object &object,
   const VArray<int> materials = *attributes.lookup_or_default<int>(
       "material_index", bke::AttrDomain::Curve, 0);
   return IndexMask::from_predicate(
-      (*fills).index_range(), GrainSize(4096), memory, [&](const int64_t fill_index) {
+      fills->index_range(), GrainSize(4096), memory, [&](const int64_t fill_index) {
         const Span<int> fill = (*fills)[fill_index];
         const int curve_i = fill.first();
         const int material_index = materials[curve_i];
