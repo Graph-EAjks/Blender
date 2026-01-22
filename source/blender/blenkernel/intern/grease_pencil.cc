@@ -1185,36 +1185,30 @@ void Drawing::tag_topology_changed(const IndexMask &changed_curves)
         curves.positions(), curves.points_by_curve(), changed_curves, normals);
   });
 
-  const std::optional<GroupedSpan<int>> fills = this->fills();
-  const int num_fills = fills.has_value() ? fills->size() : 0;
+  /* Fills cache needs to be up-to-date. */
+  this->runtime->fill_cache.tag_dirty();
 
-  /* Make sure the number of fills has not changed. */
-  if (num_fills == this->triangles().size()) {
-    const Array<int> src_triangles_offsets = Array<int>(this->triangles().offsets.data());
-    const Array<int3> src_triangles_data = Array<int3>(this->triangles().data);
-    const GroupedSpan<int3> src_triangles(src_triangles_offsets.as_span(),
-                                          src_triangles_data.as_span());
+  const Array<int> src_triangles_offsets = Array<int>(this->triangles().offsets.data());
+  const Array<int3> src_triangles_data = Array<int3>(this->triangles().data);
+  const GroupedSpan<int3> src_triangles(src_triangles_offsets.as_span(),
+                                        src_triangles_data.as_span());
 
-    this->runtime->triangle_cache.update([&](TriangleCache &r_triangle_cache) {
-      const std::optional<GroupedSpan<int>> fills = this->fills();
-      const int num_fills = fills.has_value() ? fills->size() : 0;
+  this->runtime->triangle_cache.update([&](TriangleCache &r_triangle_cache) {
+    const std::optional<GroupedSpan<int>> fills = this->fills();
+    const int num_fills = fills.has_value() ? fills->size() : 0;
 
-      r_triangle_cache.triangles.clear();
-      r_triangle_cache.triangle_offsets.resize(num_fills + 1);
+    r_triangle_cache.triangles.clear();
+    r_triangle_cache.triangle_offsets.resize(num_fills + 1);
 
-      update_triangle_and_offsets_changed(this->strokes().evaluated_positions(),
-                                          this->curve_plane_normals(),
-                                          this->strokes().evaluated_points_by_curve(),
-                                          changed_curves,
-                                          fills,
-                                          src_triangles,
-                                          r_triangle_cache.triangles,
-                                          r_triangle_cache.triangle_offsets);
-    });
-  }
-  else {
-    this->tag_fills_changed();
-  }
+    update_triangle_and_offsets_changed(this->strokes().evaluated_positions(),
+                                        this->curve_plane_normals(),
+                                        this->strokes().evaluated_points_by_curve(),
+                                        changed_curves,
+                                        fills,
+                                        src_triangles,
+                                        r_triangle_cache.triangles,
+                                        r_triangle_cache.triangle_offsets);
+  });
 
   this->tag_texture_matrices_changed();
 }
