@@ -572,23 +572,30 @@ TEST(greasepencil, remove_drawings_with_no_users)
 TEST(greasepencil, fill_cache)
 {
   {
-    Array<int> fill_ids(0);
+    Array<int> fill_ids;
     std::optional<FillCache> fill_cache = fill_cache_from_fill_ids(
-        5, VArray<int>::from_span(fill_ids.as_span()));
+        VArray<int>::from_span(fill_ids.as_span()));
+    EXPECT_FALSE(fill_cache.has_value());
+  }
+
+  {
+    Array<int> fill_ids(5, 0);
+    std::optional<FillCache> fill_cache = fill_cache_from_fill_ids(
+        VArray<int>::from_span(fill_ids.as_span()));
     EXPECT_FALSE(fill_cache.has_value());
   }
 
   {
     Array<int> fill_ids({0, 0, 0});
     std::optional<FillCache> fill_cache = fill_cache_from_fill_ids(
-        fill_ids.size(), VArray<int>::from_span(fill_ids.as_span()));
+        VArray<int>::from_span(fill_ids.as_span()));
     EXPECT_FALSE(fill_cache.has_value());
   }
 
   {
     Array<int> fill_ids({1, 2, 3});
     std::optional<FillCache> fill_cache = fill_cache_from_fill_ids(
-        fill_ids.size(), VArray<int>::from_span(fill_ids.as_span()));
+        VArray<int>::from_span(fill_ids.as_span()));
     EXPECT_TRUE(fill_cache.has_value());
 
     Array<int> expected_fill_map({0, 1, 2});
@@ -601,7 +608,7 @@ TEST(greasepencil, fill_cache)
   {
     Array<int> fill_ids({3, 2, 1});
     std::optional<FillCache> fill_cache = fill_cache_from_fill_ids(
-        fill_ids.size(), VArray<int>::from_span(fill_ids.as_span()));
+        VArray<int>::from_span(fill_ids.as_span()));
     EXPECT_TRUE(fill_cache.has_value());
 
     Array<int> expected_fill_map({0, 1, 2});
@@ -614,7 +621,7 @@ TEST(greasepencil, fill_cache)
   {
     Array<int> fill_ids({1, 1, 2, 2, 3, 3});
     std::optional<FillCache> fill_cache = fill_cache_from_fill_ids(
-        fill_ids.size(), VArray<int>::from_span(fill_ids.as_span()));
+        VArray<int>::from_span(fill_ids.as_span()));
     EXPECT_TRUE(fill_cache.has_value());
 
     Array<int> expected_fill_map({0, 1, 2, 3, 4, 5});
@@ -627,7 +634,7 @@ TEST(greasepencil, fill_cache)
   {
     Array<int> fill_ids({0, 0, 1, 0, 1, 4, 1, 3, 3});
     std::optional<FillCache> fill_cache = fill_cache_from_fill_ids(
-        fill_ids.size(), VArray<int>::from_span(fill_ids.as_span()));
+        VArray<int>::from_span(fill_ids.as_span()));
     EXPECT_TRUE(fill_cache.has_value());
 
     Array<int> expected_fill_map({2, 4, 6, 5, 7, 8});
@@ -640,7 +647,7 @@ TEST(greasepencil, fill_cache)
   {
     Array<int> fill_ids({1, 1, 0, 3, 0, 1, 2, 0, 3});
     std::optional<FillCache> fill_cache = fill_cache_from_fill_ids(
-        fill_ids.size(), VArray<int>::from_span(fill_ids.as_span()));
+        VArray<int>::from_span(fill_ids.as_span()));
     EXPECT_TRUE(fill_cache.has_value());
 
     Array<int> expected_fill_map({0, 1, 5, 3, 8, 6});

@@ -451,7 +451,7 @@ static void ensure_fill_cache(const Drawing &drawing)
     const bke::AttributeAccessor attributes = curves.attributes();
 
     const VArray<int> fill_ids = *attributes.lookup<int>("fill_id", bke::AttrDomain::Curve);
-    r_fill_cache = fill_cache_from_fill_ids(curves.curves_num(), fill_ids);
+    r_fill_cache = fill_cache_from_fill_ids(fill_ids);
   });
 }
 

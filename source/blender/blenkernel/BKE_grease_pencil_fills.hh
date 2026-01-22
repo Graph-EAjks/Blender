@@ -15,8 +15,7 @@
 
 namespace blender::bke::greasepencil {
 
-std::optional<FillCache> fill_cache_from_fill_ids(const int num_curves,
-                                                  const VArray<int> &fill_ids);
+std::optional<FillCache> fill_cache_from_fill_ids(const VArray<int> &fill_ids);
 IndexMask selected_mask_to_fills(const IndexMask selected_mask,
                                  const bke::CurvesGeometry &curves,
                                  const bke::AttrDomain selection_domain,

@@ -16,24 +16,23 @@
 
 namespace blender::bke::greasepencil {
 
-std::optional<FillCache> fill_cache_from_fill_ids(const int num_curves,
-                                                  const VArray<int> &fill_ids)
+std::optional<FillCache> fill_cache_from_fill_ids(const VArray<int> &fill_ids)
 {
-  if (num_curves == 0 || fill_ids.is_empty()) {
+  if (!fill_ids || fill_ids.is_empty()) {
     return std::nullopt;
   }
 
   /* The size of each fill. */
   Vector<int> fill_sizes;
-  /* Contains the curve indices for each non-zero fill. */
+  /* Contains the curve indices for each fill. */
   Vector<Vector<int>> curve_indices_by_fill;
   /* Maps the fill id to the index in the #curve_indices_by_fill vector. */
   Map<int, int> fill_indexing;
 
-  for (const int curve : IndexRange(num_curves)) {
+  for (const int curve : fill_ids.index_range()) {
     const int fill_id = fill_ids[curve];
 
-    /* Non fills are skipped. */
+    /* Unfilled curves are skipped. */
     if (fill_id == 0) {
       continue;
     }
@@ -58,12 +57,11 @@ std::optional<FillCache> fill_cache_from_fill_ids(const int num_curves,
   OffsetIndices<int> fill_offsets = offset_indices::accumulate_counts_to_offsets(fill_sizes);
 
   Vector<int> fill_map(fill_offsets.total_size());
-  MutableSpan<int> fill_map_span = fill_map.as_mutable_span();
   threading::parallel_for(fill_offsets.index_range(), 4096, [&](const IndexRange range) {
     for (const int fill_i : range) {
       const IndexRange fill_range = fill_offsets[fill_i];
       const Span<int> curve_indices = curve_indices_by_fill[fill_i].as_span();
-      fill_map_span.slice(fill_range).copy_from(curve_indices);
+      fill_map.as_mutable_span().slice(fill_range).copy_from(curve_indices);
     }
   });
 
