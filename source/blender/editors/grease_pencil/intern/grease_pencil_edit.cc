@@ -527,7 +527,7 @@ static bool remove_stroke_or_fill_based_on_mode(Object &object,
     bke::SpanAttributeWriter<int> fill_ids = attributes.lookup_for_write_span<int>("fill_id");
     index_mask::masked_fill(fill_ids.span, 0, fills_with_stroke);
     fill_ids.finish();
-    /* TODO: tag triangle cache! */
+    drawing.tag_fills_changed();
   }
   return true;
 }
