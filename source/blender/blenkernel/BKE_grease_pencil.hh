@@ -50,16 +50,15 @@ namespace greasepencil {
  * For compatibility, legacy thickness values have to be multiplied by this factor. */
 constexpr float LEGACY_RADIUS_CONVERSION_FACTOR = 1.0f / 2000.0f;
 
-struct TriangleCache {
-  /* Triangle offset cache for all the fills in the drawing */
-  Vector<int> triangle_offsets;
-  /* Triangle cache for all the fills in the drawing. */
-  Vector<int3> triangles;
-};
-
 struct FillCache {
   /**
-   * The store which curves are in each fill.
+   * A cache of all the fills in the drawing.
+   *
+   * Uses the "fill_id" attribute to create groups of curves (fills) that are triangulated
+   * together. A fill ID of 0 indicates that the corresponding curve is not filled.
+   * The #fill_map is an index mapping where groups are the consecutive indices of curves in each
+   * fill (ordered by the first occurance of the fill ID). The #fill_offsets are offset indices
+   * into #fill_map where each range represents a fill.
    *
    * Here's a example:
    *
@@ -73,17 +72,28 @@ struct FillCache {
   Vector<int> fill_offsets;
 };
 
+struct TriangleCache {
+  /**
+   * A cache of all the triangles (used to render fills) in this drawing.
+   *
+   * All triangles are stored sequentially in #triangles as triplet of point indices. For each fill
+   * (in #FillCache) there's a group of triangles. The ranges are stored using #triangle_offsets.
+   */
+  Vector<int3> triangles;
+  Vector<int> triangle_offsets;
+};
+
 class DrawingRuntime {
  public:
   /**
-   * Triangle cache for all the strokes in the drawing.
-   */
-  mutable SharedCache<TriangleCache> triangle_cache;
-
-  /**
-   * Fill cache for the drawing. Will be `nullopt` when all curves are their own fill.
+   * Fill cache for the drawing. Will be `nullopt` when there are no fills.
    */
   mutable SharedCache<std::optional<FillCache>> fill_cache;
+
+  /**
+   * Triangle cache for all the fills in the drawing (see #fill_cache).
+   */
+  mutable SharedCache<TriangleCache> triangle_cache;
 
   /**
    * Normal vector cache for every stroke. Computed using Newell's method.
