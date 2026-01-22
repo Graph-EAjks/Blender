@@ -86,11 +86,6 @@ class DrawingRuntime {
   mutable SharedCache<std::optional<FillCache>> fill_cache;
 
   /**
-   * Fill cache for the drawing.
-   */
-  mutable SharedCache<IndexMask> fills_cache;
-
-  /**
    * Normal vector cache for every stroke. Computed using Newell's method.
    */
   mutable SharedCache<Vector<float3>> curve_plane_normals_cache;
@@ -140,8 +135,19 @@ class Drawing : public blender::GreasePencilDrawing {
    */
   Span<float3> curve_plane_normals() const;
 
+  /**
+   * Tag when the texture coordinates have changed.
+   */
   void tag_texture_matrices_changed();
 
+  void tag_triangles_changed();
+  /**
+   * Tag when the fills have changed, e.g. when curves have been filled/unfilled.
+   */
+  void tag_fills_changed();
+  /**
+   * Tag when the positions of points have changed.
+   */
   void tag_positions_changed();
   /**
    * Tag only the positions of some curves.

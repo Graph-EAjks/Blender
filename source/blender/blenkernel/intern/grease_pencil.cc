@@ -995,11 +995,22 @@ void Drawing::tag_texture_matrices_changed()
   this->runtime->curve_texture_matrices.tag_dirty();
 }
 
+void Drawing::tag_triangles_changed()
+{
+  this->runtime->triangle_cache.tag_dirty();
+}
+
+void Drawing::tag_fills_changed()
+{
+  this->runtime->fill_cache.tag_dirty();
+  this->tag_triangles_changed();
+}
+
 void Drawing::tag_positions_changed()
 {
   this->strokes_for_write().tag_positions_changed();
   this->runtime->curve_plane_normals_cache.tag_dirty();
-  this->runtime->triangle_cache.tag_dirty();
+  this->tag_triangles_changed();
   this->tag_texture_matrices_changed();
 }
 
@@ -1141,7 +1152,7 @@ void Drawing::tag_positions_changed(const IndexMask &changed_curves)
 void Drawing::tag_topology_changed()
 {
   this->tag_positions_changed();
-  this->runtime->fill_cache.tag_dirty();
+  this->tag_fills_changed();
   this->strokes_for_write().tag_topology_changed();
 }
 
@@ -1202,7 +1213,7 @@ void Drawing::tag_topology_changed(const IndexMask &changed_curves)
     });
   }
   else {
-    this->runtime->triangle_cache.tag_dirty();
+    this->tag_fills_changed();
   }
 
   this->tag_texture_matrices_changed();
