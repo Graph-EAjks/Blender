@@ -133,11 +133,11 @@ class Drawing : public blender::GreasePencilDrawing {
   bke::CurvesGeometry &strokes_for_write();
 
   /**
-   * The curves in each fill. Will return nullopt when all fill only have one curve.
+   * Group of curve indices for each fill. Can be nullopt when there are no fills in this drawing.
    */
   std::optional<GroupedSpan<int>> fills() const;
   /**
-   * The triangles for fill geometry. Grouped by each fill. Index to curves within the fill.
+   * The triangles for fill geometry. Grouped by each fill. See #fills().
    */
   GroupedSpan<int3> triangles() const;
   /**
