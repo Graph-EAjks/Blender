@@ -1179,7 +1179,6 @@ static void grease_pencil_geom_batch_ensure(Object &object,
         object, info.drawing, memory);
     const IndexMask visible_strokes = ed::greasepencil::retrieve_visible_strokes(
         object, info.drawing, memory);
-    const std::optional<GroupedSpan<int>> fills = info.drawing.fills();
     const GroupedSpan<int3> triangles = info.drawing.triangles();
 
     Array<int> verts_start_offsets(curves.curves_num(), 0);
@@ -1284,8 +1283,6 @@ static void grease_pencil_geom_batch_ensure(Object &object,
     const Span<float4x2> texture_matrices = info.drawing.texture_matrices();
     const Span<int> verts_start_offsets = verts_start_offsets_per_visible_drawing[drawing_i];
     IndexMaskMemory memory;
-    const IndexMask visible_fills = ed::greasepencil::retrieve_visible_fills(
-        object, info.drawing, memory);
     const IndexMask visible_strokes = ed::greasepencil::retrieve_visible_strokes(
         object, info.drawing, memory);
     const std::optional<GroupedSpan<int>> fills = info.drawing.fills();
