@@ -514,7 +514,7 @@ void do_versions_after_linking_510(FileData *fd, Main *bmain)
     version_clear_unused_strip_flags(*bmain);
   }
 
-  if (!MAIN_VERSION_FILE_ATLEAST(bmain, 501, 19)) {
+  if (!MAIN_VERSION_FILE_ATLEAST(bmain, 501, 21)) {
     bke::greasepencil::convert::material_stroke_fill_toggles_to_attributes(*bmain, *fd->reports);
     /* Set the stroke mode for all brushes. */
     for (Brush &brush : bmain->brushes) {
