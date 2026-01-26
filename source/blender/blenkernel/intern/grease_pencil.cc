@@ -1195,19 +1195,21 @@ void Drawing::tag_topology_changed(const IndexMask &changed_curves)
 
   this->runtime->triangle_cache.update([&](TriangleCache &r_triangle_cache) {
     const std::optional<GroupedSpan<int>> fills = this->fills();
-    const int num_fills = fills.has_value() ? fills->size() : 0;
 
     r_triangle_cache.triangles.clear();
-    r_triangle_cache.triangle_offsets.resize(num_fills + 1);
+    if (fills.has_value()) {
+      BLI_assert(fills->size() > 0);
 
-    update_triangle_and_offsets_changed(this->strokes().evaluated_positions(),
-                                        this->curve_plane_normals(),
-                                        this->strokes().evaluated_points_by_curve(),
-                                        changed_curves,
-                                        fills,
-                                        src_triangles,
-                                        r_triangle_cache.triangles,
-                                        r_triangle_cache.triangle_offsets);
+      r_triangle_cache.triangle_offsets.resize(fills->size() + 1);
+      update_triangle_and_offsets_changed(this->strokes().evaluated_positions(),
+                                          this->curve_plane_normals(),
+                                          this->strokes().evaluated_points_by_curve(),
+                                          changed_curves,
+                                          fills,
+                                          src_triangles,
+                                          r_triangle_cache.triangles,
+                                          r_triangle_cache.triangle_offsets);
+    }
   });
 
   this->tag_texture_matrices_changed();
