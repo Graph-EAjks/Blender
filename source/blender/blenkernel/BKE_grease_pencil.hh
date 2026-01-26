@@ -91,7 +91,8 @@ class DrawingRuntime {
   mutable SharedCache<std::optional<FillCache>> fill_cache;
 
   /**
-   * Triangle cache for all the fills in the drawing (see #fill_cache).
+   * Triangle cache for all the fills in the drawing (see #fill_cache). Will be `nullopt` when
+   * there are no fills.
    */
   mutable SharedCache<std::optional<TriangleCache>> triangle_cache;
 
