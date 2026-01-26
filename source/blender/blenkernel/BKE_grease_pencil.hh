@@ -93,7 +93,7 @@ class DrawingRuntime {
   /**
    * Triangle cache for all the fills in the drawing (see #fill_cache).
    */
-  mutable SharedCache<TriangleCache> triangle_cache;
+  mutable SharedCache<std::optional<TriangleCache>> triangle_cache;
 
   /**
    * Normal vector cache for every stroke. Computed using Newell's method.
@@ -137,9 +137,10 @@ class Drawing : public blender::GreasePencilDrawing {
    */
   std::optional<GroupedSpan<int>> fills() const;
   /**
-   * The triangles for fill geometry. Grouped by each fill. See #fills().
+   * The triangles for fill geometry. Grouped by each fill. Can be nullopt when there are no fills
+   * in this drawing. See #fills().
    */
-  GroupedSpan<int3> triangles() const;
+  std::optional<GroupedSpan<int3>> triangles() const;
   /**
    * Normal vectors for a plane that fits the stroke.
    */

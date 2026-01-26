@@ -633,32 +633,37 @@ static void update_triangle_and_offsets_cache(const Span<float3> positions,
 
 static void ensure_triangle_and_offset_cache(const Drawing &drawing)
 {
-  drawing.runtime->triangle_cache.ensure([&](TriangleCache &r_triangle_cache) {
-    const CurvesGeometry &curves = drawing.strokes();
-    const std::optional<GroupedSpan<int>> fills = drawing.fills();
-    const int num_fills = fills.has_value() ? fills->size() : 0;
+  drawing.runtime->triangle_cache.ensure([&](std::optional<TriangleCache> &r_triangle_cache) {
+    if (const std::optional<GroupedSpan<int>> fills = drawing.fills()) {
+      TriangleCache triangle_cache;
+      triangle_cache.triangle_offsets.resize(fills->size() + 1);
 
-    r_triangle_cache.triangles.clear();
-    r_triangle_cache.triangle_offsets.resize(num_fills + 1);
-
-    if (fills) {
+      const CurvesGeometry &curves = drawing.strokes();
       update_triangle_and_offsets_cache(curves.evaluated_positions(),
                                         drawing.curve_plane_normals(),
                                         curves.evaluated_points_by_curve(),
                                         fills->index_range(),
                                         *fills,
-                                        r_triangle_cache.triangles,
-                                        r_triangle_cache.triangle_offsets.as_mutable_span());
+                                        triangle_cache.triangles,
+                                        triangle_cache.triangle_offsets.as_mutable_span());
+
+      r_triangle_cache = std::move(triangle_cache);
+    }
+    else {
+      r_triangle_cache = std::nullopt;
     }
   });
 }
 
-GroupedSpan<int3> Drawing::triangles() const
+std::optional<GroupedSpan<int3>> Drawing::triangles() const
 {
   ensure_triangle_and_offset_cache(*this);
-
-  return GroupedSpan<int3>(this->runtime->triangle_cache.data().triangle_offsets.as_span(),
-                           this->runtime->triangle_cache.data().triangles.as_span());
+  if (this->runtime->triangle_cache.data().has_value()) {
+    const TriangleCache &triangle_cache = *this->runtime->triangle_cache.data();
+    return GroupedSpan<int3>(triangle_cache.triangle_offsets.as_span(),
+                             triangle_cache.triangles.as_span());
+  }
+  return std::nullopt;
 }
 
 static void update_curve_plane_normal_cache(const Span<float3> positions,
@@ -1126,27 +1131,34 @@ void Drawing::tag_positions_changed(const IndexMask &changed_curves)
 
   this->tag_texture_matrices_changed();
 
-  const Array<int> src_triangles_offsets = Array<int>(this->triangles().offsets.data());
-  const Array<int3> src_triangles_data = Array<int3>(this->triangles().data);
-  const GroupedSpan<int3> src_triangles(src_triangles_offsets.as_span(),
-                                        src_triangles_data.as_span());
+  /* Fills cache needs to be up-to-date. */
+  this->runtime->fill_cache.tag_dirty();
 
-  this->runtime->triangle_cache.update([&](TriangleCache &r_triangle_cache) {
-    const std::optional<GroupedSpan<int>> fills = this->fills();
-    const int num_fills = fills.has_value() ? fills->size() : 0;
+  if (const std::optional<GroupedSpan<int3>> triangles = this->triangles()) {
+    /* Copy the triangle data. */
+    const Array<int> src_triangles_offsets = Array<int>(triangles->offsets.data());
+    const Array<int3> src_triangles_data = Array<int3>(triangles->data);
+    const GroupedSpan<int3> src_triangles(src_triangles_offsets.as_span(),
+                                          src_triangles_data.as_span());
 
-    r_triangle_cache.triangles.clear();
-    r_triangle_cache.triangle_offsets.resize(num_fills + 1);
+    this->runtime->triangle_cache.update([&](std::optional<TriangleCache> &r_triangle_cache) {
+      const std::optional<GroupedSpan<int>> fills = this->fills();
+      BLI_assert(fills.has_value());
 
-    update_triangle_and_offsets_changed(this->strokes().evaluated_positions(),
-                                        this->curve_plane_normals(),
-                                        this->strokes().evaluated_points_by_curve(),
-                                        changed_curves,
-                                        fills,
-                                        src_triangles,
-                                        r_triangle_cache.triangles,
-                                        r_triangle_cache.triangle_offsets);
-  });
+      TriangleCache triangle_cache;
+      triangle_cache.triangle_offsets.resize(fills->size() + 1);
+
+      update_triangle_and_offsets_changed(this->strokes().evaluated_positions(),
+                                          this->curve_plane_normals(),
+                                          this->strokes().evaluated_points_by_curve(),
+                                          changed_curves,
+                                          fills,
+                                          src_triangles,
+                                          triangle_cache.triangles,
+                                          triangle_cache.triangle_offsets);
+      r_triangle_cache = std::move(triangle_cache);
+    });
+  }
 }
 
 void Drawing::tag_topology_changed()
@@ -1188,29 +1200,31 @@ void Drawing::tag_topology_changed(const IndexMask &changed_curves)
   /* Fills cache needs to be up-to-date. */
   this->runtime->fill_cache.tag_dirty();
 
-  const Array<int> src_triangles_offsets = Array<int>(this->triangles().offsets.data());
-  const Array<int3> src_triangles_data = Array<int3>(this->triangles().data);
-  const GroupedSpan<int3> src_triangles(src_triangles_offsets.as_span(),
-                                        src_triangles_data.as_span());
+  if (const std::optional<GroupedSpan<int3>> triangles = this->triangles()) {
+    /* Copy the triangle data. */
+    const Array<int> src_triangles_offsets = Array<int>(triangles->offsets.data());
+    const Array<int3> src_triangles_data = Array<int3>(triangles->data);
+    const GroupedSpan<int3> src_triangles(src_triangles_offsets.as_span(),
+                                          src_triangles_data.as_span());
 
-  this->runtime->triangle_cache.update([&](TriangleCache &r_triangle_cache) {
-    const std::optional<GroupedSpan<int>> fills = this->fills();
+    this->runtime->triangle_cache.update([&](std::optional<TriangleCache> &r_triangle_cache) {
+      const std::optional<GroupedSpan<int>> fills = this->fills();
+      BLI_assert(fills.has_value());
 
-    r_triangle_cache.triangles.clear();
-    if (fills.has_value()) {
-      BLI_assert(fills->size() > 0);
+      TriangleCache triangle_cache;
+      triangle_cache.triangle_offsets.resize(fills->size() + 1);
 
-      r_triangle_cache.triangle_offsets.resize(fills->size() + 1);
       update_triangle_and_offsets_changed(this->strokes().evaluated_positions(),
                                           this->curve_plane_normals(),
                                           this->strokes().evaluated_points_by_curve(),
                                           changed_curves,
                                           fills,
                                           src_triangles,
-                                          r_triangle_cache.triangles,
-                                          r_triangle_cache.triangle_offsets);
-    }
-  });
+                                          triangle_cache.triangles,
+                                          triangle_cache.triangle_offsets);
+      r_triangle_cache = std::move(triangle_cache);
+    });
+  }
 
   this->tag_texture_matrices_changed();
 }

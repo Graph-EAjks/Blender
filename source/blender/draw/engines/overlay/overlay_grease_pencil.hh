@@ -343,7 +343,7 @@ class GreasePencil : Overlay {
       const bke::CurvesGeometry &curves = info.drawing.strokes();
       const OffsetIndices<int> points_by_curve = curves.evaluated_points_by_curve();
       const bke::AttributeAccessor attributes = curves.attributes();
-      const GroupedSpan<int3> triangles = info.drawing.triangles();
+      const std::optional<GroupedSpan<int3>> triangles = info.drawing.triangles();
       const VArray<int> stroke_materials = *attributes.lookup_or_default<int>(
           "material_index", bke::AttrDomain::Curve, 0);
       const VArray<bool> cyclic = *attributes.lookup_or_default<bool>(
@@ -397,8 +397,8 @@ class GreasePencil : Overlay {
 
         const bool hide_material = (gp_style->flag & GP_MATERIAL_HIDE) != 0;
 
-        const int num_stroke_triangles = (active_filled && fills.has_value()) ?
-                                             triangles[fill_index].size() :
+        const int num_stroke_triangles = (active_filled && triangles.has_value()) ?
+                                             (*triangles)[fill_index].size() :
                                              0;
 
         const IndexRange points = points_by_curve[curve_i];

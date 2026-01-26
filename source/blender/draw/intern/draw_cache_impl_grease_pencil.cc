@@ -1179,14 +1179,16 @@ static void grease_pencil_geom_batch_ensure(Object &object,
         object, info.drawing, memory);
     const IndexMask visible_strokes = ed::greasepencil::retrieve_visible_strokes(
         object, info.drawing, memory);
-    const GroupedSpan<int3> triangles = info.drawing.triangles();
+    const std::optional<GroupedSpan<int3>> triangles = info.drawing.triangles();
 
     Array<int> verts_start_offsets(curves.curves_num(), 0);
 
     int num_cyclic = 0;
     int num_points = 0;
 
-    total_triangles_num += sum_group_sizes(triangles.offsets, visible_fills);
+    total_triangles_num += triangles ?
+                               offset_indices::sum_group_sizes(triangles->offsets, visible_fills) :
+                               0;
 
     /* Calculate the vertex offsets for all the visible curves. */
     visible_strokes.foreach_index([&](const int curve_i) {
@@ -1279,13 +1281,13 @@ static void grease_pencil_geom_batch_ensure(Object &object,
     const VArray<int> fill_ids = *attributes.lookup_or_default<int>(
         "fill_id", bke::AttrDomain::Curve, 0);
 
-    const GroupedSpan<int3> triangles = info.drawing.triangles();
+    const std::optional<GroupedSpan<int3>> triangles = info.drawing.triangles();
+    const std::optional<GroupedSpan<int>> fills = info.drawing.fills();
     const Span<float4x2> texture_matrices = info.drawing.texture_matrices();
     const Span<int> verts_start_offsets = verts_start_offsets_per_visible_drawing[drawing_i];
     IndexMaskMemory memory;
     const IndexMask visible_strokes = ed::greasepencil::retrieve_visible_strokes(
         object, info.drawing, memory);
-    const std::optional<GroupedSpan<int>> fills = info.drawing.fills();
 
     curves.ensure_evaluated_lengths();
 
@@ -1520,7 +1522,7 @@ static void grease_pencil_geom_batch_ensure(Object &object,
 
         if (active_filled) {
           const int fill_index = fill_index_by_curves[curve_i];
-          const Span<int3> tris_slice = triangles[fill_index];
+          const Span<int3> tris_slice = (*triangles)[fill_index];
           const Span<int> fill = (*fills)[fill_index];
 
           int fill_points_index = 0;

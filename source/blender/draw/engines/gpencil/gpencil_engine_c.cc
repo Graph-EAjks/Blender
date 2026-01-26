@@ -396,7 +396,7 @@ tObject *Instance::object_sync_do(Object *ob, ResourceHandleRange res_handle)
   for (const DrawingInfo info : drawings) {
     const Layer &layer = *layers[info.layer_index];
 
-    const GroupedSpan<int3> triangles = info.drawing.triangles();
+    const std::optional<GroupedSpan<int3>> triangles = info.drawing.triangles();
     const bke::CurvesGeometry &curves = info.drawing.strokes();
     const OffsetIndices<int> points_by_curve = curves.evaluated_points_by_curve();
     const bke::AttributeAccessor attributes = curves.attributes();
@@ -418,11 +418,13 @@ tObject *Instance::object_sync_do(Object *ob, ResourceHandleRange res_handle)
     Array<int> num_vertices_per_curve(curves.curves_num());
     int total_num_triangles = 0;
     int total_num_vertices = 0;
-    visible_fills.foreach_index([&](const int fill_index) {
-      const int num_stroke_triangles = triangles[fill_index].size();
-      num_triangles_per_fill[fill_index] = num_stroke_triangles;
-      total_num_triangles += num_stroke_triangles;
-    });
+    if (triangles) {
+      visible_fills.foreach_index([&](const int fill_index) {
+        const int num_stroke_triangles = (*triangles)[fill_index].size();
+        num_triangles_per_fill[fill_index] = num_stroke_triangles;
+        total_num_triangles += num_stroke_triangles;
+      });
+    }
 
     visible_strokes.foreach_index([&](const int curve_i) {
       const IndexRange points = points_by_curve[curve_i];
@@ -527,8 +529,8 @@ tObject *Instance::object_sync_do(Object *ob, ResourceHandleRange res_handle)
 
       const bool is_fill_guide_stroke = is_fill_guide[curve_i];
 
-      const bool has_triangles = active_filled && !triangles.is_empty() &&
-                                 !triangles[fill_index].is_empty();
+      const bool has_triangles = active_filled && triangles && !triangles->is_empty() &&
+                                 !(*triangles)[fill_index].is_empty();
 
       const bool hide_material = (gp_style->flag & GP_MATERIAL_HIDE) != 0;
       const bool show_stroke = !hide_stroke[curve_i] || is_fill_guide_stroke;
