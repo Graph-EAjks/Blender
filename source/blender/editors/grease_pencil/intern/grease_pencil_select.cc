@@ -958,7 +958,7 @@ static wmOperatorStatus select_fill_exec(bContext *C, wmOperator * /*op*/)
 
 static void GREASE_PENCIL_OT_select_fill(wmOperatorType *ot)
 {
-  ot->name = "Select Shape";
+  ot->name = "Select Fill";
   ot->idname = "GREASE_PENCIL_OT_select_fill";
   ot->description = "Select all curves in a fill";
 
