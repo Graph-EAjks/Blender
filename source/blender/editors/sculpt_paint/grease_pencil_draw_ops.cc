@@ -1558,6 +1558,9 @@ static bool grease_pencil_fill_init(bContext &C, wmOperator &op)
 
   Material *material = BKE_grease_pencil_object_material_ensure_from_brush(&bmain, &ob, &brush);
   const int material_index = BKE_object_material_index_get(&ob, material);
+  if (material->gp_style->fill_rgba[3] == 0.0f) {
+    BKE_report(op.reports, RPT_WARNING, "Fill is fully transparent");
+  }
 
   const bool invert = RNA_boolean_get(op.ptr, "invert");
   const bool precision = RNA_boolean_get(op.ptr, "precision");

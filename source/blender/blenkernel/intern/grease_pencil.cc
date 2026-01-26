@@ -2853,7 +2853,7 @@ Material *BKE_grease_pencil_object_material_new(Main *bmain,
   return ma;
 }
 
-Material *BKE_grease_pencil_object_material_from_brush_get(Object *ob, Brush *brush)
+Material *BKE_grease_pencil_object_material_from_brush_get(Object *ob, const Brush *brush)
 {
   if (brush && brush->gpencil_settings &&
       (brush->gpencil_settings->flag & GP_BRUSH_MATERIAL_PINNED))

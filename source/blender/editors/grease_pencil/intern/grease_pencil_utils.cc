@@ -1662,12 +1662,42 @@ float opacity_from_input_sample(const float pressure,
   return opacity;
 }
 
+enum class StrokeVisibilityStatus {
+  Visible,
+  StrokeInvisible,
+  FillInvisible,
+  BothInvisible,
+};
+
+static StrokeVisibilityStatus get_visibility_status_for_draw_operator(Object *object,
+                                                                      const Brush &brush)
+{
+  const Material *material = BKE_grease_pencil_object_material_from_brush_get(object, &brush);
+
+  const bool is_stroke_visible = material->gp_style->stroke_rgba[3] > 0.0f;
+  const bool is_fill_visible = material->gp_style->fill_rgba[3] > 0.0f;
+
+  const bool brush_uses_stroke = (brush.gpencil_settings->flag2 & GP_BRUSH_USE_STROKE) != 0;
+  const bool brush_uses_fill = (brush.gpencil_settings->flag2 & GP_BRUSH_USE_FILL) != 0;
+  if (brush_uses_stroke && !brush_uses_fill && !is_stroke_visible) {
+    return StrokeVisibilityStatus::StrokeInvisible;
+  }
+  else if (!brush_uses_stroke && brush_uses_fill && !is_fill_visible) {
+    return StrokeVisibilityStatus::FillInvisible;
+  }
+  else if (brush_uses_stroke && brush_uses_fill && !is_stroke_visible && !is_fill_visible) {
+    return StrokeVisibilityStatus::BothInvisible;
+  }
+  BLI_assert(brush_uses_stroke || brush_uses_fill);
+  return StrokeVisibilityStatus::Visible;
+}
+
 wmOperatorStatus grease_pencil_draw_operator_invoke(bContext *C,
                                                     wmOperator *op,
                                                     const bool use_duplicate_previous_key)
 {
   const Scene *scene = CTX_data_scene(C);
-  const Object *object = CTX_data_active_object(C);
+  Object *object = CTX_data_active_object(C);
   if (!object || object->type != OB_GREASE_PENCIL) {
     return OPERATOR_CANCELLED;
   }
@@ -1708,6 +1738,24 @@ wmOperatorStatus grease_pencil_draw_operator_invoke(bContext *C,
       }
     }
     WM_event_add_notifier(C, NC_GPENCIL | NA_EDITED, nullptr);
+  }
+
+  const StrokeVisibilityStatus visibility_status = get_visibility_status_for_draw_operator(object,
+                                                                                           *brush);
+  if (visibility_status != StrokeVisibilityStatus::Visible) {
+    switch (visibility_status) {
+      case StrokeVisibilityStatus::StrokeInvisible:
+        BKE_report(op->reports, RPT_WARNING, "Stroke is fully transparent");
+        break;
+      case StrokeVisibilityStatus::FillInvisible:
+        BKE_report(op->reports, RPT_WARNING, "Fill is fully transparent");
+        break;
+      case StrokeVisibilityStatus::BothInvisible:
+        BKE_report(op->reports, RPT_WARNING, "Stroke & Fill are fully transparent");
+        break;
+      default:
+        break;
+    }
   }
   return OPERATOR_RUNNING_MODAL;
 }
